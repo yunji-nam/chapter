@@ -1,4 +1,4 @@
-package com.example.chapter.controller;
+package com.example.chapter.controller.api;
 
 import com.example.chapter.dto.SignUpDto;
 import com.example.chapter.service.UserService;

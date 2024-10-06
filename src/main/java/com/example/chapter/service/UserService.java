@@ -5,6 +5,8 @@ import com.example.chapter.entity.Address;
 import com.example.chapter.entity.User;
 import com.example.chapter.entity.UserRoleEnum;
 import com.example.chapter.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,9 +21,11 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
 
-    /*
+    /**
      * 회원가입
+     * @param signUpDto
      */
+    @Transactional
     public void join(SignUpDto signUpDto) {
         String name = signUpDto.getName();
         String password = passwordEncoder.encode(signUpDto.getPassword());
@@ -33,17 +37,9 @@ public class UserService {
 
         UserRoleEnum role = UserRoleEnum.USER;
 
-        if (checkName(name)){
-            throw new IllegalArgumentException("이미 존재하는 이름입니다.");
-        }
-
-        if (checkEmail(email)) {
-            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
-        }
-
-        if (checkPhone(phone)) {
-            throw new IllegalArgumentException("이미 존재하는 휴대폰 번호입니다.");
-        }
+        checkUser("이름", userRepository.existsByName(name));
+        checkUser("이메일", userRepository.existsByEmail(email));
+        checkUser("휴대폰 번호", userRepository.existsByPhone(phone));
 
         User user = new User(name, password, email, phone, role,
                 new Address(city, street, zipcode), false, "chapter");
@@ -51,14 +47,14 @@ public class UserService {
         userRepository.save(user);
     }
 
-    private boolean checkName(String name) {
-        return userRepository.existsByName(name);
+    /**
+     * 유저 중복 확인
+     * @param information
+     * @param exists
+     */
+    private void checkUser(String information, boolean exists) {
+        if (exists) {
+            throw new IllegalArgumentException("이미 존재하는 " + information + "입니다.");
+        }
     }
-    private boolean checkEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
-    private boolean checkPhone(String phone) {
-        return userRepository.existsByPhone(phone);
-    }
-
 }
