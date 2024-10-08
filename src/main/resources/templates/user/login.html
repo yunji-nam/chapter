@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>로그인</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+    <style>
+        .form-signin {
+            width: 100%;
+            max-width: 350px;
+            margin: auto;
+            padding: 30px;
+        }
+    </style>
+
+
+</head>
+<body class="text-center" style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+
+<main class="form-signin">
+    <form th:action="@{/login}" method="post">
+        <img class="mb-4" th:src="@{/images/logo.png}" alt="chapter logo" style="width: 200px; height: auto;">
+
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+            <label for="floatingInput">Email address</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+            <label for="floatingPassword">Password</label>
+        </div>
+
+        <button class="w-100 btn btn-login" type="submit">로그인</button>
+        <p class="mt-5 mb-3 text-muted">&copy; Chapter</p>
+    </form>
+</main>
+
+
+</body>
+</html>

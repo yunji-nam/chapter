@@ -1,0 +1,31 @@
+
+.btn-login {
+    color: #fff;
+    background-color: #055160;
+    border-color: #055160
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.btn-submit {
+    color: white;
+    background-color: #055160;
+    border-color: #055160;
+}
+
+.btn-submit:hover {
+    color: red;
+    background-color: #055160;
+    border-color: #055160;
+}
+
+
+body {
+    font-family: "Noto Sans KR", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 150;
+    font-style: normal;
+}

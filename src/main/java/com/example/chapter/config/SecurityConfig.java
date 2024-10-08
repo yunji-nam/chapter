@@ -46,7 +46,8 @@ public class SecurityConfig {
         http.httpBasic((auth) -> auth.disable());
         //경로별 인가 작업
         http.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/login", "/", "/api/member/new").permitAll()
+                .requestMatchers("/login", "/", "/book", "/join", "/css/**", "/images/**",
+                        "/api/**").permitAll()
                 .requestMatchers("/admin").hasRole("ADMIN")
                 .anyRequest().authenticated());
         http.sessionManagement((session) -> session
