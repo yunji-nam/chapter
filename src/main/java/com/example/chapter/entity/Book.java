@@ -5,11 +5,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Book {
 
@@ -31,6 +33,20 @@ public class Book {
 
     public Book(String title, String author, String publisher, String isbn, int pages, Category category,
                 LocalDate publishedDate, int price, String description, int quantity) {
+        this.title = title;
+        this.author = author;
+        this.publisher = publisher;
+        this.isbn = isbn;
+        this.pages = pages;
+        this.category = category;
+        this.publishedDate = publishedDate;
+        this.price = price;
+        this.description = description;
+        this.stockQuantity = quantity;
+    }
+
+    public void update(String title, String author, String publisher, String isbn, int pages, Category category,
+                       LocalDate publishedDate, int price, String description, int quantity) {
         this.title = title;
         this.author = author;
         this.publisher = publisher;
