@@ -31,10 +31,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
             LoginDto requestDto = new ObjectMapper().readValue(request.getInputStream(), LoginDto.class);
-            log.info(requestDto.getName());
+            log.info(requestDto.getEmail());
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            requestDto.getName(), requestDto.getPassword(), null
+                            requestDto.getEmail(), requestDto.getPassword(), null
                     )
             );
         } catch (IOException e) {
