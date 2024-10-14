@@ -3,16 +3,15 @@ package com.example.chapter.controller;
 import com.example.chapter.dto.BookRegistrationDto;
 import com.example.chapter.dto.BookResponseDto;
 import com.example.chapter.entity.Category;
+import com.example.chapter.security.UserDetailsImpl;
 import com.example.chapter.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
@@ -30,7 +29,7 @@ public class BookController {
     public String addBookForm(Model model) {
         model.addAttribute("form", new BookRegistrationDto());
         model.addAttribute("categories", Category.values());
-        return "book/admin/bookForm";
+        return "book/admin/add";
     }
 
     /**
@@ -41,8 +40,9 @@ public class BookController {
      */
     @PostMapping("/book")
     public String addBook(@Valid @RequestPart(value = "data") BookRegistrationDto registrationDto,
-                                          @RequestPart(value = "image") MultipartFile image) {
-        bookService.addBook(registrationDto, image);
+                          @RequestPart(value = "image", required = false) MultipartFile image,
+                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        bookService.addBook(registrationDto, image, userDetails.getUser());
         return "/book/list";
     }
 
@@ -63,6 +63,13 @@ public class BookController {
         return "book/list";
     }
 
+    @GetMapping("/book/{bookId}")
+    public String getBook(@PathVariable Long bookId, Model model) {
+        BookResponseDto dto = bookService.getBook(bookId);
+        model.addAttribute("book", dto);
+
+        return "book/detail";
+    }
 
 
 }

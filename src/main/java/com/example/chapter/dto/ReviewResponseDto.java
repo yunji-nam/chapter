@@ -1,12 +1,11 @@
 package com.example.chapter.dto;
 
-import lombok.AllArgsConstructor;
+import com.example.chapter.entity.Review;
 import lombok.Getter;
 
 import java.time.LocalDate;
 
 @Getter
-@AllArgsConstructor
 public class ReviewResponseDto {
 
     private Long id;
@@ -16,4 +15,12 @@ public class ReviewResponseDto {
     private LocalDate createdDate;
     private LocalDate modifiedDate;
 
+    public ReviewResponseDto(Review review) {
+        this.id = review.getId();
+        this.userName = review.getUser().getName();
+        this.content = review.getContent();
+        this.rating = review.getRating();
+        this.createdDate = review.getCreatedDate();
+        this.modifiedDate = review.getModifiedDate();
+    }
 }

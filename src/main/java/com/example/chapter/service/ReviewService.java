@@ -9,9 +9,9 @@ import com.example.chapter.repository.BookRepository;
 import com.example.chapter.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,8 +20,8 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final BookRepository bookRepository;
 
-    public void addReview(Long bookId, User user, ReviewRegistrationDto dto) {
-        Book book = bookRepository.findById(bookId)
+    public void addReview(Long id, User user, ReviewRegistrationDto dto) {
+        Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 책입니다."));
         String content = dto.getContent();
         int rating = dto.getRating();
@@ -30,24 +30,39 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
-    public void updateReview(Long reviewId, ReviewRegistrationDto dto) {
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰입니다."));
+    public List<ReviewResponseDto> getReviews() {
+        return reviewRepository.findAllByOrderByModifiedDateDesc().stream().map(ReviewResponseDto::new).toList();
+    }
+
+    public ReviewResponseDto getReview(Long id) {
+        Review review = findReview(id);
+        return new ReviewResponseDto(review);
+    }
+
+    @Transactional
+    public void updateReview(Long id, ReviewRegistrationDto dto, User user) {
+        Review review = findReview(id);
+        if (!user.getId().equals(review.getUser().getId())) {
+            throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
+        }
         String content = dto.getContent();
         int rating = dto.getRating();
 
-        review.updateReview(content, rating);
+        review.update(content, rating);
         reviewRepository.save(review);
     }
 
-    public List<ReviewResponseDto> getReviews(Long bookId) {
-        List<Review> reviews = reviewRepository.findByBookId(bookId);
-        return reviews.stream().map(review -> new ReviewResponseDto(
-                review.getId(),
-                review.getUser().getName(),
-                review.getContent(),
-                review.getRating(),
-                review.getCreatedDate(),
-                review.getModifiedDate())).collect(Collectors.toList());
+    @Transactional
+    public void deleteReview(Long id, User user) {
+        Review review = findReview(id);
+        if (!user.getId().equals(review.getUser().getId())) {
+            throw new IllegalArgumentException("작성자만 삭제할 수 있습니다.");
+        }
+        reviewRepository.delete(review);
+    }
+
+    private Review findReview(Long reviewId) {
+        return reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰입니다."));
     }
 }

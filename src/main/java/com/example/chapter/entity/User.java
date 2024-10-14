@@ -2,10 +2,13 @@ package com.example.chapter.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
     @Id
@@ -35,9 +38,6 @@ public class User {
     @NotEmpty
     private String provider;
 
-    protected User() {
-    }
-
     public User(String name, String password, String email, String phone, UserRoleEnum role, Address address, boolean isDelete, String provider) {
         this.name = name;
         this.password = password;
@@ -48,4 +48,10 @@ public class User {
         this.isDelete = isDelete;
         this.provider = provider;
     }
+
+    public boolean isAdmin() {
+        return this.role.equals(UserRoleEnum.ADMIN);
+    }
+
+
 }

@@ -1,6 +1,8 @@
 package com.example.chapter.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,13 +18,12 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotEmpty
     private String content;
 
-    @Column(nullable = false)
     private int rating;
 
-    @Column(nullable = false)
+    @NotNull
     private LocalDate createdDate;
 
     private LocalDate modifiedDate;
@@ -44,7 +45,7 @@ public class Review {
         this.user = user;
     }
 
-    public void updateReview(String content, int rating) {
+    public void update(String content, int rating) {
         this.content = content;
         this.rating = rating;
         this.modifiedDate = LocalDate.now();

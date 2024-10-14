@@ -1,9 +1,9 @@
 package com.example.chapter.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,16 +19,37 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty
+    @Column(unique = true)
     private String title;
+
+    @NotEmpty
     private String author;
+
+    @NotEmpty
     private String publisher;
+
+    @NotEmpty
+    @Column(unique = true)
     private String isbn;
+
+    @Min(1)
     private int pages;
+
+    @NotNull
     private Category category;
+
+    @NotNull
     private LocalDate publishedDate;
+
+    @Min(1)
     private int price;
+
+    @NotEmpty
     private String description;
+
     private int stockQuantity;
+
     private String image;
 
     public Book(String title, String author, String publisher, String isbn, int pages, Category category,
@@ -58,7 +79,6 @@ public class Book {
         this.description = description;
         this.stockQuantity = quantity;
     }
-
 
     public void addStock(int quantity) {
         this.stockQuantity += quantity;
