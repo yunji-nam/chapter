@@ -43,7 +43,7 @@ public class BookController {
                           @RequestPart(value = "image", required = false) MultipartFile image,
                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         bookService.addBook(registrationDto, image, userDetails.getUser());
-        return "/book/list";
+        return "redirect:/books";
     }
 
     @GetMapping("/books")
@@ -71,5 +71,27 @@ public class BookController {
         return "book/detail";
     }
 
+    //도서 수정 폼
+    @GetMapping("/book/{bookId}/edit")
+    public String updateBookForm(@PathVariable Long bookId, Model model) {
+        BookResponseDto responseDto = bookService.getBook(bookId);
+        model.addAttribute("form", new BookRegistrationDto(responseDto));
+        model.addAttribute("categories", Category.values());
+        return "book/admin/update";
+    }
 
+    @PutMapping("/book/{bookId}/edit")
+    public String updateBook(@PathVariable Long bookId,
+                             @Valid @RequestPart(value = "data") BookRegistrationDto registrationDto,
+                             @RequestPart(value = "image", required = false) MultipartFile image,
+                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        bookService.updateBook(bookId, registrationDto, image, userDetails.getUser());
+        return "redirect:/book/" + bookId;
+    }
+
+    @DeleteMapping("/book/{bookId}")
+    public String deleteBook(@PathVariable Long bookId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        bookService.deleteBook(bookId, userDetails.getUser());
+        return "redirect:/books";
+    }
 }

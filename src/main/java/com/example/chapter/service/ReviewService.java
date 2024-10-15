@@ -20,7 +20,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final BookRepository bookRepository;
 
-    public void addReview(Long id, User user, ReviewRegistrationDto dto) {
+    public void addReview(Long id, ReviewRegistrationDto dto, User user) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 책입니다."));
         String content = dto.getContent();
@@ -49,7 +49,6 @@ public class ReviewService {
         int rating = dto.getRating();
 
         review.update(content, rating);
-        reviewRepository.save(review);
     }
 
     @Transactional

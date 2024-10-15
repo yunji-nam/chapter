@@ -2,7 +2,9 @@ package com.example.chapter.service;
 
 import com.example.chapter.dto.BookRegistrationDto;
 import com.example.chapter.dto.BookResponseDto;
-import com.example.chapter.entity.*;
+import com.example.chapter.entity.Book;
+import com.example.chapter.entity.Category;
+import com.example.chapter.entity.User;
 import com.example.chapter.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,8 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -27,22 +27,9 @@ public class BookService {
      */
     public void addBook(BookRegistrationDto dto, MultipartFile image, User user) {
         checkAuthority(user);
-
-        String title = dto.getTitle();
-        String author = dto.getAuthor();
-        String publisher = dto.getPublisher();
-        String isbn = dto.getIsbn();
-        int pages = dto.getPages();
-        Category category = dto.getCategory();
-        LocalDate publishedDate = dto.getPublishedDate();
-        int price = dto.getPrice();
-        String description = dto.getDescription();
-        int quantity = dto.getQuantity();
 //        String imageUrl = s3Service.upload();
 
-        Book book = new Book(title, author, publisher, isbn, pages, category,
-                publishedDate, price, description, quantity);
-
+        Book book = dto.toEntity();
         bookRepository.save(book);
     }
 
@@ -69,22 +56,11 @@ public class BookService {
     }
 
     @Transactional
-    public void updateBook(Long id, BookRegistrationDto dto, User user) {
+    public void updateBook(Long id, BookRegistrationDto dto, MultipartFile image, User user) {
         Book book = findBook(id);
         checkAuthority(user);
 
-        String title = dto.getTitle();
-        String author = dto.getAuthor();
-        String publisher = dto.getPublisher();
-        String isbn = dto.getIsbn();
-        int pages = dto.getPages();
-        Category category = dto.getCategory();
-        LocalDate publishedDate = dto.getPublishedDate();
-        int price = dto.getPrice();
-        String description = dto.getDescription();
-        int quantity = dto.getQuantity();
-
-        book.update(title, author, publisher, isbn, pages, category, publishedDate, price, description, quantity);
+        book.update(dto.toEntity());
     }
 
     @Transactional

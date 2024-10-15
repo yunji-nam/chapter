@@ -18,6 +18,7 @@ public class BookResponseDto {
     private LocalDate publishedDate;
     private int price;
     private String description;
+    private int stockQuantity;
     private String image;
 
     public BookResponseDto(Book book) {
@@ -30,6 +31,7 @@ public class BookResponseDto {
         this.publishedDate = book.getPublishedDate();
         this.price = book.getPrice();
         this.description = book.getDescription();
+        this.stockQuantity = book.getStockQuantity();
         this.image = book.getImage();
     }
 

@@ -66,18 +66,17 @@ public class Book {
         this.stockQuantity = quantity;
     }
 
-    public void update(String title, String author, String publisher, String isbn, int pages, Category category,
-                       LocalDate publishedDate, int price, String description, int quantity) {
-        this.title = title;
-        this.author = author;
-        this.publisher = publisher;
-        this.isbn = isbn;
-        this.pages = pages;
-        this.category = category;
-        this.publishedDate = publishedDate;
-        this.price = price;
-        this.description = description;
-        this.stockQuantity = quantity;
+    public void update(Book book) {
+        this.title = book.getTitle();
+        this.author = book.getAuthor();
+        this.publisher = book.getPublisher();
+        this.isbn = book.getIsbn();
+        this.pages = book.getPages();
+        this.category = book.getCategory();
+        this.publishedDate = book.getPublishedDate();
+        this.price = book.getPrice();
+        this.description = book.getDescription();
+        this.stockQuantity = book.getStockQuantity();
     }
 
     public void addStock(int quantity) {
