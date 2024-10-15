@@ -1,7 +1,6 @@
 package com.example.chapter.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,16 +14,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
+    @Column(nullable = false)
     private String name;
 
-    @NotEmpty
+    @Column(nullable = false)
     private String password;
 
-    @NotEmpty
+    @Column(nullable = false)
     private String email;
 
-    @NotEmpty
+    @Column(nullable = false)
     private String phone;
 
     @Enumerated(value = EnumType.STRING)
@@ -35,7 +34,7 @@ public class User {
 
     private boolean isDelete;
 
-    @NotEmpty
+    @Column(nullable = false)
     private String provider;
 
     public User(String name, String password, String email, String phone, UserRoleEnum role, Address address, boolean isDelete, String provider) {

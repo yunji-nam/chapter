@@ -1,9 +1,6 @@
 package com.example.chapter.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,33 +16,27 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String title;
 
-    @NotEmpty
+    @Column(nullable = false)
     private String author;
 
-    @NotEmpty
+    @Column(nullable = false)
     private String publisher;
 
-    @NotEmpty
     @Column(unique = true)
     private String isbn;
 
-    @Min(1)
     private int pages;
 
-    @NotNull
     private Category category;
 
-    @NotNull
     private LocalDate publishedDate;
 
-    @Min(1)
     private int price;
 
-    @NotEmpty
+    @Column(nullable = false)
     private String description;
 
     private int stockQuantity;
