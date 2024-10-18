@@ -4,9 +4,9 @@ import jakarta.validation.constraints.Min;
 import lombok.Getter;
 
 @Getter
-public class CartDto {
+public class CartUpdateDto {
 
-    private Long bookId;
+    Long cartItemId;
     @Min(1)
-    private int quantity;
+    int quantity;
 }

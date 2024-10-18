@@ -4,6 +4,7 @@ import com.example.chapter.dto.ReviewRegistrationDto;
 import com.example.chapter.dto.ReviewResponseDto;
 import com.example.chapter.security.UserDetailsImpl;
 import com.example.chapter.service.ReviewService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -25,7 +26,7 @@ public class ReviewController {
 
     @PostMapping
     public String addReview(@PathVariable Long bookId,
-                            @RequestBody ReviewRegistrationDto dto,
+                            @Valid @RequestBody ReviewRegistrationDto dto,
                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         reviewService.addReview(bookId, dto, userDetails.getUser());
         return "redirect:/book/" + bookId;
@@ -48,7 +49,7 @@ public class ReviewController {
 
     @PutMapping("/{reviewId}/edit")
     public String updateReview(@PathVariable Long bookId, @PathVariable Long reviewId,
-                             @RequestBody ReviewRegistrationDto dto,
+                             @Valid @RequestBody ReviewRegistrationDto dto,
                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
         reviewService.updateReview(reviewId, dto, userDetails.getUser());
         return "redirect:/book/" + bookId + "/review/" + reviewId;
