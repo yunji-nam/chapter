@@ -57,6 +57,7 @@ public class CartService {
         return itemDtos;
     }
 
+    // 아이템 수량 수정
     @Transactional
     public void updateCartItemQuantity(CartUpdateDto dto, User user) {
         CartItem cartItem = cartItemRepository.findById(dto.getCartItemId())
@@ -67,7 +68,7 @@ public class CartService {
         cartItem.updateQuantity(dto.getQuantity());
     }
 
-    // 장바구니 전체 삭제
+    // 전체 삭제
     @Transactional
     public void deleteCart(User user) {
         Cart cart = findCart(user);
