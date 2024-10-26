@@ -37,6 +37,10 @@ public class User {
     @Column(nullable = false)
     private String provider;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
+
     public User(String name, String password, String email, String phone, UserRoleEnum role, Address address, boolean isDelete, String provider) {
         this.name = name;
         this.password = password;
