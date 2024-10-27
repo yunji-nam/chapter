@@ -7,6 +7,7 @@ import com.example.chapter.entity.Review;
 import com.example.chapter.entity.User;
 import com.example.chapter.repository.BookRepository;
 import com.example.chapter.repository.ReviewRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,7 @@ public class ReviewService {
 
     public void addReview(Long id, ReviewRegistrationDto dto, User user) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 책입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("책을 찾을 수 없습니다."));
         String content = dto.getContent();
         int rating = dto.getRating();
 
@@ -62,6 +63,6 @@ public class ReviewService {
 
     private Review findReview(Long reviewId) {
         return reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("리뷰를 찾을 수 없습니다"));
     }
 }

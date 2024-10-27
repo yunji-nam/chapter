@@ -45,4 +45,15 @@ public class Order {
         this.orderBooks = orderBooks;
     }
 
+    public void cancel() {
+        if (delivery.getStatus() == DeliveryStatus.DELIVERED) {
+            throw new IllegalStateException("이미 배송이 완료된 상품입니다.");
+        }
+
+        this.status = OrderStatus.CANCEL;
+        for (OrderBook orderBook : orderBooks) {
+            orderBook.cancel();
+        }
+    }
+
 }

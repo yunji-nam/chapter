@@ -29,5 +29,10 @@ public class OrderBook {
     public OrderBook(Book book, int quantity) {
         this.book = book;
         this.quantity = quantity;
+        book.decreaseStock(quantity);
+    }
+
+    public void cancel() {
+        getBook().addStock(quantity);
     }
 }
