@@ -35,14 +35,14 @@ public class Order {
     private OrderStatus status;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderBook> orderBooks = new ArrayList<>();
+    private List<OrderItem> items = new ArrayList<>();
 
-    public Order(User user, Delivery delivery, List<OrderBook> orderBooks) {
+    public Order(User user, Delivery delivery, List<OrderItem> items) {
         this.user = user;
         this.delivery = delivery;
         this.orderDate = LocalDateTime.now();
         this.status = OrderStatus.ORDER;
-        this.orderBooks = orderBooks;
+        this.items = items;
     }
 
     public void cancel() {
@@ -51,8 +51,8 @@ public class Order {
         }
 
         this.status = OrderStatus.CANCEL;
-        for (OrderBook orderBook : orderBooks) {
-            orderBook.cancel();
+        for (OrderItem orderItem : items) {
+            orderItem.cancel();
         }
     }
 

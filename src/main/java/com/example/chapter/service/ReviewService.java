@@ -43,9 +43,8 @@ public class ReviewService {
     @Transactional
     public void updateReview(Long id, ReviewRegistrationDto dto, User user) {
         Review review = findReview(id);
-        if (!user.getId().equals(review.getUser().getId())) {
-            throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
-        }
+        checkUser(user, review);
+
         String content = dto.getContent();
         int rating = dto.getRating();
 
@@ -55,14 +54,18 @@ public class ReviewService {
     @Transactional
     public void deleteReview(Long id, User user) {
         Review review = findReview(id);
-        if (!user.getId().equals(review.getUser().getId())) {
-            throw new IllegalArgumentException("작성자만 삭제할 수 있습니다.");
-        }
+        checkUser(user, review);
         reviewRepository.delete(review);
     }
 
     private Review findReview(Long reviewId) {
         return reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new EntityNotFoundException("리뷰를 찾을 수 없습니다"));
+    }
+
+    private static void checkUser(User user, Review review) {
+        if (!user.getId().equals(review.getUser().getId())) {
+            throw new IllegalArgumentException("작성자가 아닙니다.");
+        }
     }
 }

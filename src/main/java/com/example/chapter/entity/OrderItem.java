@@ -10,7 +10,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OrderBook {
+public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class OrderBook {
 
     private int quantity;
 
-    public OrderBook(Book book, int quantity) {
+    public OrderItem(Book book, int quantity) {
         this.book = book;
         this.quantity = quantity;
         book.decreaseStock(quantity);

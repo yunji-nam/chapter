@@ -61,7 +61,7 @@ public class CartService {
     @Transactional
     public void updateCartItemQuantity(CartUpdateDto dto, User user) {
         CartItem cartItem = cartItemRepository.findById(dto.getCartItemId())
-                        .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 CartItem입니다."));
+                        .orElseThrow(() -> new EntityNotFoundException("cart item을 찾을 수 없습니다."));
         if (!cartItem.getCart().getUser().getId().equals(user.getId())) {
                     throw new IllegalArgumentException("사용자가 다릅니다.");
         }
@@ -77,25 +77,25 @@ public class CartService {
 
     // 장바구니 내 아이템 삭제
     @Transactional
-    public void deleteItemFromCart(Long cartItemId, User user) {
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 CartItem입니다."));
+    public void deleteItemFromCart(Long id, User user) {
+        CartItem cartItem = cartItemRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("cart item을 찾을 수 없습니다."));
         if (!cartItem.getCart().getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("사용자가 다릅니다.");
         }
-        Cart cart = cartItem.getCart(); //
-        cart.getItems().remove(cartItem); //
+        Cart cart = cartItem.getCart();
+        cart.getItems().remove(cartItem);
         cartItemRepository.delete(cartItem);
     }
 
     private Book findBook(Long id) {
         return bookRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 책입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("책을 찾을 수 없습니다."));
     }
 
     private Cart findCart(User user) {
         Cart cart = cartRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 카트입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("cart을 찾을 수 없습니다."));
         return cart;
     }
 

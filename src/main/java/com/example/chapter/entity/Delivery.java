@@ -22,11 +22,17 @@ public class Delivery {
     @Embedded
     private Address address;
 
+    private String name;
+
+    private String phone;
+
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
 
-    public Delivery(Address address) {
+    public Delivery(Address address, String name, String phone) {
         this.address = address;
+        this.name = name;
+        this.phone = phone;
         this.status = DeliveryStatus.READY;
     }
 
