@@ -4,6 +4,7 @@ import com.example.chapter.dto.OrderDetailDto;
 import com.example.chapter.dto.OrderListDto;
 import com.example.chapter.dto.OrderRequestDto;
 import com.example.chapter.entity.*;
+import com.example.chapter.repository.CartRepository;
 import com.example.chapter.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +23,12 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final CartRepository cartRepository;
 
     // 주문
     public void createOrder(User user, OrderRequestDto dto) {
-        Cart cart = user.getCart();
+        Cart cart = cartRepository.findByUserId(user.getId()).orElseThrow(() ->
+                new EntityNotFoundException("cart를 찾을 수 없습니다."));
         List<CartItem> items = cart.getItems();
 
         List<OrderItem> orderItems = new ArrayList<>();

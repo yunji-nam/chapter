@@ -4,10 +4,12 @@ import com.example.chapter.entity.Address;
 import com.example.chapter.entity.User;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Getter
+@NoArgsConstructor
 public class OrderRequestDto {
 
     @NotEmpty
@@ -19,7 +21,6 @@ public class OrderRequestDto {
     private String userName;
     private String userPhone;
     private Address userAddress;
-
     private List<CartItemDto> cartItems;
     private int totalPrice;
 
