@@ -26,7 +26,8 @@ public class OrderItem {
 
     private int quantity;
 
-    public OrderItem(Book book, int quantity) {
+    public OrderItem(Order order, Book book, int quantity) {
+        this.order = order;
         this.book = book;
         this.quantity = quantity;
         book.decreaseStock(quantity);

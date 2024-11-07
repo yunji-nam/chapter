@@ -45,6 +45,11 @@ public class Order {
         this.items = items;
     }
 
+    public void addOrderItem(Book book, int quantity) {
+        OrderItem orderItem = new OrderItem(this, book, quantity);
+        items.add(orderItem);
+    }
+
     public void cancel() {
         if (delivery.getStatus() == DeliveryStatus.DELIVERED) {
             throw new IllegalStateException("이미 배송이 완료된 상품입니다.");

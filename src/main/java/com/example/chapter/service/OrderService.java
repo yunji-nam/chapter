@@ -33,14 +33,6 @@ public class OrderService {
 
         List<OrderItem> orderItems = new ArrayList<>();
 
-        for (CartItem cartItem : items) {
-            Book book = cartItem.getBook();
-            int quantity = cartItem.getQuantity();
-
-            OrderItem orderItem = new OrderItem(book, quantity);
-            orderItems.add(orderItem);
-        }
-
         Address address = dto.getDeliveryAddress();
         String name = dto.getDeliveryName();
         String phone = dto.getDeliveryPhone();
@@ -48,6 +40,14 @@ public class OrderService {
         Delivery delivery = new Delivery(address, name, phone);
 
         Order order = new Order(user, delivery, orderItems);
+
+        for (CartItem cartItem : items) {
+            Book book = cartItem.getBook();
+            int quantity = cartItem.getQuantity();
+
+            order.addOrderItem(book, quantity);
+        }
+
         orderRepository.save(order);
     }
 
