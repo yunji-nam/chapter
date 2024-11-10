@@ -26,10 +26,10 @@ public class BookController {
      * @return
      */
     @GetMapping("/book")
-    public String addBookForm(Model model) {
+    public String registerBookForm(Model model) {
         model.addAttribute("form", new BookRegistrationDto());
         model.addAttribute("categories", Category.values());
-        return "book/admin/add";
+        return "admin/book/add";
     }
 
     /**
@@ -39,16 +39,17 @@ public class BookController {
      * @return
      */
     @PostMapping("/book")
-    public String addBook(@Valid @RequestPart(value = "data") BookRegistrationDto registrationDto,
+    public String registerBook(@Valid @RequestPart(value = "data") BookRegistrationDto registrationDto,
                           @RequestPart(value = "image", required = false) MultipartFile image,
                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        bookService.addBook(registrationDto, image, userDetails.getUser());
+        bookService.registerBook(registrationDto, image, userDetails.getUser());
         return "redirect:/books";
     }
 
+
     @GetMapping("/books")
     public String getAllBooks(@RequestParam(required = false) String category,
-                              @RequestParam(defaultValue = "latest") String sortType,
+                              @RequestParam(defaultValue = "id") String sortType,
                               @RequestParam(defaultValue = "0") int pageNo,
                               @RequestParam(defaultValue = "2") int size,
                               Model model) {
@@ -57,7 +58,7 @@ public class BookController {
         if (category != null) {
             bookDtos = bookService.getBooksByCategory(Category.valueOf(category), sortType, pageNo, size);
         } else {
-            bookDtos = bookService.getAllBooks(sortType, pageNo, size);
+            bookDtos = bookService.getBooks(sortType, pageNo, size);
         }
         model.addAttribute("bookList", bookDtos);
         return "book/list";
@@ -77,7 +78,7 @@ public class BookController {
         BookResponseDto responseDto = bookService.getBook(bookId);
         model.addAttribute("form", new BookRegistrationDto(responseDto));
         model.addAttribute("categories", Category.values());
-        return "book/admin/update";
+        return "admin/book/update";
     }
 
     @PutMapping("/book/{bookId}/edit")

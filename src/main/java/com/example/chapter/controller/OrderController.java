@@ -41,7 +41,8 @@ public class OrderController {
     }
 
     @GetMapping("/order/{orderId}")
-    public String getOrder(@PathVariable Long orderId, @AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
+    public String getOrder(@PathVariable Long orderId,
+                           @AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
         OrderDetailDto dto = orderService.getOrder(orderId, userDetails.getUser());
         model.addAttribute("order", dto);
 
