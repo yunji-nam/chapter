@@ -1,9 +1,12 @@
 package com.example.chapter.controller;
 
+import com.example.chapter.dto.ProfileDto;
 import com.example.chapter.dto.SignUpDto;
+import com.example.chapter.security.UserDetailsImpl;
 import com.example.chapter.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,5 +38,12 @@ public class UserController {
         }
         userService.join(signUpDto);
         return "redirect:/login";
+    }
+
+    @GetMapping("/profile")
+    public String getProfile(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
+        ProfileDto profile = userService.getProfile(userDetails.getUser());
+        model.addAttribute("profile", profile);
+        return "user/profile";
     }
 }

@@ -1,5 +1,6 @@
 package com.example.chapter.service;
 
+import com.example.chapter.dto.ProfileDto;
 import com.example.chapter.dto.SignUpDto;
 import com.example.chapter.entity.Address;
 import com.example.chapter.entity.User;
@@ -45,6 +46,10 @@ public class UserService {
                 new Address(city, street, zipcode), false, "chapter");
 
         userRepository.save(user);
+    }
+
+    public ProfileDto getProfile(User user) {
+            return new ProfileDto(user);
     }
 
     /**
