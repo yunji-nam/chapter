@@ -2,9 +2,11 @@ package com.example.chapter.service;
 
 import com.example.chapter.dto.ProfileDto;
 import com.example.chapter.dto.SignUpDto;
+import com.example.chapter.dto.UpdateProfileDto;
 import com.example.chapter.entity.Address;
 import com.example.chapter.entity.User;
 import com.example.chapter.entity.UserRoleEnum;
+import com.example.chapter.exception.DuplicateFieldException;
 import com.example.chapter.repository.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,12 +24,10 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
 
-    /**
-     * 회원가입
-     * @param signUpDto
-     */
+    // 회원가입
     @Transactional
     public void join(SignUpDto signUpDto) {
+
         String name = signUpDto.getName();
         String password = passwordEncoder.encode(signUpDto.getPassword());
         String email = signUpDto.getEmail();
@@ -38,9 +38,7 @@ public class UserService {
 
         UserRoleEnum role = UserRoleEnum.USER;
 
-        checkUser("이름", userRepository.existsByName(name));
-        checkUser("이메일", userRepository.existsByEmail(email));
-        checkUser("휴대폰 번호", userRepository.existsByPhone(phone));
+        validateFields(name, email, phone);
 
         User user = new User(name, password, email, phone, role,
                 new Address(city, street, zipcode), false, "chapter");
@@ -48,18 +46,50 @@ public class UserService {
         userRepository.save(user);
     }
 
+    // 프로필 조회
     public ProfileDto getProfile(User user) {
-            return new ProfileDto(user);
+        return new ProfileDto(user);
     }
 
-    /**
-     * 유저 중복 확인
-     * @param information
-     * @param exists
-     */
-    private void checkUser(String information, boolean exists) {
-        if (exists) {
-            throw new IllegalArgumentException("이미 존재하는 " + information + "입니다.");
-        }
+    // 프로필 수정
+    @Transactional
+    public void updateProfile(User user, UpdateProfileDto dto) {
+
+        String password = dto.getPassword() != null ? passwordEncoder.encode(dto.getPassword()) : user.getPassword();
+        String email = dto.getEmail() != null ? validateEmail(dto.getEmail()) : user.getEmail();
+        String phone = dto.getPhone() != null ? validatePhone(dto.getPhone()) : user.getPhone();
+
+        Address address = updateAddress(user.getAddress(), dto.getAddress());
+
+        user.updateUser(password, email, phone, address);
+
     }
+
+    private void validateFields(String name, String email, String phone) {
+        if (userRepository.existsByName(name)) throw new DuplicateFieldException("이름", name);
+        if (userRepository.existsByEmail(email)) throw new DuplicateFieldException("이메일", email);
+        if (userRepository.existsByEmail(phone)) throw new DuplicateFieldException("휴대폰 번호", phone);
+    }
+
+    private String validateEmail(String email) {
+        if (userRepository.existsByEmail(email)) throw new DuplicateFieldException("이메일", email);
+        return email;
+    }
+
+    private String validatePhone(String phone) {
+        if (userRepository.existsByEmail(phone)) throw new DuplicateFieldException("휴대폰 번호", phone);
+        return phone;
+    }
+
+    private Address updateAddress(Address currentAddress, Address newAddress) {
+        if (newAddress == null) {
+            return currentAddress;
+        }
+        return new Address(
+                newAddress.getCity() != null ? newAddress.getCity() : currentAddress.getCity(),
+                newAddress.getStreet() != null ? newAddress.getStreet() : currentAddress.getStreet(),
+                newAddress.getZipcode() != null ? newAddress.getZipcode() : currentAddress.getZipcode()
+        );
+    }
+
 }

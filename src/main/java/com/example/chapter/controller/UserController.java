@@ -2,6 +2,8 @@ package com.example.chapter.controller;
 
 import com.example.chapter.dto.ProfileDto;
 import com.example.chapter.dto.SignUpDto;
+import com.example.chapter.dto.UpdateProfileDto;
+import com.example.chapter.entity.User;
 import com.example.chapter.security.UserDetailsImpl;
 import com.example.chapter.service.UserService;
 import jakarta.validation.Valid;
@@ -12,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
@@ -44,6 +47,24 @@ public class UserController {
     public String getProfile(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
         ProfileDto profile = userService.getProfile(userDetails.getUser());
         model.addAttribute("profile", profile);
-        return "user/profile";
+        return "user/profile/view";
     }
+
+    @GetMapping("/profile/edit")
+    public String updateProfileForm(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
+        User user = userDetails.getUser();
+        UpdateProfileDto profile = new UpdateProfileDto(user.getPassword(), user.getEmail(),
+                user.getPhone(), user.getAddress());
+        model.addAttribute("form", profile);
+
+        return "user/profile/edit";
+    }
+
+    @PutMapping("/profile/edit")
+    public String updateProfile(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                @Valid UpdateProfileDto dto) {
+        userService.updateProfile(userDetails.getUser(), dto);
+        return "redirect:/profile";
+    }
+
 }

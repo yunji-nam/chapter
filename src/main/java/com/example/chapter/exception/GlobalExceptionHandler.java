@@ -17,4 +17,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleException(EntityNotFoundException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
+
+    @ExceptionHandler(DuplicateFieldException.class)
+    public ResponseEntity<String> handleException(DuplicateFieldException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+
 }

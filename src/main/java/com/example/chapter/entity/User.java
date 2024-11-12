@@ -58,6 +58,13 @@ public class User {
         this.provider = provider;
     }
 
+    public void updateUser(String password, String email, String phone, Address address) {
+        this.password = password;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+    }
+
     public boolean isAdmin() {
         return this.role.equals(UserRoleEnum.ADMIN);
     }
