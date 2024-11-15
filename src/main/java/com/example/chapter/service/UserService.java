@@ -63,11 +63,6 @@ public class UserService {
 
     }
 
-    private void validateFields(String email, String phone) {
-        if (userRepository.existsByEmail(email)) throw new DuplicateFieldException("이메일", email);
-        if (userRepository.existsByPhone(phone)) throw new DuplicateFieldException("휴대폰 번호", phone);
-    }
-
     private String validateEmail(String email) {
         if (userRepository.existsByEmail(email)) throw new DuplicateFieldException("이메일", email);
         return email;
