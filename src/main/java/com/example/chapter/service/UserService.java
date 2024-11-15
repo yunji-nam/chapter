@@ -38,10 +38,8 @@ public class UserService {
 
         UserRoleEnum role = UserRoleEnum.USER;
 
-        validateFields(name, email, phone);
-
-        User user = new User(name, password, email, phone, role,
-                new Address(city, street, zipcode), false, "chapter");
+        User user = new User(name, password, validateEmail(email), validatePhone(phone), role,
+                new Address(city, street, zipcode), "chapter");
 
         userRepository.save(user);
     }
@@ -65,10 +63,9 @@ public class UserService {
 
     }
 
-    private void validateFields(String name, String email, String phone) {
-        if (userRepository.existsByName(name)) throw new DuplicateFieldException("이름", name);
+    private void validateFields(String email, String phone) {
         if (userRepository.existsByEmail(email)) throw new DuplicateFieldException("이메일", email);
-        if (userRepository.existsByEmail(phone)) throw new DuplicateFieldException("휴대폰 번호", phone);
+        if (userRepository.existsByPhone(phone)) throw new DuplicateFieldException("휴대폰 번호", phone);
     }
 
     private String validateEmail(String email) {
@@ -77,7 +74,7 @@ public class UserService {
     }
 
     private String validatePhone(String phone) {
-        if (userRepository.existsByEmail(phone)) throw new DuplicateFieldException("휴대폰 번호", phone);
+        if (userRepository.existsByPhone(phone)) throw new DuplicateFieldException("휴대폰 번호", phone);
         return phone;
     }
 

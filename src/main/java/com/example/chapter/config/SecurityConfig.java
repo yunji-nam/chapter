@@ -47,7 +47,7 @@ public class SecurityConfig {
         //경로별 인가 작업
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/login", "/", "/book", "/join", "/css/**", "/images/**",
-                        "/api/**").permitAll()
+                        "/kakao/*", "/api/**").permitAll()
                 .requestMatchers("/admin").hasRole("ADMIN")
                 .anyRequest().authenticated());
         http.sessionManagement((session) -> session

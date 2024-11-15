@@ -34,11 +34,12 @@ public class JwtUtil {
     public String createToken(User user) {
         Date date = new Date();
         return Jwts.builder()
+                .subject(user.getEmail())
                 .claim("username", user.getName())
                 .claim("role", user.getRole())
                 .issuedAt(date)
                 .expiration(new Date(date.getTime() + TOKEN_TIME))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(key, Jwts.SIG.HS256)
                 .compact();
     }
 

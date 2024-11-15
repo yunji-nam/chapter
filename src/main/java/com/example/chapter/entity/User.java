@@ -23,10 +23,10 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(unique = true)
     private String phone;
 
     @Enumerated(value = EnumType.STRING)
@@ -40,21 +40,26 @@ public class User {
     @Column(nullable = false)
     private String provider;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id")
-    private Cart cart;
-
     @OneToMany(mappedBy = "user")
     private List<Order> orders = new ArrayList<>();
 
-    public User(String name, String password, String email, String phone, UserRoleEnum role, Address address, boolean isDelete, String provider) {
+    public User(String name, String password, String email, String phone, UserRoleEnum role, Address address, String provider) {
         this.name = name;
         this.password = password;
         this.email = email;
         this.phone = phone;
         this.role = role;
         this.address = address;
-        this.isDelete = isDelete;
+        this.isDelete = false;
+        this.provider = provider;
+    }
+
+    public User(String name, String password, String email, UserRoleEnum role, String provider) {
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.role =role;
+        this.isDelete = false;
         this.provider = provider;
     }
 
