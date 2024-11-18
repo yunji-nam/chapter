@@ -8,12 +8,11 @@ import com.example.chapter.entity.User;
 import com.example.chapter.entity.UserRoleEnum;
 import com.example.chapter.exception.DuplicateFieldException;
 import com.example.chapter.repository.UserRepository;
-import org.springframework.transaction.annotation.Transactional;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -29,17 +28,21 @@ public class UserService {
     public void join(SignUpDto signUpDto) {
 
         String name = signUpDto.getName();
+        log.info("name:" + name);
         String password = passwordEncoder.encode(signUpDto.getPassword());
+        log.info("password:" + password);
         String email = signUpDto.getEmail();
         String phone = signUpDto.getPhone();
-        String city = signUpDto.getAddress().getCity();
-        String street = signUpDto.getAddress().getStreet();
+
         String zipcode = signUpDto.getAddress().getZipcode();
+        String street = signUpDto.getAddress().getStreet();
+        String detail = signUpDto.getAddress().getDetail();
+
 
         UserRoleEnum role = UserRoleEnum.USER;
 
         User user = new User(name, password, validateEmail(email), validatePhone(phone), role,
-                new Address(city, street, zipcode), "chapter");
+                new Address(zipcode, street, detail), "chapter");
 
         userRepository.save(user);
     }
@@ -78,9 +81,9 @@ public class UserService {
             return currentAddress;
         }
         return new Address(
-                newAddress.getCity() != null ? newAddress.getCity() : currentAddress.getCity(),
+                newAddress.getZipcode() != null ? newAddress.getZipcode() : currentAddress.getZipcode(),
                 newAddress.getStreet() != null ? newAddress.getStreet() : currentAddress.getStreet(),
-                newAddress.getZipcode() != null ? newAddress.getZipcode() : currentAddress.getZipcode()
+                newAddress.getDetail() != null ? newAddress.getDetail() : currentAddress.getDetail()
         );
     }
 

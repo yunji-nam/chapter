@@ -10,29 +10,37 @@
 
     <form th:action="@{/join}" th:object="${form}" method="post">
         <div class="form-group">
-            <label th:for="title">이름</label>
-            <input type="text" th:field="*{name}" class="form-control" placeholder="이름을 입력하세요">
+            <label for="name">이름</label>
+            <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="이름을 입력하세요">
         </div>
         <div class="form-group">
-            <label th:for="author">비밀번호</label>
-            <input type="text" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력하세요">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력하세요">
         </div>
         <div class="form-group">
-            <label th:for="publisher">이메일</label>
-            <input type="text" th:field="*{email}" class="form-control" placeholder="이메일을 입력하세요">
+            <label for="email">이메일</label>
+            <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="이메일을 입력하세요">
         </div>
         <div class="form-group">
-            <label th:for="isbn">휴대폰 번호</label>
-            <input type="text" th:field="*{phone}" class="form-control" placeholder="휴대폰 번호를 입력하세요">
+            <label for="phone">휴대폰 번호</label>
+            <input type="tel" id="phone" th:field="*{phone}" class="form-control" placeholder="휴대폰 번호를 입력하세요">
         </div>
         <div class="form-group">
-            <label th:for="pages">주소</label>
-            <input type="text" th:field="*{address}" class="form-control" placeholder="주소를 입력하세요">
+            <label for="zipcode">우편 번호</label>
+            <input type="text" id="zipcode" th:field="*{address.zipcode}" class="form-control" placeholder="우편번호를 입력하세요">
         </div>
+        <div class="form-group">
+            <label for="street">도로명 주소</label>
+            <input type="text" id="street" th:field="*{address.street}" class="form-control" placeholder="도로명 주소를 입력하세요">
+        </div>
+        <div class="form-group">
+            <label for="detail">상세 주소</label>
+            <input type="text" id="detail" th:field="*{address.detail}" class="form-control" placeholder="상세 주소를 입력하세요">
+        </div>
+
 
         <button type="submit" class="btn btn-success">회원가입</button>
     </form>
-</div> <!-- /container -->
-
+</div>
 </body>
 </html>

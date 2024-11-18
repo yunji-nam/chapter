@@ -3,14 +3,14 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
-<head th:replace="common/header::header">
+<head th:replace="~{common/header::header}">
 
 </head>
 <body>
 
 <th:block layout:fragment="content"></th:block>
 
-<footer th:replace="common/footer::footer"></footer>
+<footer th:replace="~{common/footer::footer}"></footer>
 </body>
 
 </html>

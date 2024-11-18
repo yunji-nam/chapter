@@ -3,8 +3,10 @@ package com.example.chapter.dto;
 import com.example.chapter.entity.Address;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class SignUpDto {
 
     @Pattern(regexp = "^[가-힣a-zA-Z]+$", message = "이름은 한글, 영문 대/소문자를 사용해 주세요.")
