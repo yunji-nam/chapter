@@ -41,8 +41,15 @@ public class UserService {
 
         UserRoleEnum role = UserRoleEnum.USER;
 
-        User user = new User(name, password, validateEmail(email), validatePhone(phone), role,
-                new Address(zipcode, street, detail), "chapter");
+        User user = User.builder()
+                .name(name)
+                .password(password)
+                .email(validateEmail(email))
+                .phone(validatePhone(phone))
+                .role(role)
+                .address(new Address(zipcode, street, detail))
+                .isDelete(false)
+                .provider("chapter").build();
 
         userRepository.save(user);
     }

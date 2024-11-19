@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}"
+      layout:fragment="content">
+
+<body>
+
+<div class="container">
+
+    <form th:action="@{/admin/book/{bookId}/edit(bookId=${bookId})}" th:object="${form}" th:method="put" enctype="multipart/form-data">
+        <div class="form-group mb-3">
+            <label th:for="title">도서명</label>
+            <input type="text" id="title" th:field="*{title}" class="form-control" placeholder="도서명을 입력하세요">
+        </div>
+        <div class="form-group mb-3">
+            <label th:for="author">저자</label>
+            <input type="text" id="author" th:field="*{author}" class="form-control" placeholder="저자를 입력하세요">
+        </div>
+        <div class="form-group mb-3">
+            <label th:for="publisher">출판사</label>
+            <input type="text" id="publisher" th:field="*{publisher}" class="form-control" placeholder="출판사를 입력하세요">
+        </div>
+        <div class="form-group mb-3">
+            <label th:for="isbn">ISBN</label>
+            <input type="text" id="isbn" th:field="*{isbn}" class="form-control" placeholder="ISBN을 입력하세요">
+        </div>
+        <div class="form-group mb-3">
+            <label th:for="pages">쪽수</label>
+            <input type="number" id="pages" th:field="*{pages}" class="form-control" placeholder="쪽수를 입력하세요">
+        </div>
+        <div class="form-group mb-3">
+            <label th:for="category">카테고리</label>
+            <select th:field="*{category}" id="category" class="form-select">
+                <option value="" disabled selected>카테고리를 선택하세요</option>
+                <option th:each="ca : ${categories}" th:value="${ca}" th:text="${ca.categoryName}"></option>
+            </select>
+        </div>
+        <div class="form-group mb-3">
+            <label th:for="publishedDate">출판일</label>
+            <input type="date" th:field="*{publishedDate}" class="form-control" placeholder="출판일을 입력하세요">
+        </div>
+        <div class="form-group mb-3">
+            <label th:for="price">가격</label>
+            <input type="number" th:field="*{price}" class="form-control" placeholder="가격을 입력하세요">
+        </div>
+        <div class="form-group mb-3">
+            <label th:for="description">책 소개글</label>
+            <textarea th:field="*{description}" class="form-control" placeholder="소개글을 입력하세요" rows="4"></textarea>
+        </div>
+        <div class="form-group mb-3">
+            <label th:for="quantity">수량</label>
+            <input type="number" th:field="*{quantity}" class="form-control" placeholder="수량을 입력하세요">
+        </div>
+        <div class="form-group mb-5">
+            <label th:for="image">도서 이미지</label>
+            <input type="file" name="image" class="form-control" id="image">
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-submit">도서 수정</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

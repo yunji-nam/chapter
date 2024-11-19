@@ -1,9 +1,7 @@
 package com.example.chapter.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +9,8 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -42,26 +42,6 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Order> orders = new ArrayList<>();
-
-    public User(String name, String password, String email, String phone, UserRoleEnum role, Address address, String provider) {
-        this.name = name;
-        this.password = password;
-        this.email = email;
-        this.phone = phone;
-        this.role = role;
-        this.address = address;
-        this.isDelete = false;
-        this.provider = provider;
-    }
-
-    public User(String name, String password, String email, UserRoleEnum role, String provider) {
-        this.name = name;
-        this.password = password;
-        this.email = email;
-        this.role =role;
-        this.isDelete = false;
-        this.provider = provider;
-    }
 
     public void updateUser(String password, String email, String phone, Address address) {
         this.password = password;

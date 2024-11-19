@@ -30,6 +30,7 @@ public class Book {
 
     private int pages;
 
+    @Enumerated(EnumType.STRING)
     private Category category;
 
     private LocalDate publishedDate;
@@ -44,7 +45,7 @@ public class Book {
     private String image;
 
     public Book(String title, String author, String publisher, String isbn, int pages, Category category,
-                LocalDate publishedDate, int price, String description, int quantity) {
+                LocalDate publishedDate, int price, String description, int quantity, String image) {
         this.title = title;
         this.author = author;
         this.publisher = publisher;
@@ -55,6 +56,7 @@ public class Book {
         this.price = price;
         this.description = description;
         this.stockQuantity = quantity;
+        this.image = image;
     }
 
     public void update(Book book) {

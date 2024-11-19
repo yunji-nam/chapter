@@ -2,6 +2,7 @@ package com.example.chapter.controller;
 
 import com.example.chapter.dto.CartItemDto;
 import com.example.chapter.dto.OrderDetailDto;
+import com.example.chapter.dto.OrderListDto;
 import com.example.chapter.dto.OrderRequestDto;
 import com.example.chapter.entity.User;
 import com.example.chapter.security.UserDetailsImpl;
@@ -9,6 +10,7 @@ import com.example.chapter.service.CartService;
 import com.example.chapter.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -54,8 +56,16 @@ public class OrderController {
                                         @RequestParam(required = false) LocalDateTime startDate,
                                         @RequestParam(required = false) LocalDateTime endDate,
                                         @RequestParam(defaultValue = "0") int pageNo,
-                                        @RequestParam(defaultValue = "2") int size) {
-        orderService.getOrders(userDetails.getUser(), startDate, endDate, pageNo, size);
+                                        @RequestParam(defaultValue = "2") int size,
+                            Model model) {
+        Page<OrderListDto> orders = orderService.getOrders(userDetails.getUser(), startDate, endDate, pageNo, size);
+
+        model.addAttribute("orders", orders.getContent());
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", orders.getTotalPages());
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+
         return "order/list";
     }
 
