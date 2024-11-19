@@ -33,9 +33,9 @@ public class SecurityConfig {
         http.httpBasic(AbstractHttpConfigurer::disable);
         //경로별 인가 작업
         http.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/login", "/", "/book", "/join", "/css/**", "/images/**",
-                        "/kakao/*", "/api/**").permitAll()
-                .requestMatchers("/admin").hasRole("ADMIN")
+                .requestMatchers("/login", "/", "/join", "/css/**", "/images/**",
+                        "/kakao/**", "/api/**", "/admin/join").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated());
 
         return http.build();

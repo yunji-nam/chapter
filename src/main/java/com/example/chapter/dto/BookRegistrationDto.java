@@ -8,10 +8,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class BookRegistrationDto {
 
@@ -35,6 +38,7 @@ public class BookRegistrationDto {
     private String description;
     @Min(1)
     private int quantity;
+    private MultipartFile image;
 
     public BookRegistrationDto(BookResponseDto dto) {
         this.title = dto.getTitle();
@@ -49,8 +53,8 @@ public class BookRegistrationDto {
         this.quantity = dto.getStockQuantity();
     }
 
-    public Book toEntity() {
-        return new Book(title, author, publisher, isbn, pages, category, publishedDate, price, description, quantity);
+    public Book toEntity(String imageUrl) {
+        return new Book(title, author, publisher, isbn, pages, category, publishedDate, price, description, quantity, imageUrl);
     }
 
 }
