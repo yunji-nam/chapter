@@ -15,6 +15,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -42,15 +46,20 @@ public class KakaoService {
     @Value("${kakao.redirect.uri}")
     private String redirectUri;
 
-    public void login(String code, HttpServletResponse response) throws JsonProcessingException {
+    public void login(String code) throws JsonProcessingException {
         String accessToken = getToken(code);
         log.info("kakao access token = " + accessToken);
         KakaoUserInfo info = getKakaoUserInfo(accessToken);
         log.info("kakao email = " + info.getEmail());
         User user = registerKakaoUser(info);
 
-        String createAccessToken = jwtUtil.createToken(user);
-        response.setHeader("Authorization", createAccessToken);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                user, null, AuthorityUtils.createAuthorityList(user.getRole().name())
+        );
+
+        // 인증을 SecurityContext에 저장
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
     }
 
     private User registerKakaoUser(KakaoUserInfo info) {
@@ -61,7 +70,12 @@ public class KakaoService {
             String password = UUID.randomUUID().toString();
             String encodedPassword = passwordEncoder.encode(password);
 
-            user = new User(info.getNickname(), encodedPassword, kakaoEmail, UserRoleEnum.USER, "kakao");
+            user = User.builder()
+                    .name(info.getNickname())
+                    .password(encodedPassword)
+                    .email(kakaoEmail)
+                    .role(UserRoleEnum.USER)
+                    .provider("kakao").build();
 
             userRepository.save(user);
         }

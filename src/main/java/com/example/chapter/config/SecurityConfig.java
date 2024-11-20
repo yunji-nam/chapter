@@ -10,6 +10,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.http.HttpMethod.GET;
+
 @Configuration
 @EnableWebSecurity(debug = true)
 @RequiredArgsConstructor
@@ -34,7 +36,8 @@ public class SecurityConfig {
         //경로별 인가 작업
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/login", "/", "/join", "/css/**", "/images/**",
-                        "/kakao/**", "/api/**", "/admin/join").permitAll()
+                        "/kakao/**", "/api/**", "/admin/join", "/books").permitAll()
+                .requestMatchers(GET, "/book/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated());
 

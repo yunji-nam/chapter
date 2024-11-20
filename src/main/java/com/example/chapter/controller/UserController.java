@@ -5,10 +5,13 @@ import com.example.chapter.dto.SignUpDto;
 import com.example.chapter.dto.UpdateProfileDto;
 import com.example.chapter.entity.User;
 import com.example.chapter.security.UserDetailsImpl;
+import com.example.chapter.service.KakaoService;
 import com.example.chapter.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,10 +24,25 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final KakaoService kakaoService;
+
+    @Value("${kakao.restapi.key}")
+    private String clientId;
+
+    @Value("${kakao.redirect.uri}")
+    private String redirectUri;
 
     @GetMapping("/login")
-    public String login() {
+    public String login(Model model) {
+        String location = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=" + clientId + "&redirect_uri=" + redirectUri;
+        model.addAttribute("location", location);
         return "user/login";
+    }
+
+    @GetMapping("/kakao/callback")
+    public String callback(@RequestParam String code) throws JsonProcessingException {
+        kakaoService.login(code);
+        return "redirect:/";
     }
 
     @GetMapping("/join")
