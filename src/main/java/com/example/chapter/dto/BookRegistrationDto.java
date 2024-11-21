@@ -40,7 +40,7 @@ public class BookRegistrationDto {
     private int quantity;
     private MultipartFile image;
 
-    public BookRegistrationDto(BookResponseDto dto) {
+    public BookRegistrationDto(BookDetailDto dto) {
         this.title = dto.getTitle();
         this.author = dto.getAuthor();
         this.publisher = dto.getPublisher();

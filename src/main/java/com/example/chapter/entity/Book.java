@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -43,6 +45,9 @@ public class Book {
     private int stockQuantity;
 
     private String image;
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
 
     public Book(String title, String author, String publisher, String isbn, int pages, Category category,
                 LocalDate publishedDate, int price, String description, int quantity, String image) {

@@ -1,3 +1,19 @@
+h4 {
+    margin-bottom: 40px;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover {
+    color: black;
+}
+
+.card-text {
+    margin: 0;
+}
 
 .btn-login {
     color: #fff;
@@ -10,16 +26,32 @@
     margin: 0 auto;
 }
 
-.btn-submit {
-    color: white;
-    background-color: #055160;
-    border-color: #055160;
+.container-list {
+    max-width: 750px;
+    margin: 0 auto;
 }
 
-.btn-submit:hover {
-    color: red;
-    background-color: #055160;
-    border-color: #055160;
+.btn-success {
+    margin-top: 20px;
+}
+
+td {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: break-word;
+}
+
+.col-wide {
+    width: 20%;
+}
+
+.footer-container {
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 

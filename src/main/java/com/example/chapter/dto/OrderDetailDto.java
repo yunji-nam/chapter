@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class OrderDetailDto {
 
     private Long id;
-    private List<BookInfo> books;
+    private List<OrderBookInfo> books;
     private int totalPrice;
     private OrderStatus orderStatus;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -25,7 +25,7 @@ public class OrderDetailDto {
     public OrderDetailDto(Order order) {
         this.id = order.getId();
         this.books = order.getItems().stream()
-            .map(BookInfo::new)
+            .map(OrderBookInfo::new)
             .collect(Collectors.toList());
         this.totalPrice = books.stream()
             .mapToInt(book -> book.getPrice() * book.getQuantity())

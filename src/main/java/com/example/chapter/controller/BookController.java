@@ -1,6 +1,7 @@
 package com.example.chapter.controller;
 
-import com.example.chapter.dto.BookResponseDto;
+import com.example.chapter.dto.BookDetailDto;
+import com.example.chapter.dto.BookListDto;
 import com.example.chapter.entity.Category;
 import com.example.chapter.service.BookService;
 import lombok.RequiredArgsConstructor;
@@ -24,15 +25,20 @@ public class BookController {
     public String getAllBooks(@RequestParam(required = false) String category,
                               @RequestParam(defaultValue = "id") String sortType,
                               @RequestParam(defaultValue = "0") int pageNo,
-                              @RequestParam(defaultValue = "2") int size,
+                              @RequestParam(defaultValue = "20") int size,
                               Model model) {
-        Page<BookResponseDto> bookDtos;
+        Page<BookListDto> bookDtos;
 
-        if (category != null) {
-            bookDtos = bookService.getBooksByCategory(Category.valueOf(category), sortType, pageNo, size);
-        } else {
+        if (category == null || category.isEmpty()) {
             bookDtos = bookService.getBooks(sortType, pageNo, size);
+        } else {
+            try {
+                bookDtos = bookService.getBooksByCategory(Category.valueOf(category), sortType, pageNo, size);
+            } catch (IllegalArgumentException e) {
+                bookDtos = bookService.getBooks(sortType, pageNo, size);
+            }
         }
+
         model.addAttribute("bookList", bookDtos);
         return "book/list";
     }
@@ -40,7 +46,7 @@ public class BookController {
     // 도서 상세 조회
     @GetMapping("/book/{bookId}")
     public String getBook(@PathVariable Long bookId, Model model) {
-        BookResponseDto dto = bookService.getBook(bookId);
+        BookDetailDto dto = bookService.getBook(bookId);
         model.addAttribute("book", dto);
 
         return "book/detail";

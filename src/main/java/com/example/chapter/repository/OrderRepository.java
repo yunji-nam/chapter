@@ -10,4 +10,5 @@ import java.time.LocalDateTime;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Page<Order> findByUserIdAndOrderDateBetween(Long userId, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
+    Page<Order> findByOrderDateBetween(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 }

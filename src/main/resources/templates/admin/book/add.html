@@ -7,6 +7,7 @@
 <body>
 
 <div class="container">
+    <h4>도서 등록</h4>
 
     <form th:action="@{/admin/book}" th:object="${form}" method="post" enctype="multipart/form-data">
         <div class="form-group mb-3">
@@ -57,7 +58,7 @@
             <input type="file" name="image" class="form-control" id="image">
         </div>
         <div class="text-center">
-            <button type="submit" class="btn btn-submit">도서 등록</button>
+            <button type="submit" class="btn btn-success">도서 등록</button>
         </div>
     </form>
 </div>

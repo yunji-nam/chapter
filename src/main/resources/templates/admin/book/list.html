@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}"
+      layout:fragment="content">
+
+
+<div style="max-width: 1000px; margin: 0 auto; padding: 0 15px;" class="mt-4">
+    <h4>도서 목록</h4>
+    <table class="table table-striped text-center">
+        <thead>
+
+        <tr>
+            <th scope="col">카테고리</th>
+            <th scope="col" class="col-wide">제목</th>
+            <th scope="col">저자</th>
+            <th scope="col">출판사</th>
+            <th scope="col" class="col-wide">ISBN</th>
+            <th scope="col">가격</th>
+            <th scope="col">재고 수량</th>
+            <th scope="col">도서 관리</th>
+
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr th:each="book : ${bookList.content}">
+            <td th:text="${book.category}"></td>
+            <td th:text="${book.title}" class="col-wide"></td>
+            <td th:text="${book.author}"></td>
+            <td th:text="${book.publisher}"></td>
+            <td th:text="${book.isbn}" class="col-wide"></td>
+            <td th:text="${#numbers.formatInteger(book.price, 3, 'COMMA')} + ' 원'"></td>
+            <td th:text="${book.stockQuantity}"></td>
+            <td>
+                <a th:href="@{/admin/book/{bookId}/edit(bookId=${book.id})}" class="btn btn-sm btn-primary">수정</a>
+                <form id="deleteForm" method="post" th:action="@{/admin/book/{bookId}(bookId=${book.id})}" style="display: none;">
+                    <input type="hidden" name="_method" value="DELETE"/>
+                </form>
+                <a href="#" class="btn btn-sm btn-danger"
+                   onclick="if(confirm('정말 삭제하시겠습니까?')) document.getElementById('deleteForm').submit(); return false;">삭제</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!--        페이지네이션->-->
+    <ul class="pagination h-100 justify-content-center align-items-center">
+        <li class="page-item" th:classappend="${bookList.hasPrevious()} ? '' : 'disabled'">
+
+            <a class="page-link"
+               th:href="@{/admin/books(pageNo=${bookList.number - 1}, size=${bookList.size}, sortType=${sortType}, category=${category})}"
+               aria-label="Previous">
+                &laquo;
+            </a>
+        </li>
+        <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, bookList.totalPages - 1)}"
+            th:classappend="${pageNum == bookList.number} ? 'active'">
+            <a class="page-link"
+               th:href="@{/admin/books(pageNo=${pageNum}, size=${bookList.size}, sortType=${sortType}, category=${category})}"
+               th:text="${pageNum + 1}"></a>
+        </li>
+
+
+        <li class="page-item" th:classappend="${bookList.hasNext()} ? '' : 'disabled'">
+            <a class="page-link"
+               th:href="@{/admin/books(pageNo=${bookList.number + 1}, size=${bookList.size}, sortType=${sortType},  category=${category})}"
+               aria-label="Next">
+                &raquo;
+            </a>
+        </li>
+    </ul>
+
+</div>
+
+</html>

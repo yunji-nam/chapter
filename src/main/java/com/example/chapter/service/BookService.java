@@ -1,7 +1,8 @@
 package com.example.chapter.service;
 
+import com.example.chapter.dto.BookListDto;
 import com.example.chapter.dto.BookRegistrationDto;
-import com.example.chapter.dto.BookResponseDto;
+import com.example.chapter.dto.BookDetailDto;
 import com.example.chapter.entity.Book;
 import com.example.chapter.entity.Category;
 import com.example.chapter.entity.User;
@@ -33,25 +34,25 @@ public class BookService {
 
 
     // 도서 모두 조회
-    public Page<BookResponseDto> getBooks(String sortType, int pageNo, int size) {
+    public Page<BookListDto> getBooks(String sortType, int pageNo, int size) {
         Pageable pageable = PageRequest.of(pageNo, size, Sort.by(Sort.Direction.DESC, sortType));
         Page<Book> page = bookRepository.findAll(pageable);
 
-        return page.map(BookResponseDto::new);
+        return page.map(BookListDto::new);
     }
 
     // 카테고리 별 조회
-    public Page<BookResponseDto> getBooksByCategory(Category category, String sortType, int pageNo, int size) {
+    public Page<BookListDto> getBooksByCategory(Category category, String sortType, int pageNo, int size) {
         Pageable pageable = PageRequest.of(pageNo, size, Sort.by(Sort.Direction.DESC, sortType));
         Page<Book> page = bookRepository.findByCategory(category, pageable);
 
-        return page.map(BookResponseDto::new);
+        return page.map(BookListDto::new);
     }
 
-    // 도서 조회
-    public BookResponseDto getBook(Long id) {
+    // 도서 상세 조회
+    public BookDetailDto getBook(Long id) {
         Book book = findBook(id);
-        return new BookResponseDto(book);
+        return new BookDetailDto(book);
     }
 
     // 도서 수정

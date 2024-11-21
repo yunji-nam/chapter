@@ -83,6 +83,22 @@ public class OrderService {
         order.cancel();
     }
 
+    public Page<OrderListDto> getAllOrders(LocalDateTime startDate, LocalDateTime endDate, int pageNo, int size) {
+        Pageable pageable = PageRequest.of(pageNo, size);
+        LocalDateTime twoYearAgo = LocalDateTime.now().minusYears(2);
+        LocalDateTime now = LocalDateTime.now();
+
+        if (startDate == null || startDate.isBefore(twoYearAgo)) {
+            startDate = twoYearAgo;
+        }
+        if (endDate == null || endDate.isAfter(now)) {
+            endDate = now;
+        }
+
+        Page<Order> page = orderRepository.findByOrderDateBetween(startDate, endDate, pageable);
+        return page.map(OrderListDto::new);
+    }
+
     private static void checkUser(User user, Order order) {
         if (!order.getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("유저가 다릅니다.");
