@@ -4,11 +4,9 @@ import com.example.chapter.dto.KakaoUserInfo;
 import com.example.chapter.entity.User;
 import com.example.chapter.entity.UserRoleEnum;
 import com.example.chapter.repository.UserRepository;
-import com.example.chapter.util.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +36,6 @@ public class KakaoService {
     private final RestTemplate restTemplate;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
 
     @Value("${kakao.restapi.key}")
     private String clientId;
