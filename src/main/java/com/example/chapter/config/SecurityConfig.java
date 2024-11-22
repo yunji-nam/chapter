@@ -1,5 +1,6 @@
 package com.example.chapter.config;
 
+import com.example.chapter.security.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,8 @@ import static org.springframework.http.HttpMethod.GET;
 @EnableWebSecurity(debug = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
 
     @Bean
@@ -36,10 +39,14 @@ public class SecurityConfig {
         //경로별 인가 작업
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/login", "/", "/join", "/css/**", "/images/**",
-                        "/kakao/**", "/api/**", "/admin/join", "/books").permitAll()
+                        "/kakao/**", "/admin/join", "/books").permitAll()
                 .requestMatchers(GET, "/book/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated());
+
+        http.exceptionHandling((exceptionHandling) ->
+                exceptionHandling
+                        .authenticationEntryPoint(customAuthenticationEntryPoint));
 
         return http.build();
     }
