@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class CartUpdateDto {
 
-    Long cartItemId;
+    Long bookId;
     @Min(1)
     int quantity;
 }

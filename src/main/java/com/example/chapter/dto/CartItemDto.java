@@ -6,15 +6,18 @@ import lombok.Getter;
 @Getter
 public class CartItemDto {
 
-    private String title;
-    private int price;
-//    private String bookImage;
+    private Long bookId;
+    private String bookTitle;
+    private int bookPrice;
+    private String bookImage;
     @Min(1)
     private int quantity;
 
-    public CartItemDto(String title, int price, int quantity) {
-        this.title = title;
-        this.price = price;
+    public CartItemDto(Long id, String title, int price, String imageUrl, int quantity) {
+        this.bookId = id;
+        this.bookTitle = title;
+        this.bookPrice = price;
+        this.bookImage = imageUrl;
         this.quantity = quantity;
     }
 

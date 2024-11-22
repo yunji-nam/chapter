@@ -33,7 +33,7 @@ public class SecurityConfig {
         //form 로그인
         http.formLogin((auth) -> auth.loginPage("/login")
                 .usernameParameter("email")
-                .defaultSuccessUrl("/").permitAll());
+                .defaultSuccessUrl("/", true).permitAll());
         //http basic 인증 방식 disable
         http.httpBasic(AbstractHttpConfigurer::disable);
         //경로별 인가 작업

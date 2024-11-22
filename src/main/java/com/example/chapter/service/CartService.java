@@ -53,14 +53,14 @@ public class CartService {
 
         List<CartItem> items = cart.getItems();
         List<CartItemDto> itemDtos = items.stream().map(item ->
-                new CartItemDto(item.getBook().getTitle(), item.getBook().getPrice(), item.getQuantity())).toList();
+                new CartItemDto(item.getBook().getId(), item.getBook().getTitle(), item.getBook().getPrice(), item.getBook().getImage(), item.getQuantity())).toList();
         return itemDtos;
     }
 
     // 아이템 수량 수정
     @Transactional
     public void updateCartItemQuantity(CartUpdateDto dto, User user) {
-        CartItem cartItem = cartItemRepository.findById(dto.getCartItemId())
+        CartItem cartItem = cartItemRepository.findByBookId(dto.getBookId())
                         .orElseThrow(() -> new EntityNotFoundException("cart item을 찾을 수 없습니다."));
         if (!cartItem.getCart().getUser().getId().equals(user.getId())) {
                     throw new IllegalArgumentException("사용자가 다릅니다.");
@@ -78,7 +78,7 @@ public class CartService {
     // 장바구니 내 아이템 삭제
     @Transactional
     public void deleteItemFromCart(Long id, User user) {
-        CartItem cartItem = cartItemRepository.findById(id)
+        CartItem cartItem = cartItemRepository.findByBookId(id)
                 .orElseThrow(() -> new EntityNotFoundException("cart item을 찾을 수 없습니다."));
         if (!cartItem.getCart().getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("사용자가 다릅니다.");

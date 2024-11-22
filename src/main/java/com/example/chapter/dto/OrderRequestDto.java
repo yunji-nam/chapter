@@ -29,6 +29,6 @@ public class OrderRequestDto {
         this.userAddress = user.getAddress();
         this.userPhone = user.getPhone();
         this.cartItems = cartItems;
-        this.totalPrice = cartItems.stream().mapToInt(CartItemDto::getPrice).sum();
+        this.totalPrice = cartItems.stream().mapToInt(CartItemDto::getBookPrice).sum();
     }
 }
