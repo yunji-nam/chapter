@@ -73,7 +73,6 @@ public class BookService {
     }
 
     // 도서 검색
-
     private Book findBook(Long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("책을 찾을 수 없습니다."));
@@ -85,4 +84,10 @@ public class BookService {
         }
     }
 
+    public Page<BookListDto> searchBook(String keyword, Pageable pageable) {
+        Pageable defaultPageable = PageRequest.of(pageable.getPageNumber(),6);
+
+        Page<BookListDto> searchPages = bookRepository.findAllByKeywordContainsIgnoreCase(keyword, defaultPageable);
+        return searchPages;
+    }
 }

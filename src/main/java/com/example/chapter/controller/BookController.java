@@ -7,6 +7,7 @@ import com.example.chapter.service.BookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,6 +51,13 @@ public class BookController {
         model.addAttribute("book", dto);
 
         return "book/detail";
+    }
+
+    @GetMapping("/search")
+    public String searchBook(@RequestParam String keyword, Pageable pageable, Model model) {
+        Page<BookListDto> searchResults = bookService.searchBook(keyword, pageable);
+        model.addAttribute("searchResults", searchResults);
+        return "book/search";
     }
 
 }
