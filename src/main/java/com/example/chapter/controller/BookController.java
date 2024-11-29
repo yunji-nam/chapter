@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +27,7 @@ public class BookController {
     public String getAllBooks(@RequestParam(required = false) String category,
                               @RequestParam(defaultValue = "id") String sortType,
                               @RequestParam(defaultValue = "0") int pageNo,
-                              @RequestParam(defaultValue = "20") int size,
+                              @RequestParam(defaultValue = "2") int size,
                               Model model) {
         Page<BookListDto> bookDtos;
 
@@ -54,9 +55,13 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    public String searchBook(@RequestParam String keyword, Pageable pageable, Model model) {
+    public String searchBook(@RequestParam String keyword,
+                             @PageableDefault(size = 3) Pageable pageable,
+                             Model model) {
         Page<BookListDto> searchResults = bookService.searchBook(keyword, pageable);
         model.addAttribute("searchResults", searchResults);
+        model.addAttribute("keyword", keyword);
+
         return "book/search";
     }
 

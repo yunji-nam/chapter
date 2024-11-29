@@ -85,9 +85,6 @@ public class BookService {
     }
 
     public Page<BookListDto> searchBook(String keyword, Pageable pageable) {
-        Pageable defaultPageable = PageRequest.of(pageable.getPageNumber(),6);
-
-        Page<BookListDto> searchPages = bookRepository.findAllByKeywordContainsIgnoreCase(keyword, defaultPageable);
-        return searchPages;
+        return bookRepository.findAllByKeywordContainsIgnoreCase(keyword, pageable);
     }
 }

@@ -25,8 +25,8 @@ public class CartController {
 
     @GetMapping
     public String getCart(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
-        List<CartItemDto> cartItemDtos = cartService.getCart(userDetails.getUser());
-        model.addAttribute("cartList", cartItemDtos);
+        List<CartItemDto> cartItems = cartService.getCart(userDetails.getUser());
+        model.addAttribute("cartList", cartItems);
         return "user/cart";
     }
 

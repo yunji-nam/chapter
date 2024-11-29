@@ -1,5 +1,6 @@
 package com.example.chapter.dto;
 
+import com.example.chapter.entity.CartItem;
 import jakarta.validation.constraints.Min;
 import lombok.Getter;
 
@@ -13,12 +14,12 @@ public class CartItemDto {
     @Min(1)
     private int quantity;
 
-    public CartItemDto(Long id, String title, int price, String imageUrl, int quantity) {
-        this.bookId = id;
-        this.bookTitle = title;
-        this.bookPrice = price;
-        this.bookImage = imageUrl;
-        this.quantity = quantity;
+    public CartItemDto(CartItem cartItem) {
+        this.bookId = cartItem.getBook().getId();
+        this.bookTitle = cartItem.getBook().getTitle();
+        this.bookPrice = cartItem.getBook().getPrice();
+        this.bookImage = cartItem.getBook().getImage();
+        this.quantity = cartItem.getQuantity();
     }
 
 }

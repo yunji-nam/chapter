@@ -41,6 +41,32 @@
         </div>
     </div>
 
+    <ul class="pagination h-100 justify-content-center align-items-center" style="margin-top: 20px;">
+        <li class="page-item" th:classappend="${bookList.hasPrevious()} ? '' : 'disabled'">
+
+            <a class="page-link"
+               th:href="@{/books(pageNo=${bookList.number - 1}, size=${bookList.size}, sortType=${sortType}, category=${category})}"
+               aria-label="Previous">
+                &laquo;
+            </a>
+        </li>
+        <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, bookList.totalPages - 1)}"
+            th:classappend="${pageNum == bookList.number} ? 'active'">
+            <a class="page-link"
+               th:href="@{/books(pageNo=${pageNum}, size=${bookList.size}, sortType=${sortType}, category=${category})}"
+               th:text="${pageNum + 1}"></a>
+        </li>
+
+
+        <li class="page-item" th:classappend="${bookList.hasNext()} ? '' : 'disabled'">
+            <a class="page-link"
+               th:href="@{/books(pageNo=${bookList.number + 1}, size=${bookList.size}, sortType=${sortType},  category=${category})}"
+               aria-label="Next">
+                &raquo;
+            </a>
+        </li>
+    </ul>
+
 </main>
 <script th:inline="javascript">
     document.querySelectorAll('[id^="addToCart_"]').forEach(button => {

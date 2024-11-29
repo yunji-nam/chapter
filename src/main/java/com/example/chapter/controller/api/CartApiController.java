@@ -2,7 +2,6 @@ package com.example.chapter.controller.api;
 
 import com.example.chapter.dto.ApiResponse;
 import com.example.chapter.dto.CartDto;
-import com.example.chapter.dto.CartUpdateDto;
 import com.example.chapter.security.UserDetailsImpl;
 import com.example.chapter.service.CartService;
 import jakarta.validation.Valid;
@@ -32,7 +31,7 @@ public class CartApiController {
     }
 
     @PutMapping("/items")
-    public ResponseEntity<ApiResponse> updateCart(@Valid @RequestBody CartUpdateDto dto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<ApiResponse> updateCart(@Valid @RequestBody CartDto dto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
             cartService.updateCartItemQuantity(dto, userDetails.getUser());
             return ResponseEntity.ok(new ApiResponse("장바구니 수량 업데이트 완료"));

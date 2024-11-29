@@ -1,0 +1,130 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}"
+      layout:fragment="content">
+<body>
+<main>
+    <div class="container-list">
+        <div class="row row-cols-1 g-3">
+
+            <div th:each="item : ${cartList}">
+                <div class="card shadow-sm d-flex flex-row align-items-center" style="height: 270px">
+                    <!-- 체크박스 -->
+                    <div class="form-check" style="margin: 10px;">
+                        <input class="form-check-input cart-item-checkbox" type="checkbox"
+                               th:data-price="${item.bookPrice * item.quantity}" th:data-book-id="${item.bookId}"
+                               checked>
+                    </div>
+
+                    <!-- 책 이미지 -->
+                    <a th:href="@{'/book/' + ${item.bookId}}">
+                        <img th:src="${item.bookImage}" alt="Book Cover"
+                             style="width: 150px; height: 100%; object-fit: cover;"/>
+                    </a>
+
+                    <!-- 내용 -->
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <h6 class="card-title" style="margin-bottom: 5px;">
+                                <a th:text="${item.bookTitle}" th:href="@{'/book/' + ${item.bookId}}"></a>
+                            </h6>
+                            <p class="card-text"
+                               th:text="${#numbers.formatInteger(item.bookPrice, 3, 'COMMA')} + ' 원'"></p>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-end gap-3" style="height: 40px;">
+                            <input class="form-control text-center me-3" th:id="'inputQuantity_' + ${item.bookId}"
+                                   type="number" th:value="${item.quantity}" th:data-book-price="${item.bookPrice}"
+                                   style="max-width: 4rem; flex-grow: 0; flex-shrink: 0;"/>
+                            <button class="btn btn-sm btn-outline-dark mt-2" type="button"
+                                    th:id="'addToCart_' + ${item.bookId}" th:data-book-id="${item.bookId}"
+                                    style="height: 100%; flex-shrink: 0;">
+                                변경
+                            </button>
+                            <form id="deleteForm" method="post"
+                                  th:action="@{/cart/items/{cartItemId}(cartItemId=${item.bookId})}"
+                                  style="display: inline;">
+                                <input type="hidden" name="_method" value="DELETE"/>
+                                <button class="btn btn-sm btn-outline-dark mt-2"
+                                        type="submit" style="height: 2.5rem; flex-shrink: 0;">
+                                    삭제
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="total-price-container" style="margin-top: 20px; padding-top: 10px; border-top: 2px solid #000;">
+        <div class="d-flex justify-content-center">
+            <span>총 주문 금액</span>
+            <span id="totalPrice" style="margin-left: 10px; font-weight: bold;">0 원</span>
+        </div>
+    </div>
+
+</main>
+<script th:inline="javascript">
+    // 총 금액 계산
+    function calculateTotalPrice() {
+        const checkboxes = document.querySelectorAll('.cart-item-checkbox');
+        let total = 0;
+
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                total += parseInt(checkbox.getAttribute('data-price'), 10);
+            }
+        })
+
+        document.getElementById('totalPrice').innerText = total.toLocaleString() + " 원";
+    }
+
+    document.querySelectorAll('.cart-item-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', calculateTotalPrice);
+    });
+
+    calculateTotalPrice();
+
+    // 수량 변경
+    document.querySelectorAll('[id^="addToCart_"]').forEach(button => {
+        button.addEventListener('click', function () {
+            const bookId = this.getAttribute('data-book-id');
+            const quantityInput = document.getElementById(`inputQuantity_${bookId}`);
+            const quantity = parseInt(quantityInput.value, 10);
+            const bookPrice = parseInt(quantityInput.getAttribute('data-book-price'), 10);
+
+            fetch('/api/cart/items', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    bookId: bookId,
+                    quantity: quantity
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("응답 실패: " + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data) {
+                        alert("장바구니 수량 변경되었습니다.");
+
+                        const updatedPrice = quantity * bookPrice;
+                        const checkbox = document.querySelector(`.cart-item-checkbox[data-price][data-book-id="${bookId}"]`);
+
+                        checkbox.setAttribute('data-price', String(updatedPrice));
+
+                        calculateTotalPrice();
+                    }
+                })
+                .catch(error => console.error('api 호출 오류:', error));
+        });
+    });
+
+</script>
+</body>
+</html>

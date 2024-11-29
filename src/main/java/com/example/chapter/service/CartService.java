@@ -2,7 +2,6 @@ package com.example.chapter.service;
 
 import com.example.chapter.dto.CartDto;
 import com.example.chapter.dto.CartItemDto;
-import com.example.chapter.dto.CartUpdateDto;
 import com.example.chapter.entity.Book;
 import com.example.chapter.entity.Cart;
 import com.example.chapter.entity.CartItem;
@@ -52,14 +51,13 @@ public class CartService {
         Cart cart = findCart(user);
 
         List<CartItem> items = cart.getItems();
-        List<CartItemDto> itemDtos = items.stream().map(item ->
-                new CartItemDto(item.getBook().getId(), item.getBook().getTitle(), item.getBook().getPrice(), item.getBook().getImage(), item.getQuantity())).toList();
+        List<CartItemDto> itemDtos = items.stream().map(CartItemDto::new).toList();
         return itemDtos;
     }
 
     // 아이템 수량 수정
     @Transactional
-    public void updateCartItemQuantity(CartUpdateDto dto, User user) {
+    public void updateCartItemQuantity(CartDto dto, User user) {
         CartItem cartItem = cartItemRepository.findByBookId(dto.getBookId())
                         .orElseThrow(() -> new EntityNotFoundException("cart item을 찾을 수 없습니다."));
         if (!cartItem.getCart().getUser().getId().equals(user.getId())) {

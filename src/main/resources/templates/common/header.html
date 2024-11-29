@@ -9,8 +9,54 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
-</head>
-<body>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
+</head>
+<body th:fragment="navbar">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a th:href="@{/}">
+            <img th:src="@{/images/logo.png}" alt="Logo" style="height: 30px; margin-left: 15px;">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+            <ul class="navbar-nav" style="margin-left: 15px;">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" th:href="@{/shop}">All Products</a></li>
+                        <li>
+                            <hr class="dropdown-divider"/>
+                        </li>
+                        <li><a class="dropdown-item" th:href="@{/shop/popular}">Popular Items</a></li>
+                        <li><a class="dropdown-item" th:href="@{/shop/new}">New Arrivals</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="d-flex search-container">
+                <form class="d-flex search-form" method="get" th:action="@{/search}">
+                    <input class="form-control me-1" type="search" name="keyword"
+                           th:value="${keyword}" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-secondary btn-search" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+            </div>
+
+            <form class="d-flex" th:action="@{/cart}">
+                <button class="btn btn-outline-dark" style="display: inline-flex; align-items: center; gap: 6px;">
+                    <i class="bi-cart-fill me-1"></i>
+                    Cart
+                    <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</nav>
 </body>
-</html>
