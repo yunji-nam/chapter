@@ -10,7 +10,7 @@
     <h4>도서 수정</h4>
 
     <form th:action="@{/admin/book/{bookId}/edit(bookId=${bookId})}" th:object="${form}" th:method="put" enctype="multipart/form-data">
-        <div class="form-group mb-3">
+        <div class="form-group mb-3 mt-4">
             <label th:for="title">도서명</label>
             <input type="text" id="title" th:field="*{title}" class="form-control" placeholder="도서명을 입력하세요">
         </div>

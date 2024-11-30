@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}"
+      layout:fragment="content">
+
+<body>
+
+<div class="container">
+    <h4 class="mb-4">리뷰 수정</h4>
+
+    <form id="review" th:action="@{/book/{bookId}/review/{reviewId}/edit(bookId=${bookId},reviewId=${reviewId})}" th:object="${form}" th:method="put">
+        <fieldset>
+            <span class="text-bold">별점을 선택해주세요</span>
+            <input type="radio" name="rating" value="5" id="rate1" th:field="*{rating}"><label for="rate1">★</label>
+            <input type="radio" name="rating" value="4" id="rate2" th:field="*{rating}"><label for="rate2">★</label>
+            <input type="radio" name="rating" value="3" id="rate3" th:field="*{rating}"><label for="rate3">★</label>
+            <input type="radio" name="rating" value="2" id="rate4" th:field="*{rating}"><label for="rate4">★</label>
+            <input type="radio" name="rating" value="1" id="rate5" th:field="*{rating}"><label for="rate5">★</label>
+        </fieldset>
+        <div>
+            <textarea class="form-control mt-3" type="text" th:field="*{content}" placeholder="도서에 대한 한줄평을 남겨주세요."></textarea>
+        </div>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-outline-success">수정</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

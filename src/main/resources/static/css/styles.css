@@ -1,6 +1,3 @@
-h4 {
-    margin-bottom: 40px;
-}
 
 a {
     color: inherit;
@@ -75,14 +72,32 @@ td {
     display: inline-block;
 }
 
+#review fieldset {
+    display: inline-block;
+    direction: rtl;
+}
+
+#review input[type=radio] {
+    display: none;
+}
+
+#review label {
+    font-size: 1.5em;
+    color: transparent;
+    text-shadow: 0 0 0 #f0f0f0;
+}
+
+#review fieldset legend{
+    text-align: right;
+}
+
+#review input[type=radio]:checked ~ label {
+    text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
+}
+
 body {
     font-family: "Noto Sans KR", sans-serif;
     font-optical-sizing: auto;
     font-weight: 150;
     font-style: normal;
-}
-
-main {
-    padding: 20px;
-    margin-top: 20px;
 }

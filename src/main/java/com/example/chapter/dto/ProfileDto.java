@@ -3,8 +3,10 @@ package com.example.chapter.dto;
 import com.example.chapter.entity.Address;
 import com.example.chapter.entity.User;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class ProfileDto {
 
     private String name;
