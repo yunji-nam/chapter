@@ -43,8 +43,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Order> orders = new ArrayList<>();
 
-    public void updateUser(String password, String email, String phone, Address address) {
-        this.password = password;
+    public void update(String email, String phone, Address address) {
         this.email = email;
         this.phone = phone;
         this.address = address;

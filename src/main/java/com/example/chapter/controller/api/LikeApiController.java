@@ -1,13 +1,9 @@
 package com.example.chapter.controller.api;
 
 import com.example.chapter.dto.ApiResponse;
-import com.example.chapter.dto.BookListDto;
 import com.example.chapter.security.UserDetailsImpl;
-import com.example.chapter.service.BookService;
 import com.example.chapter.service.LikeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +26,5 @@ public class LikeApiController {
         likeService.unlikeBook(bookId, userDetails.getUser());
         return ResponseEntity.ok(new ApiResponse("좋아요 취소 완료"));
     }
-
 
 }

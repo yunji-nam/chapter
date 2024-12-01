@@ -1,5 +1,6 @@
 package com.example.chapter.service;
 
+import com.example.chapter.dto.PasswordDto;
 import com.example.chapter.dto.ProfileDto;
 import com.example.chapter.dto.SignUpDto;
 import com.example.chapter.dto.UpdateProfileDto;
@@ -8,6 +9,7 @@ import com.example.chapter.entity.User;
 import com.example.chapter.entity.UserRoleEnum;
 import com.example.chapter.exception.DuplicateFieldException;
 import com.example.chapter.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,6 +36,14 @@ public class UserService {
         String email = signUpDto.getEmail();
         String phone = signUpDto.getPhone();
 
+        if (validateEmail(email)) {
+            throw new DuplicateFieldException("이메일", email);
+        }
+
+        if (validatePhone(phone)) {
+            throw new DuplicateFieldException("휴대폰 번호", phone);
+        }
+
         String zipcode = signUpDto.getAddress().getZipcode();
         String street = signUpDto.getAddress().getStreet();
         String detail = signUpDto.getAddress().getDetail();
@@ -44,8 +54,8 @@ public class UserService {
         User user = User.builder()
                 .name(name)
                 .password(password)
-                .email(validateEmail(email))
-                .phone(validatePhone(phone))
+                .email(email)
+                .phone(phone)
                 .role(role)
                 .address(new Address(zipcode, street, detail))
                 .isDelete(false)
@@ -56,42 +66,73 @@ public class UserService {
 
     // 프로필 조회
     public ProfileDto getProfile(User user) {
-        return new ProfileDto(user);
+        User findUser = getUser(user);
+        return new ProfileDto(findUser);
     }
 
     // 프로필 수정
     @Transactional
     public void updateProfile(User user, UpdateProfileDto dto) {
+        User findUser = getUser(user);
+        String email = findUser.getEmail();
+        if (!dto.getEmail().equals(email)) {
+            if (validateEmail(dto.getEmail())) {
+                throw new DuplicateFieldException("이메일", dto.getEmail());
+            }
+            email = dto.getEmail();
+        }
 
-        String password = dto.getPassword() != null ? passwordEncoder.encode(dto.getPassword()) : user.getPassword();
-        String email = dto.getEmail() != null ? validateEmail(dto.getEmail()) : user.getEmail();
-        String phone = dto.getPhone() != null ? validatePhone(dto.getPhone()) : user.getPhone();
+        String phone = findUser.getPhone();
+        if ((phone == null && dto.getPhone() != null) || (phone != null && !dto.getPhone().equals(phone))) {
+            if (validatePhone(dto.getPhone())) {
+                throw new DuplicateFieldException("휴대폰 번호", dto.getPhone());
+            }
+            phone = dto.getPhone();
+        }
 
-        Address address = updateAddress(user.getAddress(), dto.getAddress());
+        Address address = findUser.getAddress();
+        if (address != null) {
+            address = updateAddress(findUser.getAddress(), dto.getAddress());
+        }
 
-        user.updateUser(password, email, phone, address);
+        findUser.update(email, phone, address);
 
+        log.info("user email:" + user.getEmail());
+        log.info("user phone:" + user.getPhone());
     }
 
-    private String validateEmail(String email) {
-        if (userRepository.existsByEmail(email)) throw new DuplicateFieldException("이메일", email);
-        return email;
+    private User getUser(User user) {
+        return userRepository.findById(user.getId()).orElseThrow(() -> new EntityNotFoundException("user를 찾을 수 없습니다."));
     }
 
-    private String validatePhone(String phone) {
-        if (userRepository.existsByPhone(phone)) throw new DuplicateFieldException("휴대폰 번호", phone);
-        return phone;
+    // 비밀번호 확인
+    public boolean checkPassword(User user, PasswordDto dto) {
+        String encodedPassword = passwordEncoder.encode(dto.getPassword());
+        return user.getPassword().equals(encodedPassword);
+    }
+
+    private boolean validateEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    private boolean validatePhone(String phone) {
+        return userRepository.existsByPhone(phone);
     }
 
     private Address updateAddress(Address currentAddress, Address newAddress) {
-        if (newAddress == null) {
-            return currentAddress;
+        String zipcode = currentAddress.getZipcode();
+        String street = currentAddress.getStreet();
+        String detail = currentAddress.getDetail();
+        if (zipcode != null && !newAddress.getZipcode().equals(currentAddress.getZipcode())) {
+            zipcode = newAddress.getZipcode();
         }
-        return new Address(
-                newAddress.getZipcode() != null ? newAddress.getZipcode() : currentAddress.getZipcode(),
-                newAddress.getStreet() != null ? newAddress.getStreet() : currentAddress.getStreet(),
-                newAddress.getDetail() != null ? newAddress.getDetail() : currentAddress.getDetail()
-        );
+        if (street != null && !newAddress.getStreet().equals(currentAddress.getStreet())) {
+            street = newAddress.getStreet();
+        }
+        if (detail != null && !newAddress.getDetail().equals(currentAddress.getDetail())) {
+            detail = newAddress.getDetail();
+        }
+        return new Address(zipcode, street, detail);
     }
 
 }
