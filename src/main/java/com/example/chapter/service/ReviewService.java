@@ -2,10 +2,9 @@ package com.example.chapter.service;
 
 import com.example.chapter.dto.ReviewRegistrationDto;
 import com.example.chapter.dto.ReviewResponseDto;
-import com.example.chapter.entity.Book;
-import com.example.chapter.entity.Review;
-import com.example.chapter.entity.User;
+import com.example.chapter.entity.*;
 import com.example.chapter.repository.BookRepository;
+import com.example.chapter.repository.OrderRepository;
 import com.example.chapter.repository.ReviewRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +19,17 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final BookRepository bookRepository;
+    private final OrderRepository orderRepository;
 
     public void addReview(Long id, ReviewRegistrationDto dto, User user) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("책을 찾을 수 없습니다."));
+
+//        boolean isReviewable = orderRepository.existsByUserIdAndItemsBookIdAndStatusAndDeliveryStatus(user.getId(), book.getId(), OrderStatus.ORDER, DeliveryStatus.DELIVERED);
+//        if (!isReviewable) {
+//            throw new IllegalArgumentException("리뷰 작성이 불가합니다.");
+//        }
+
         String content = dto.getContent();
         int rating = dto.getRating();
 
@@ -33,6 +39,10 @@ public class ReviewService {
 
     public List<ReviewResponseDto> getReviews() {
         return reviewRepository.findAllByOrderByModifiedDateDesc().stream().map(ReviewResponseDto::new).toList();
+    }
+
+    public List<ReviewResponseDto> getAllMyReviews(User user) {
+        return reviewRepository.findAllByUserId(user.getId()).stream().map(ReviewResponseDto::new).toList();
     }
 
     public ReviewResponseDto getReview(Long id) {

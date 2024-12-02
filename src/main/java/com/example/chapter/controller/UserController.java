@@ -1,9 +1,9 @@
 package com.example.chapter.controller;
 
+import com.example.chapter.dto.PasswordDto;
 import com.example.chapter.dto.ProfileDto;
 import com.example.chapter.dto.SignUpDto;
 import com.example.chapter.dto.UpdateProfileDto;
-import com.example.chapter.entity.User;
 import com.example.chapter.security.UserDetailsImpl;
 import com.example.chapter.service.KakaoService;
 import com.example.chapter.service.UserService;
@@ -16,7 +16,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @Slf4j
@@ -60,28 +63,46 @@ public class UserController {
         return "redirect:/login";
     }
 
-    @GetMapping("/profile")
+    @GetMapping("/user/me")
+    public String getMyPage(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
+        userService.getMyPage(userDetails.getUser());
+        model.addAttribute("username", userDetails.getUser().getName());
+        return "user/myPage";
+    }
+
+    @GetMapping("/user/profile")
     public String getProfile(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
         ProfileDto profile = userService.getProfile(userDetails.getUser());
         model.addAttribute("profile", profile);
         return "user/profile/view";
     }
 
-    @GetMapping("/profile/edit")
+    @GetMapping("/user/profile/edit")
     public String updateProfileForm(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
-        User user = userDetails.getUser();
-        UpdateProfileDto profile = new UpdateProfileDto(user.getPassword(), user.getEmail(),
-                user.getPhone(), user.getAddress());
+        ProfileDto profileDto = userService.getProfile(userDetails.getUser());
+        UpdateProfileDto profile = new UpdateProfileDto(profileDto);
         model.addAttribute("form", profile);
 
         return "user/profile/edit";
     }
 
-    @PutMapping("/profile/edit")
+    @PutMapping("/user/profile/edit")
     public String updateProfile(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                 @Valid UpdateProfileDto dto) {
         userService.updateProfile(userDetails.getUser(), dto);
-        return "redirect:/profile";
+        return "redirect:/user/profile";
+    }
+
+    @GetMapping("/user/password")
+    public String updatePasswordForm(Model model) {
+        model.addAttribute("form", new PasswordDto());
+        return "user/profile/editPassword";
+    }
+
+    @PutMapping("/user/password")
+    public String updatePassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid PasswordDto dto) {
+        userService.updatePassword(userDetails.getUser(), dto);
+        return "redirect:/user/profile";
     }
 
 }

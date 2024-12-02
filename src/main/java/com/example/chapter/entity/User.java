@@ -43,10 +43,14 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Order> orders = new ArrayList<>();
 
-    public void update(String email, String phone, Address address) {
+    public void updateProfile(String email, String phone, Address address) {
         this.email = email;
         this.phone = phone;
         this.address = address;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
     }
 
     public boolean isAdmin() {

@@ -93,22 +93,31 @@ public class UserService {
         Address address = findUser.getAddress();
         if (address != null) {
             address = updateAddress(findUser.getAddress(), dto.getAddress());
+        } else {
+            if (dto.getAddress() != null) {
+                String zipcode = dto.getAddress().getZipcode();
+                String street = dto.getAddress().getStreet();
+                String detail = dto.getAddress().getDetail();
+                address = new Address(zipcode, street, detail);
+            }
         }
 
-        findUser.update(email, phone, address);
+        findUser.updateProfile(email, phone, address);
+    }
 
-        log.info("user email:" + user.getEmail());
-        log.info("user phone:" + user.getPhone());
+    // 비밀번호 수정
+    @Transactional
+    public void updatePassword(User user, PasswordDto dto) {
+        User findUser = getUser(user);
+        if (!passwordEncoder.matches(dto.getCurrentPassword(), findUser.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 틀립니다.");
+        }
+        String newPassword = passwordEncoder.encode(dto.getNewPassword());
+        findUser.updatePassword(newPassword);
     }
 
     private User getUser(User user) {
         return userRepository.findById(user.getId()).orElseThrow(() -> new EntityNotFoundException("user를 찾을 수 없습니다."));
-    }
-
-    // 비밀번호 확인
-    public boolean checkPassword(User user, PasswordDto dto) {
-        String encodedPassword = passwordEncoder.encode(dto.getPassword());
-        return user.getPassword().equals(encodedPassword);
     }
 
     private boolean validateEmail(String email) {

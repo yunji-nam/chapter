@@ -11,22 +11,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/book/{bookId}/review")
 public class ReviewController {
 
     private final ReviewService reviewService;
 
     // 리뷰 등록 폼
-    @GetMapping
+    @GetMapping("/book/{bookId}/review")
     public String addReviewForm(@PathVariable Long bookId, Model model) {
         model.addAttribute("form", new ReviewRegistrationDto());
         return "review/add";
     }
 
     // 리뷰 등록
-    @PostMapping
+    @PostMapping("/book/{bookId}/review")
     public String addReview(@PathVariable Long bookId,
                             @Valid ReviewRegistrationDto dto,
                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -35,7 +36,7 @@ public class ReviewController {
     }
 
     // 리뷰 조회
-    @GetMapping("/{reviewId}")
+    @GetMapping("/book/{bookId}/review/{reviewId}")
     public String getReview(@PathVariable Long bookId, @PathVariable Long reviewId, Model model) {
         ReviewResponseDto dto = reviewService.getReview(reviewId);
         model.addAttribute("review", dto);
@@ -44,7 +45,7 @@ public class ReviewController {
     }
 
     // 리뷰 수정 폼
-    @GetMapping("/{reviewId}/edit")
+    @GetMapping("/book/{bookId}/review/{reviewId}/edit")
     public String updateReviewForm(@PathVariable Long bookId, @PathVariable Long reviewId, Model model) {
         ReviewResponseDto responseDto = reviewService.getReview(reviewId);
         model.addAttribute("form", new ReviewRegistrationDto(responseDto));
@@ -52,7 +53,7 @@ public class ReviewController {
     }
 
     // 리뷰 수정
-    @PutMapping("/{reviewId}/edit")
+    @PutMapping("/book/{bookId}/review/{reviewId}/edit")
     public String updateReview(@PathVariable Long bookId, @PathVariable Long reviewId,
                              @Valid ReviewRegistrationDto dto,
                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -61,10 +62,17 @@ public class ReviewController {
     }
 
     // 리뷰 삭제
-    @DeleteMapping("/{reviewId}")
+    @DeleteMapping("/book/{bookId}/review/{reviewId}")
     public String deleteReview(@PathVariable Long bookId, @PathVariable Long reviewId,
                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
         reviewService.deleteReview(reviewId, userDetails.getUser());
         return "redirect:/book/" + bookId;
+    }
+
+    @GetMapping("/reviews")
+    public String getAllMyReviews(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
+        List<ReviewResponseDto> MyReviews = reviewService.getAllMyReviews(userDetails.getUser());
+        model.addAttribute("reviews", MyReviews);
+        return "review/listTest";
     }
 }

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+<div th:fragment="sidebar_user">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 bg-light sidebar">
+        <div class="position-sticky pt-3">
+            <div class="d-flex ms-3 fw-bold mt- 3 mb-5" style="font-size: 18px;">
+                <span th:text="${username} + ' 님'"></span>
+            </div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" style="color: black;" aria-current="page" th:href="@{/user/profile}">
+                        프로필
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" style="color: black;" href="#">
+                        주문배송 조회
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" style="color: black;" th:href="@{/reviews}">
+                        상품 리뷰
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" style="color: black;" href="#">
+                        좋아요 목록
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+</div>
+
+
+</body>
+</html>
