@@ -7,9 +7,8 @@
 <body>
 <div th:replace="~{common/header::navbar}"></div>
 
-<div class="content-container" style="margin-top: 30px;">
-    <th:block layout:fragment="content"></th:block>
-</div>
+<th:block layout:fragment="content"></th:block>
+
 
 <footer th:replace="~{common/footer::footer}"></footer>
 </body>
