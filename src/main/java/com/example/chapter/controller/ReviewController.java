@@ -73,6 +73,6 @@ public class ReviewController {
     public String getAllMyReviews(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
         List<ReviewResponseDto> MyReviews = reviewService.getAllMyReviews(userDetails.getUser());
         model.addAttribute("reviews", MyReviews);
-        return "review/listTest";
+        return "review/list";
     }
 }

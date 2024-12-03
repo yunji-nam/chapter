@@ -2,8 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .sidebar {
             height: 100vh;
@@ -12,13 +10,14 @@
             left: 0;
             overflow-y: auto;
         }
+
     </style>
 </head>
-<body th:fragment="sidebar_user">
+<body th:fragment="sidebar_admin">
 
-<nav id="sidebarMenu" class="bg-light sidebar">
+<nav id="sidebarMenu" class="bg-light sidebar" style="width: 300px;">
     <div class="position-sticky pt-3">
-        <div class="col-md-4 col-lg-3 d-flex ms-3 fw-bold mt-3 mb-5" style="font-size: 18px;">
+        <div class="d-flex ms-3 fw-bold mt-3 pb-3 mb-4 link-dark border-bottom" style="font-size: 18px;">
             <span sec:authentication="name" th:text="${#authentication.name} + ' 님'"></span>
         </div>
         <ul class="nav flex-column">
@@ -33,20 +32,33 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" style="color: black;" href="#">
-                    주문배송 조회
+                <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+                   aria-expanded="false" style="color: black;">
+                    <span>도서 관리</span>
                 </a>
+                <div class="collapse" id="collapseTwo" aria-labelledby="headingTwo" data-bs-parent="#accordionSidebar">
+                    <ul class="bg-white py-2 collapse-inner pb-1">
+                        <li><a class="collapse-item mb-1" th:href="@{/admin/books}">도서 목록</a></li>
+                        <li><a class="collapse-item mb-1" th:href="@{/admin/book}">도서 등록</a></li>
+                    </ul>
+                </div>
             </li>
             <li class="nav-item">
                 <a class="nav-link" style="color: black;" th:href="@{/reviews}">
-                    상품 리뷰
+                    주문 관리
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" style="color: black;" href="#">
-                    좋아요 목록
+                    회원 관리
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" style="color: black;" href="#">
+                    리뷰 관리
+                </a>
+            </li>
+
         </ul>
 
     </div>

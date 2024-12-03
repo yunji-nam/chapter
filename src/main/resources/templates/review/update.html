@@ -6,7 +6,7 @@
 
 <body>
 
-<div class="container">
+<div class="container mt-4">
     <h4 class="mb-4">리뷰 수정</h4>
 
     <form id="review" th:action="@{/book/{bookId}/review/{reviewId}/edit(bookId=${bookId},reviewId=${reviewId})}" th:object="${form}" th:method="put">

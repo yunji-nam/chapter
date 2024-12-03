@@ -5,42 +5,55 @@
       layout:fragment="content">
 
 <body>
+<div class="container-fluid">
+    <div class="row">
+        <div th:insert="~{common/sidebar_user::sidebar_user}" class="col-md-4 col-lg-3"></div>
+        <div class="col-md-8 ms-sm-auto col-lg-9">
+            <div class="container mt-4 ms-3">
+                <h5>프로필 수정</h5>
 
-<div class="container">
+                <form th:action="@{/user/profile/edit}" th:object="${form}" th:method="put">
+                    <div class="form-group mt-3">
+                        <label th:for="email">이메일</label>
+                        <input type="email" id="email" th:field="*{email}" class="form-control"
+                               placeholder="이메일을 입력하세요">
+                    </div>
+                    <div class="form-group mt-3">
+                        <label th:for="phone">휴대폰 번호</label>
+                        <input type="tel" id="phone" th:field="*{phone}" class="form-control"
+                               placeholder="휴대폰 번호를 입력하세요">
+                    </div>
+                    <div class="form-group mt-3">
+                        <label th:for="zipcode">우편 번호</label>
+                        <div class="d-flex">
+                            <input type="text" id="zipcode" th:field="*{address.zipcode}" class="form-control me-2"
+                                   style="max-width: 150px;" readonly="readonly">
+                            <button type="button" class="btn btn-outline-secondary" onclick="execPostCode();"
+                                    style="font-size: 14px;">우편번호 찾기
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label th:for="street">도로명 주소</label>
+                        <input type="text" id="street" th:field="*{address.street}" class="form-control"
+                               readonly="readonly">
+                    </div>
+                    <div class="form-group mt-3 mb-3">
+                        <label th:for="detail">상세 주소</label>
+                        <input type="text" id="detail" th:field="*{address.detail}" class="form-control"
+                               placeholder="상세 주소를 입력하세요">
+                    </div>
 
-    <h5>프로필 수정</h5>
-
-    <form th:action="@{/user/profile/edit}" th:object="${form}" th:method="put">
-        <div class="form-group mt-3">
-            <label th:for="email">이메일</label>
-            <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="이메일을 입력하세요">
-        </div>
-        <div class="form-group mt-3">
-            <label th:for="phone">휴대폰 번호</label>
-            <input type="tel" id="phone" th:field="*{phone}" class="form-control" placeholder="휴대폰 번호를 입력하세요">
-        </div>
-        <div class="form-group mt-3">
-            <label th:for="zipcode">우편 번호</label>
-            <div class="d-flex">
-                <input type="text" id="zipcode" th:field="*{address.zipcode}" class="form-control me-2" style="max-width: 150px;" readonly="readonly">
-                <button type="button" class="btn btn-outline-secondary" onclick="execPostCode();" style="font-size: 14px;">우편번호 찾기
-                </button>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success">수정하기</button>
+                    </div>
+                </form>
             </div>
         </div>
-        <div class="form-group mt-3">
-            <label th:for="street">도로명 주소</label>
-            <input type="text" id="street" th:field="*{address.street}" class="form-control" readonly="readonly">
-        </div>
-        <div class="form-group mt-3 mb-3">
-            <label th:for="detail">상세 주소</label>
-            <input type="text" id="detail" th:field="*{address.detail}" class="form-control" placeholder="상세 주소를 입력하세요">
-        </div>
-
-        <div class="text-center">
-            <button type="submit" class="btn btn-success">수정하기</button>
-        </div>
-    </form>
+    </div>
 </div>
+
+
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
     function execPostCode() {

@@ -5,8 +5,9 @@
       layout:fragment="content">
 <body>
 <main>
-    <div class="container-list">
-        <div class="row row-cols-1 g-3">
+    <div class="container-list mt-4">
+        <h6>장바구니</h6>
+        <div class="row row-cols-1 g-3 mt-3">
 
             <div th:each="item : ${cartList}">
                 <div class="card shadow-sm d-flex flex-row align-items-center" style="height: 270px">
