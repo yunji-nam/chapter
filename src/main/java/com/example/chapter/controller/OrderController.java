@@ -26,6 +26,7 @@ public class OrderController {
     private final OrderService orderService;
     private final CartService cartService;
 
+    // 주문 폼
     @GetMapping("/order")
     public String orderForm(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
         User user = userDetails.getUser();
@@ -35,6 +36,7 @@ public class OrderController {
         return "order/order";
     }
 
+    // 주문 등록
     @PostMapping("/order")
     public String order(@AuthenticationPrincipal UserDetailsImpl userDetails,
                         @Valid OrderRequestDto dto) {
@@ -42,6 +44,7 @@ public class OrderController {
         return "redirect:/orders";
     }
 
+    // 주문 조회
     @GetMapping("/order/{orderId}")
     public String getOrder(@PathVariable Long orderId,
                            @AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
@@ -51,6 +54,7 @@ public class OrderController {
         return "order/detail";
     }
 
+    // 주문 목록 조회
     @GetMapping("/orders")
     public String getOrders(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                         @RequestParam(required = false) LocalDateTime startDate,
@@ -60,15 +64,15 @@ public class OrderController {
                             Model model) {
         Page<OrderListDto> orders = orderService.getOrders(userDetails.getUser(), startDate, endDate, pageNo, size);
 
-        model.addAttribute("orders", orders.getContent());
+        model.addAttribute("orders", orders);
         model.addAttribute("currentPage", pageNo);
-        model.addAttribute("totalPages", orders.getTotalPages());
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
 
         return "order/list";
     }
 
+    // 주문 취소
     @DeleteMapping("/order/{orderId}")
     public String cancelOrder(@PathVariable Long orderId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         orderService.cancelOrder(orderId, userDetails.getUser());

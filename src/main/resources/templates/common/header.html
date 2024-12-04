@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head th:fragment="header">
     <meta charset="UTF-8">
-    <meta name="viewport">
     <title>Chapter</title>
     <link rel="icon" type="image/png" th:href="@{/images/favicon.png}"/>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
@@ -30,12 +29,12 @@
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" th:href="@{/shop}">All Products</a></li>
+                        <li><a class="dropdown-item" th:href="@{/books}">All Products</a></li>
                         <li>
                             <hr class="dropdown-divider"/>
                         </li>
-                        <li><a class="dropdown-item" th:href="@{/shop/popular}">Popular Items</a></li>
-                        <li><a class="dropdown-item" th:href="@{/shop/new}">New Arrivals</a></li>
+                        <li><a class="dropdown-item" th:href="@{/books/popular}">Popular Items</a></li>
+                        <li><a class="dropdown-item" th:href="@{/books/new}">New Arrivals</a></li>
                     </ul>
                 </li>
             </ul>

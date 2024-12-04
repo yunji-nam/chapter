@@ -21,6 +21,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String merchantUid;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -37,11 +39,12 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items = new ArrayList<>();
 
-    public Order(User user, Delivery delivery, List<OrderItem> items) {
+    public Order(String merchantUid, User user, Delivery delivery, List<OrderItem> items) {
+        this.merchantUid = merchantUid;
         this.user = user;
         this.delivery = delivery;
         this.orderDate = LocalDateTime.now();
-        this.status = OrderStatus.ORDER;
+        this.status = OrderStatus.PENDING;
         this.items = items;
     }
 

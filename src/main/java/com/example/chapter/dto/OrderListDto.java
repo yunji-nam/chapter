@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @Getter
 public class OrderListDto {
     private Long id;
+    private String merchantUid;
     private List<OrderBookInfo> books;
     private OrderStatus orderStatus;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -21,6 +22,7 @@ public class OrderListDto {
 
     public OrderListDto(Order order) {
         this.id = order.getId();
+        this.merchantUid = order.getMerchantUid();
         this.books = order.getItems().stream()
                 .map(OrderBookInfo::new)
                 .collect(Collectors.toList());

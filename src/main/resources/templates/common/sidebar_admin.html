@@ -1,22 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
-<head>
-    <meta charset="utf-8">
-    <style>
-        .sidebar {
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            overflow-y: auto;
-        }
 
-    </style>
-</head>
 <body th:fragment="sidebar_admin">
 
-<nav id="sidebarMenu" class="bg-light sidebar" style="width: 300px;">
-    <div class="position-sticky pt-3">
+<nav class="bg-light sidebar">
+    <div class="pt-3">
         <div class="d-flex ms-3 fw-bold mt-3 pb-3 mb-4 link-dark border-bottom" style="font-size: 18px;">
             <span sec:authentication="name" th:text="${#authentication.name} + ' 님'"></span>
         </div>
@@ -44,9 +32,15 @@
                 </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" style="color: black;" th:href="@{/reviews}">
+                <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                   aria-expanded="false" style="color: black;">
                     주문 관리
                 </a>
+                <div class="collapse" id="collapseOne" aria-labelledby="headingTwo" data-bs-parent="#accordionSidebar">
+                    <ul class="bg-white py-2 collapse-inner pb-1">
+                        <li><a class="collapse-item mb-1" th:href="@{/admin/orders}">주문 목록</a></li>
+                    </ul>
+                </div>
             </li>
             <li class="nav-item">
                 <a class="nav-link" style="color: black;" href="#">

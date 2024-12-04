@@ -23,5 +23,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
+    @ExceptionHandler(PaymentAmountMismatchException.class)
+    public ResponseEntity<String> handleException(PaymentAmountMismatchException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
 
 }

@@ -1,13 +1,15 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       layout:decorate="~{common/layout}"
       layout:fragment="content">
 
 <body>
 <div class="container-fluid">
     <div class="row">
-        <div th:insert="~{common/sidebar_user::sidebar_user}" class="col-md-4 col-lg-3"></div>
+        <div sec:authorize="hasRole('ROLE_ADMIN')" th:include="~{common/sidebar_admin::sidebar_admin}" class="col-md-4 col-lg-3"></div>
+        <div sec:authorize="hasRole('ROLE_USER')" th:include="~{common/sidebar_user::sidebar_user}" class="col-md-4 col-lg-3"></div>
         <div class="col-md-8 ms-sm-auto col-lg-9">
             <div class="container mt-4 ms-3">
                 <h5>프로필 수정</h5>

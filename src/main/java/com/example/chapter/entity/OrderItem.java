@@ -36,4 +36,8 @@ public class OrderItem {
     public void cancel() {
         getBook().addStock(quantity);
     }
+
+    public int getTotalPrice() {
+        return getBook().getPrice() * getQuantity();
+    }
 }
