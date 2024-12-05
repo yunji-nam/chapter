@@ -6,6 +6,7 @@ import com.example.chapter.entity.Book;
 import com.example.chapter.entity.Cart;
 import com.example.chapter.entity.CartItem;
 import com.example.chapter.entity.User;
+import com.example.chapter.exception.OutOfStockException;
 import com.example.chapter.repository.BookRepository;
 import com.example.chapter.repository.CartItemRepository;
 import com.example.chapter.repository.CartRepository;
@@ -58,7 +59,7 @@ public class CartService {
     // 아이템 수량 수정
     @Transactional
     public void updateCartItemQuantity(CartDto dto, User user) {
-        CartItem cartItem = cartItemRepository.findByBookId(dto.getBookId())
+        CartItem cartItem = cartItemRepository.findById(dto.getCartItemId())
                         .orElseThrow(() -> new EntityNotFoundException("cart item을 찾을 수 없습니다."));
         if (!cartItem.getCart().getUser().getId().equals(user.getId())) {
                     throw new IllegalArgumentException("사용자가 다릅니다.");
@@ -76,7 +77,7 @@ public class CartService {
     // 장바구니 내 아이템 삭제
     @Transactional
     public void deleteItemFromCart(Long id, User user) {
-        CartItem cartItem = cartItemRepository.findByBookId(id)
+        CartItem cartItem = cartItemRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("cart item을 찾을 수 없습니다."));
         if (!cartItem.getCart().getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("사용자가 다릅니다.");
@@ -87,8 +88,12 @@ public class CartService {
     }
 
     private Book findBook(Long id) {
-        return bookRepository.findById(id)
+        Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("책을 찾을 수 없습니다."));
+        if (book.getStockQuantity() <= 0) {
+            throw new OutOfStockException("재고가 부족합니다.");
+        }
+        return book;
     }
 
     private Cart findCart(User user) {

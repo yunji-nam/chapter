@@ -5,12 +5,16 @@ import com.example.chapter.entity.User;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class OrderRequestDto {
+
+    private Long orderId;
 
     @NotEmpty
     private String deliveryName;

@@ -1,5 +1,6 @@
 package com.example.chapter.entity;
 
+import com.example.chapter.exception.OutOfStockException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -84,7 +85,7 @@ public class Book {
     public void decreaseStock(int quantity) {
         int restStock = this.stockQuantity - quantity;
         if (restStock < 0) {
-            throw new IllegalArgumentException("재고가 부족합니다.");
+            throw new OutOfStockException("재고가 부족합니다.");
         }
         this.stockQuantity = restStock;
     }

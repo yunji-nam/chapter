@@ -1,5 +1,6 @@
 package com.example.chapter.entity;
 
+import com.example.chapter.exception.OutOfStockException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -31,8 +32,11 @@ public class CartItem {
     }
 
     public void updateQuantity(int quantity) {
-        if (quantity < 1) {
+        if (quantity <= 0) {
             throw new IllegalArgumentException("수량은 1 이상이어야 합니다.");
+        }
+        if (quantity > book.getStockQuantity()) {
+            throw new OutOfStockException("재고가 부족합니다.");
         }
         this.quantity = quantity;
     }
