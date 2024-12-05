@@ -1,40 +1,55 @@
 package com.example.chapter.controller;
 
-import com.example.chapter.dto.CartItemDto;
-import com.example.chapter.dto.OrderDetailDto;
-import com.example.chapter.dto.OrderListDto;
-import com.example.chapter.dto.OrderRequestDto;
+import com.example.chapter.dto.*;
 import com.example.chapter.entity.User;
 import com.example.chapter.security.UserDetailsImpl;
-import com.example.chapter.service.CartService;
 import com.example.chapter.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
 public class OrderController {
 
     private final OrderService orderService;
-    private final CartService cartService;
+
+    // cart 선택 아이템 받기
+    @PostMapping("/order/prepare")
+    public ResponseEntity<Map<String, Object>> prepareOrder(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                            @RequestBody OrderPrepareDto dto) {
+        Long orderId = orderService.prepareOrder(userDetails.getUser(), dto.getCartList());
+        Map<String, Object> response = new HashMap<>();
+        response.put("orderId", orderId);
+        return ResponseEntity.ok(response);
+    }
 
     // 주문 폼
-    @GetMapping("/order")
-    public String orderForm(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
+    @GetMapping ("/order/form")
+    public String orderForm(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam Long orderId, Model model) {
         User user = userDetails.getUser();
-        List<CartItemDto> cartItems = cartService.getCart(user);
-        model.addAttribute("form", new OrderRequestDto(user, cartItems));
+        List<OrderItemDto> orderItems = orderService.getOrderItems(orderId);
+        model.addAttribute("form", new OrderFormDto(user, orderItems));
 
         return "order/order";
     }
+
+    @PostMapping("/order/{orderId}")
+    public String confirmOrder(@Valid OrderRequestDto dto) {
+        orderService.confirmOrder(dto);
+        return "redirect:/orders";
+    }
+
 
     // 주문 등록
     @PostMapping("/order")

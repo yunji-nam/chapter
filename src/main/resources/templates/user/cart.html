@@ -15,7 +15,7 @@
                     <div class="form-check" style="margin: 10px;">
                         <input class="form-check-input cart-item-checkbox" type="checkbox"
                                th:data-price="${item.bookPrice * item.quantity}" th:data-book-id="${item.bookId}"
-                               checked>
+                               th:data-cart-item-id="${item.id}" checked>
                     </div>
 
                     <!-- 책 이미지 -->
@@ -36,9 +36,11 @@
                         <div class="d-flex align-items-center justify-content-end gap-3" style="height: 40px;">
                             <input class="form-control text-center me-3" th:id="'inputQuantity_' + ${item.bookId}"
                                    type="number" th:value="${item.quantity}" th:data-book-price="${item.bookPrice}"
+                                   th:data-cart-item-id="${item.id}"
                                    style="max-width: 4rem; flex-grow: 0; flex-shrink: 0;"/>
                             <button class="btn btn-sm btn-outline-dark mt-2" type="button"
                                     th:id="'addToCart_' + ${item.bookId}" th:data-book-id="${item.bookId}"
+                                    th:data-cart-item-id="${item.id}"
                                     style="height: 100%; flex-shrink: 0;">
                                 변경
                             </button>
@@ -59,10 +61,12 @@
     </div>
     <div class="total-price-container" style="margin-top: 20px; padding-top: 10px; border-top: 2px solid #000;">
         <div class="d-flex justify-content-center">
-            <span>총 주문 금액</span>
+            <span>총 주문 예정 금액</span>
             <span id="totalPrice" style="margin-left: 10px; font-weight: bold;">0 원</span>
         </div>
     </div>
+
+    <button class="btn btn-primary btn-lg" id="proceedToOrder" type="button">주문하기</button>
 
 </main>
 <script th:inline="javascript">
@@ -73,7 +77,12 @@
 
         checkboxes.forEach(checkbox => {
             if (checkbox.checked) {
-                total += parseInt(checkbox.getAttribute('data-price'), 10);
+                const bookId = checkbox.getAttribute('data-book-id');
+                const quantityInput = document.getElementById(`inputQuantity_${bookId}`);
+                const bookPrice = parseInt(quantityInput.getAttribute('data-book-price'), 10);
+                const quantity = parseInt(quantityInput.value, 10);
+
+                total += bookPrice * quantity;
             }
         })
 
@@ -90,9 +99,9 @@
     document.querySelectorAll('[id^="addToCart_"]').forEach(button => {
         button.addEventListener('click', function () {
             const bookId = this.getAttribute('data-book-id');
+            const cartItemId = this.getAttribute('data-cart-item-id');
             const quantityInput = document.getElementById(`inputQuantity_${bookId}`);
             const quantity = parseInt(quantityInput.value, 10);
-            const bookPrice = parseInt(quantityInput.getAttribute('data-book-price'), 10);
 
             fetch('/api/cart/items', {
                 method: 'PUT',
@@ -100,31 +109,75 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    bookId: bookId,
+                    cartItemId: cartItemId,
                     quantity: quantity
                 })
             })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error("응답 실패: " + response.status);
+                        return response.json().then(errorData => {
+                            throw new Error(JSON.stringify(errorData));
+                        })
                     }
-                    return response.json();
+                    alert("장바구니 수량 변경되었습니다.");
+                    calculateTotalPrice();
                 })
-                .then(data => {
-                    if (data) {
-                        alert("장바구니 수량 변경되었습니다.");
-
-                        const updatedPrice = quantity * bookPrice;
-                        const checkbox = document.querySelector(`.cart-item-checkbox[data-price][data-book-id="${bookId}"]`);
-
-                        checkbox.setAttribute('data-price', String(updatedPrice));
-
-                        calculateTotalPrice();
-                    }
-                })
-                .catch(error => console.error('api 호출 오류:', error));
+                .catch(error => {
+                    alert(error.message);
+                });
         });
     });
+
+    // 선택된 항목들 주문 폼으로 전송
+    document.getElementById('proceedToOrder').addEventListener('click', function () {
+
+        const cartList = [];
+        const checkboxes = document.querySelectorAll('.cart-item-checkbox');
+
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                const cartItemId = checkbox.getAttribute('data-cart-item-id');
+                const bookId = checkbox.getAttribute('data-book-id');
+                const quantityInput = document.getElementById(`inputQuantity_${bookId}`);
+                const quantity = parseInt(quantityInput.value, 10);
+
+                cartList.push({cartItemId, bookId, quantity});
+            }
+        });
+
+        console.log(cartList);
+        if (cartList.length === 0) {
+            alert('선택된 항목이 없습니다.');
+            return;
+        }
+
+        fetch('/order/prepare', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'  // JSON 형식으로 전송
+            },
+            body: JSON.stringify({
+                cartList  // JSON 형식으로 데이터 전송
+            })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(JSON.stringify(errorData));
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                const orderId = data.orderId;
+                // 주문 폼 페이지로 이동
+                window.location.href = `/order/form?orderId=${orderId}`;
+            })
+            .catch(error => {
+                alert(error.message);
+            });
+    });
+
 
 </script>
 </body>

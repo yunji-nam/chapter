@@ -1,9 +1,8 @@
 package com.example.chapter.service;
 
-import com.example.chapter.dto.OrderDetailDto;
-import com.example.chapter.dto.OrderListDto;
-import com.example.chapter.dto.OrderRequestDto;
+import com.example.chapter.dto.*;
 import com.example.chapter.entity.*;
+import com.example.chapter.repository.CartItemRepository;
 import com.example.chapter.repository.CartRepository;
 import com.example.chapter.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -14,9 +13,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +26,37 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final CartRepository cartRepository;
+    private final CartItemRepository cartItemRepository;
+    private final SecureRandom secureRandom = new SecureRandom();
+
+    public Long prepareOrder(User user, List<CartDto> cartList) {
+        if (cartList == null || cartList.isEmpty()) {
+            throw new IllegalArgumentException("장바구니가 비어 있습니다.");
+        }
+
+        List<Long> cartItemIds = cartList.stream()
+                .map(CartDto::getCartItemId).toList();
+        List<CartItem> cartItems = cartItemRepository.findAllById(cartItemIds);
+        String merchant_uid = generateOrderNumber();
+        List<OrderItem> orderItems = new ArrayList<>();
+
+        Order order = new Order(merchant_uid, user, orderItems);
+        for (CartItem cartItem : cartItems) {
+            Book book = cartItem.getBook();
+            int quantity = cartItem.getQuantity();
+
+            order.addOrderItem(book, quantity);
+        }
+        orderRepository.save(order);
+        return order.getId();
+    }
+
+    public List<OrderItemDto> getOrderItems(Long orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("order를 찾을 수 없습니다."));
+        return order.getItems().stream().map(OrderItemDto::new).collect(Collectors.toList());
+    }
+
+
 
     // 주문
     public void createOrder(User user, OrderRequestDto dto) {
@@ -39,7 +72,8 @@ public class OrderService {
 
         Delivery delivery = new Delivery(address, name, phone);
 
-        Order order = new Order(user, delivery, orderItems);
+        String merchant_uid = generateOrderNumber();
+        Order order = new Order(merchant_uid, user, orderItems);
 
         for (CartItem cartItem : items) {
             Book book = cartItem.getBook();
@@ -51,7 +85,45 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    // 주문 조회
+    public void confirmOrder(OrderRequestDto dto) {
+        Order order = orderRepository.findById(dto.getOrderId()).orElseThrow(() ->
+                new EntityNotFoundException("order를 찾을 수 없습니다."));
+
+        // 배송 정보 생성
+        Address address = dto.getDeliveryAddress();
+        String name = dto.getDeliveryName();
+        String phone = dto.getDeliveryPhone();
+
+        Delivery delivery = new Delivery(address, name, phone);
+
+        order.confirmOrder(delivery);
+    }
+
+    public Order validOrder(String merchantUid) {
+        return orderRepository.findByMerchantUid(merchantUid).orElseThrow(()
+                -> new EntityNotFoundException("order를 찾을 수 없습니다."));
+    }
+
+    private String generateOrderNumber() {
+        String randomString = generateRandomString(6);
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yy-MM-dd");
+        String formattedDay = now.format(dateTimeFormatter).replace("-", "");
+
+        return formattedDay + randomString;
+    }
+
+    private String generateRandomString(int length) {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int randomIndex = secureRandom.nextInt(characters.length());
+            sb.append(characters.charAt(randomIndex));
+        }
+        return sb.toString();
+    }
+
+    // 주문 상세 조회
     public OrderDetailDto getOrder(Long id, User user) {
         Order order = findOrder(id);
         checkUser(user, order);
