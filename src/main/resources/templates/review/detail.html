@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}"
+      layout:fragment="content">
+
+<body>
+
+<div class="container mt-4">
+    <h4 class="mb-4">리뷰</h4>
+
+    <form id="review" th:action="@{/book/{bookId}/review(bookId=${bookId})}" th:object="${review}" method="post">
+        <fieldset>
+            <span class="text-bold">별점</span>
+            <input type="radio" name="rating" value="5" id="rate1" th:field="*{rating}" disabled><label for="rate1">★</label>
+            <input type="radio" name="rating" value="4" id="rate2" th:field="*{rating}" disabled><label for="rate2">★</label>
+            <input type="radio" name="rating" value="3" id="rate3" th:field="*{rating}" disabled><label for="rate3">★</label>
+            <input type="radio" name="rating" value="2" id="rate4" th:field="*{rating}" disabled><label for="rate4">★</label>
+            <input type="radio" name="rating" value="1" id="rate5" th:field="*{rating}" disabled><label for="rate5">★</label>
+        </fieldset>
+        <div th:text="${review.content}" class="mt-3"></div>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-outline-danger">수정</button>
+            <button type="submit" class="btn btn-outline-dark">삭제</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
