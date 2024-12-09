@@ -3,7 +3,6 @@ package com.example.chapter.service;
 import com.example.chapter.dto.*;
 import com.example.chapter.entity.*;
 import com.example.chapter.repository.CartItemRepository;
-import com.example.chapter.repository.CartRepository;
 import com.example.chapter.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +24,10 @@ import java.util.stream.Collectors;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final SecureRandom secureRandom = new SecureRandom();
 
+    // 주문 준비
     public Long prepareOrder(User user, List<CartDto> cartList) {
         if (cartList == null || cartList.isEmpty()) {
             throw new IllegalArgumentException("장바구니가 비어 있습니다.");
@@ -56,35 +55,12 @@ public class OrderService {
         return order.getItems().stream().map(OrderItemDto::new).collect(Collectors.toList());
     }
 
-
-
-    // 주문
-    public void createOrder(User user, OrderRequestDto dto) {
-        Cart cart = cartRepository.findByUserId(user.getId()).orElseThrow(() ->
-                new EntityNotFoundException("cart를 찾을 수 없습니다."));
-        List<CartItem> items = cart.getItems();
-
-        List<OrderItem> orderItems = new ArrayList<>();
-
-        Address address = dto.getDeliveryAddress();
-        String name = dto.getDeliveryName();
-        String phone = dto.getDeliveryPhone();
-
-        Delivery delivery = new Delivery(address, name, phone);
-
-        String merchant_uid = generateOrderNumber();
-        Order order = new Order(merchant_uid, user, orderItems);
-
-        for (CartItem cartItem : items) {
-            Book book = cartItem.getBook();
-            int quantity = cartItem.getQuantity();
-
-            order.addOrderItem(book, quantity);
-        }
-
-        orderRepository.save(order);
+    // 주문 준비 취소
+    public void deleteOrder(Order order) {
+        orderRepository.delete(order);
     }
 
+    // 주문 확정
     public void confirmOrder(OrderRequestDto dto) {
         Order order = orderRepository.findById(dto.getOrderId()).orElseThrow(() ->
                 new EntityNotFoundException("order를 찾을 수 없습니다."));
@@ -104,6 +80,7 @@ public class OrderService {
                 -> new EntityNotFoundException("order를 찾을 수 없습니다."));
     }
 
+    // 주문 번호 생성
     private String generateOrderNumber() {
         String randomString = generateRandomString(6);
         LocalDateTime now = LocalDateTime.now();
@@ -177,7 +154,7 @@ public class OrderService {
         }
     }
 
-    private Order findOrder(Long id) {
+    public Order findOrder(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("주문을 찾을 수 없습니다."));
     }

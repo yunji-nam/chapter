@@ -45,7 +45,7 @@
                                 변경
                             </button>
                             <form id="deleteForm" method="post"
-                                  th:action="@{/cart/items/{cartItemId}(cartItemId=${item.bookId})}"
+                                  th:action="@{/cart/items/{cartItemId}(cartItemId=${item.id})}"
                                   style="display: inline;">
                                 <input type="hidden" name="_method" value="DELETE"/>
                                 <button class="btn btn-sm btn-outline-dark mt-2"

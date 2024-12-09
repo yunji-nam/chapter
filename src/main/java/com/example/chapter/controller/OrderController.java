@@ -1,6 +1,7 @@
 package com.example.chapter.controller;
 
 import com.example.chapter.dto.*;
+import com.example.chapter.entity.Order;
 import com.example.chapter.entity.User;
 import com.example.chapter.security.UserDetailsImpl;
 import com.example.chapter.service.OrderService;
@@ -39,7 +40,8 @@ public class OrderController {
     public String orderForm(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam Long orderId, Model model) {
         User user = userDetails.getUser();
         List<OrderItemDto> orderItems = orderService.getOrderItems(orderId);
-        model.addAttribute("form", new OrderFormDto(user, orderItems));
+        Order order = orderService.findOrder(orderId);
+        model.addAttribute("form", new OrderFormDto(order, user, orderItems));
 
         return "order/order";
     }
@@ -47,15 +49,6 @@ public class OrderController {
     @PostMapping("/order/{orderId}")
     public String confirmOrder(@Valid OrderRequestDto dto) {
         orderService.confirmOrder(dto);
-        return "redirect:/orders";
-    }
-
-
-    // 주문 등록
-    @PostMapping("/order")
-    public String order(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                        @Valid OrderRequestDto dto) {
-        orderService.createOrder(userDetails.getUser(), dto);
         return "redirect:/orders";
     }
 
