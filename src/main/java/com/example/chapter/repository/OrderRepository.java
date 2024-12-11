@@ -1,8 +1,6 @@
 package com.example.chapter.repository;
 
-import com.example.chapter.entity.DeliveryStatus;
 import com.example.chapter.entity.Order;
-import com.example.chapter.entity.OrderStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

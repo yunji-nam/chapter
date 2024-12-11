@@ -128,7 +128,7 @@
         });
     });
 
-    // 선택된 항목들 주문 폼으로 전송
+    // 선택된 항목들 로컬스토리지 저장
     document.getElementById('proceedToOrder').addEventListener('click', function () {
 
         const cartList = [];
@@ -138,10 +138,13 @@
             if (checkbox.checked) {
                 const cartItemId = checkbox.getAttribute('data-cart-item-id');
                 const bookId = checkbox.getAttribute('data-book-id');
+                const bookTitleElement = checkbox.closest('.card').querySelector('.card-body .card-title a');
+                const bookTitle = bookTitleElement.innerText;
+                const bookPrice = parseInt(checkbox.getAttribute('data-price'), 10);
                 const quantityInput = document.getElementById(`inputQuantity_${bookId}`);
                 const quantity = parseInt(quantityInput.value, 10);
 
-                cartList.push({cartItemId, bookId, quantity});
+                cartList.push({cartItemId, bookTitle, bookPrice, quantity});
             }
         });
 
@@ -151,31 +154,35 @@
             return;
         }
 
-        fetch('/order/prepare', {
+        localStorage.setItem('cartItems', JSON.stringify(cartList));
+
+        const merchantUid = '[[${merchantUid}]]';
+
+        fetch('payment/prepare', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'  // JSON 형식으로 전송
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                cartList  // JSON 형식으로 데이터 전송
+                merchant_uid: merchantUid,
+                amount: cartList.reduce((total, item) => total + (item.bookPrice * item.quantity), 0)
             })
         })
             .then(response => {
                 if (!response.ok) {
                     return response.json().then(errorData => {
                         throw new Error(JSON.stringify(errorData));
-                    });
+                    })
                 }
-                return response.json();
-            })
-            .then(data => {
-                const orderId = data.orderId;
-                // 주문 폼 페이지로 이동
-                window.location.href = `/order/form?orderId=${orderId}`;
+                response.json().then(data => {
+                    console.log("응답 데이터:", data);
+                });
+                window.location.href = 'order/form';
             })
             .catch(error => {
                 alert(error.message);
-            });
+            })
+
     });
 
 
