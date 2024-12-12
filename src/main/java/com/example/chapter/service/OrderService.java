@@ -1,11 +1,9 @@
 package com.example.chapter.service;
 
-import com.example.chapter.dto.CartDto;
 import com.example.chapter.dto.OrderDetailDto;
 import com.example.chapter.dto.OrderListDto;
-import com.example.chapter.dto.OrderRequestDto;
-import com.example.chapter.entity.*;
-import com.example.chapter.repository.CartItemRepository;
+import com.example.chapter.entity.Order;
+import com.example.chapter.entity.User;
 import com.example.chapter.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -18,57 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final CartItemRepository cartItemRepository;
     private final SecureRandom secureRandom = new SecureRandom();
-
-    // 주문 준비
-    public Long prepareOrder(User user, List<CartDto> cartList) {
-        if (cartList == null || cartList.isEmpty()) {
-            throw new IllegalArgumentException("장바구니가 비어 있습니다.");
-        }
-
-        List<Long> cartItemIds = cartList.stream().map(CartDto::getCartItemId).toList();
-        List<CartItem> cartItems = cartItemRepository.findAllById(cartItemIds);
-        String merchant_uid = generateOrderNumber();
-        List<OrderItem> orderItems = new ArrayList<>();
-
-        Order order = new Order(merchant_uid, user, orderItems);
-        for (CartItem cartItem : cartItems) {
-            Book book = cartItem.getBook();
-            int quantity = cartItem.getQuantity();
-
-            order.addOrderItem(book, quantity);
-        }
-        orderRepository.save(order);
-        return order.getId();
-    }
-
-    // 주문 확정
-    public void confirmOrder(Long id, OrderRequestDto dto) {
-        Order order = findOrderById(id);
-
-        // 배송 정보 생성, pay도 저장.
-        Address address = dto.getDeliveryAddress();
-        String name = dto.getDeliveryName();
-        String phone = dto.getDeliveryPhone();
-
-        Delivery delivery = new Delivery(address, name, phone);
-
-        order.confirmOrder(delivery);
-    }
-
-    public Order findOrderByMerchantUid(String merchantUid) {
-        return orderRepository.findByMerchantUid(merchantUid).orElseThrow(()
-                -> new EntityNotFoundException("order를 찾을 수 없습니다."));
-    }
 
     // 주문 번호 생성
     public String generateOrderNumber() {

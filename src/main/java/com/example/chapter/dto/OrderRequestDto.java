@@ -1,12 +1,13 @@
 package com.example.chapter.dto;
 
 import com.example.chapter.entity.Address;
-import com.example.chapter.entity.OrderItem;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -14,13 +15,16 @@ import java.util.List;
 @NoArgsConstructor
 public class OrderRequestDto {
 
-    private String merchantUid; // 주문번호
+    @NotEmpty
     private List<Long> cartItemIds;
-
     @NotEmpty
     private String deliveryName;
     @NotEmpty
     private String deliveryPhone;
     private Address deliveryAddress;
+    @NotNull
+    private BigDecimal amount;
+    @NotEmpty
+    private String payMethod;
 
 }

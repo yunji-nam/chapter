@@ -39,15 +39,12 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items = new ArrayList<>();
 
-    public void confirmOrder(Delivery delivery) {
-        this.delivery = delivery;
-        this.orderDate = LocalDateTime.now();
-    }
-
-    public Order(String merchantUid, User user, List<OrderItem> items) {
+    public Order(String merchantUid, User user, Delivery delivery, List<OrderItem> items) {
         this.merchantUid = merchantUid;
         this.user = user;
-        this.status = OrderStatus.PENDING;
+        this.orderDate = LocalDateTime.now();
+        this.delivery = delivery;
+        this.status = OrderStatus.PAID;
         this.items = items;
     }
 

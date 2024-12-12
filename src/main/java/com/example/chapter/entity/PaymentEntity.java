@@ -28,10 +28,11 @@ public class PaymentEntity {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    public PaymentEntity(BigDecimal amount, Order order) {
+    public PaymentEntity(BigDecimal amount, String paymentMethod, Order order) {
         this.amount = amount;
         this.isPaid = true;
         this.paidAt = LocalDateTime.now();
+        this.paymentMethod = paymentMethod;
         this.order = order;
     }
 

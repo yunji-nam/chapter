@@ -16,23 +16,15 @@
             <div class="col-md-5 col-lg-4 order-md-last">
                 <h4 class="d-flex justify-content-between align-items-center mb-3">
                     <span class="text-primary">장바구니</span>
-                    <span th:text="${form.orderItems.size()}" class="badge bg-primary rounded-pill"></span>
+                    <span class="badge bg-primary rounded-pill" id="cartItemCount"></span> <!--장바구니 항목 수-->
                 </h4>
-                <ul class="list-group mb-3">
-                    <li th:each="orderItem : ${form.orderItems}"
-                        class="list-group-item d-flex justify-content-between lh-sm">
-                        <div>
-                            <h6 th:text="${orderItem.bookTitle}" class="my-0"></h6>
-                            <small th:text="${orderItem.quantity + '개'}" class="text-muted"></small>
-                        </div>
-                        <span th:text="${orderItem.bookPrice}" class="text-muted"></span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>Total </span>
-                        <strong th:text="${#numbers.formatInteger(form.totalPrice, 3, 'COMMA')}"
-                                class="text-muted"></strong> 원
-                    </li>
+                <ul class="list-group mb-3" id="cartItemList">
+                    <!--항목 리스트-->
                 </ul>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Total </span>
+                    <strong class="text-muted" id="totalPrice"></strong> <!--총 가격-->
+                </li>
             </div>
 
 
@@ -112,6 +104,38 @@
 </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const cartItems = JSON.parse(localStorage.getItem('cartItems'));
+        const cartItemCount = document.getElementById('cartItemCount');
+        const cartItemList = document.getElementById('cartItemList');
+        const totalPriceElement = document.getElementById('totalPrice');
+
+        let totalPrice = 0;
+
+        if (cartItems.length > 0) {
+            cartItemCount.textContent = cartItems.length;
+
+            cartItems.forEach(item => {
+                const listItem = document.createElement('li');
+                listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+                listItem.innerHTML = `
+                                <span>${item.bookTitle}</span>
+                                <span>${item.quantity}개</span>
+                                <strong>${item.bookPrice.toLocaleString()}원</strong>
+                            `;
+                cartItemList.appendChild(listItem); // 리스트에 항목 추가
+                totalPrice += item.bookPrice; // 총 가격 계산
+            });
+
+            localStorage.setItem('totalPrice', totalPrice);
+        } else {
+            cartItemCount.textContent = 0;
+            cartItemList.innerHTML = '<li class="list-group-item">장바구니에 항목이 없습니다.</li>';
+        }
+
+        totalPriceElement.textContent = totalPrice.toLocaleString() + '원';
+    });
+
     function execPostCode() {
         new daum.Postcode({
             oncomplete: function (data) {
@@ -150,10 +174,9 @@
                     document.getElementById("deliveryStreet").value = '';
                 }
 
-                // 우편번호와 주소 정보를 해당 필드에 넣는다.
                 document.getElementById('deliveryZipcode').value = data.zonecode;
                 document.getElementById('deliveryStreet').value = addr;
-                // 커서를 상세주소 필드로 이동한다.
+                // 커서를 상세주소 필드로 이동
                 document.getElementById("deliveryDetail").focus();
             }
         }).open();
@@ -186,9 +209,12 @@
 
     function request_pay() {
 
+        const cartItems = JSON.parse(localStorage.getItem('cartItems'));
+        const cartItemIds = cartItems.map(item => item.cartItemId);
+        const itemName = cartItems[0].bookTitle;
+        const price = localStorage.getItem('totalPrice');
+
         var merchantUid = '[[${form.merchantUid}]]';
-        var itemName = '[[${form.orderItems[0].bookTitle}]]';
-        var price = '[[${form.totalPrice}]]';
         var buyerName = '[[${form.userName}]]';
         var buyerEmail = '[[${form.userEmail}]]';
         var buyerPhone = '[[${form.userPhone}]]';
@@ -212,13 +238,68 @@
             },
             function (response) {
                 if (response.success) {
-                    alert("결제 성공");
-                    // 검증 후
-                    // 결제, 주문 정보 저장
-                } else {
-                    alert("결제 실패");
+                    alert("결제 요청 성공");
+                    // 금액 검증
+                    fetch('/payment/validate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            impUid: response.imp_uid,
+                            requestPrice: price
+                        })
+                    })
+                        .then(res=> {
+                            if (!res.ok) {
+                                return res.json().then(errorData => {
+                                    throw new Error(JSON.stringify(errorData));
+                                });
+                            }
+                            return res.json();
+                        })
+                        .then(data => {
+                            const payMethod = data.response.payMethod;
+                            const amount = data.response.amount;
+
+                            fetch(`/payment/complete/${merchantUid}`, {
+                                method: "POST",
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    cartItemIds: cartItemIds,
+                                    deliveryName: document.getElementById("deliveryName").value,
+                                    deliveryPhone: document.getElementById("deliveryPhone").value,
+                                    deliveryAddress: {
+                                        zipcode: document.getElementById("deliveryZipcode").value,
+                                        street: document.getElementById("deliveryStreet").value,
+                                        detail: document.getElementById("deliveryDetail").value,
+                                    },
+                                    amount: amount,
+                                    payMethod: payMethod
+                                }),
+                            })
+                                .then(response => {
+                                    if (!response.ok) {
+                                        return response.json().then(errorData => {
+                                            throw new Error(JSON.stringify(errorData));
+                                        });
+                                    }
+                                    // 로컬스토리지 비우기
+                                    localStorage.removeItem('cartItems');
+                                    localStorage.removeItem('totalPrice');
+
+                                    window.location.href = `/order/success/${merchantUid}`;
+                                })
+                                .catch(() => alert("결제 완료 처리 중 오류가 발생했습니다."));
+                        })
+                        .catch(error => {
+                            alert(error.message);
+                        });
                 }
-            });
+            }
+        )
     }
 
 </script>
