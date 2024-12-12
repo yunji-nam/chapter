@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}"
+      layout:fragment="content">
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div th:insert="~{common/sidebar_user::sidebar_user}" class="col-md-4 col-lg-3"></div>
+        <div class="col-md-8 ms-sm-auto col-lg-9">
+            <div class="mt-4 ms-3" style="max-width: 1000px; margin: 0 auto; padding: 0 15px;">
+                <h5>주문 목록</h5>
+                <table class="table table-striped text-center mt-4">
+                    <thead>
+
+                    <tr>
+                        <th scope="col">주문 번호</th>
+                        <th scope="col" class="col-wide">도서 정보</th>
+                        <th scope="col">주문 날짜</th>
+                        <th scope="col">주문 상태</th>
+                        <th scope="col">배송 상태</th>
+                        <th scope="col">취소</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr th:each="order : ${orders}">
+                        <td th:text="${order.merchantUid}"></td>
+                        <td>
+                            <ul style="list-style: none; padding: 0;">
+                                <li th:each="book : ${order.books}" style="margin-bottom: 10px;">
+                                    <div>
+                                        <strong th:text="${book.title}"></strong>
+                                        | <span th:text="${book.author}"></span>
+                                    </div>
+                                    <span th:text="${#numbers.formatInteger(book.price, 3, 'COMMA')} + '원'"></span>
+                                    | <span th:text="${book.quantity + '개'}"></span>
+                                </li>
+                            </ul>
+                        </td>
+                        <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd')}" class="col-wide"></td>
+                        <td th:text="${order.orderStatus}"></td>
+                        <td th:text="${order.deliveryStatus}"></td>
+                        <td>
+                            <form id="deleteForm_{order.id}" method="post"
+                                  th:action="@{/order/{orderId}(orderId=${order.id})}" style="display: none;">
+                                <input type="hidden" name="_method" value="DELETE"/>
+                            </form>
+                            <a href="#" class="btn btn-sm btn-danger"
+                               onclick="if(confirm('정말 취소하시겠습니까?')) document.getElementById('deleteForm').submit(); return false;">주문취소</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <!--        페이지네이션->-->
+                <ul class="pagination h-100 justify-content-center align-items-center">
+                    <li class="page-item" th:classappend="${orders.hasPrevious()} ? '' : 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/orders(pageNo=${orders.number - 1}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
+                           aria-label="Previous">
+                            &laquo;
+                        </a>
+                    </li>
+                    <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, orders.totalPages - 1)}"
+                        th:classappend="${pageNum == orders.number} ? 'active'">
+                        <a class="page-link"
+                           th:href="@{/orders(pageNo=${pageNum}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
+                           th:text="${pageNum + 1}"></a>
+                    </li>
+
+
+                    <li class="page-item" th:classappend="${orders.hasNext()} ? '' : 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/orders(pageNo=${orders.number + 1}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
+                           aria-label="Next">
+                            &raquo;
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</html>
