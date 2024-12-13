@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -51,18 +52,18 @@ public class CartService {
     public List<CartItemDto> getCart(User user) {
         Cart cart = findCart(user);
 
-        List<CartItem> items = cart.getItems();
-        List<CartItemDto> itemDtos = items.stream().map(CartItemDto::new).toList();
-        return itemDtos;
+        List<CartItem> items = cart.getItems().stream().sorted(Comparator.comparing(CartItem::getId).reversed()).toList();
+
+        return items.stream().map(CartItemDto::new).toList();
     }
 
     // 아이템 수량 수정
     @Transactional
     public void updateCartItemQuantity(CartDto dto, User user) {
         CartItem cartItem = cartItemRepository.findById(dto.getCartItemId())
-                        .orElseThrow(() -> new EntityNotFoundException("cart item을 찾을 수 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("cart item을 찾을 수 없습니다."));
         if (!cartItem.getCart().getUser().getId().equals(user.getId())) {
-                    throw new IllegalArgumentException("사용자가 다릅니다.");
+            throw new IllegalArgumentException("사용자가 다릅니다.");
         }
         cartItem.updateQuantity(dto.getQuantity());
     }

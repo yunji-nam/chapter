@@ -15,9 +15,8 @@ import com.siot.IamportRestClient.request.CancelData;
 import com.siot.IamportRestClient.request.PrepareData;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
-import groovy.util.logging.Slf4j;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -25,7 +24,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-@lombok.extern.slf4j.Slf4j
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -37,12 +35,12 @@ public class PaymentService {
     private final OrderRepository orderRepository;
 
     // 사전 검증
-    public ResponseEntity<ApiResponse> preparePayment(PaymentPrepareDto prepareDto) throws IamportResponseException, IOException {
+    public ApiResponse<String> preparePayment(PaymentPrepareDto prepareDto) throws IamportResponseException, IOException {
         BigDecimal amount = prepareDto.getAmount();
         PrepareData prepareData = new PrepareData(prepareDto.getMerchant_uid(), amount);
         iamportClient.postPrepare(prepareData);
         log.info("사전 검증 완료");
-        return ResponseEntity.ok(new ApiResponse("payment 사전 검증 완료"));
+        return new ApiResponse<>("payment 사전 검증 완료");
     }
 
     // 사후 검증
@@ -68,7 +66,7 @@ public class PaymentService {
         return new CancelData(response.getResponse().getImpUid(), true);
     }
 
-    public ResponseEntity<ApiResponse> completePayment(String merchantUid, User user, OrderRequestDto dto) {
+    public ApiResponse<String> completePayment(String merchantUid, User user, OrderRequestDto dto) {
         List<Long> cartItemIds = dto.getCartItemIds();
         List<CartItem> cartItems = cartItemRepository.findAllById(cartItemIds);
 
@@ -94,6 +92,6 @@ public class PaymentService {
         PaymentEntity payment = new PaymentEntity(amount, payMethod, order);
         paymentRepository.save(payment);
 
-        return ResponseEntity.ok(new ApiResponse("결제 완료"));
+        return new ApiResponse<>("결제 완료");
     }
 }

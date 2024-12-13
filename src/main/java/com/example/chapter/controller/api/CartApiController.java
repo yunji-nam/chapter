@@ -18,15 +18,15 @@ public class CartApiController {
     private final CartService cartService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse> addCartItem(@Valid @RequestBody CartDto dto,
+    public ApiResponse<String> addCartItem(@Valid @RequestBody CartDto dto,
                                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {
         cartService.addCartItem(dto, userDetails.getUser());
-        return ResponseEntity.ok(new ApiResponse("장바구니 추가 완료"));
+        return new ApiResponse<>("장바구니 추가 완료");
     }
 
     @PutMapping("/items")
-    public ResponseEntity<ApiResponse> updateCart(@Valid @RequestBody CartDto dto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ApiResponse<String> updateCart(@Valid @RequestBody CartDto dto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         cartService.updateCartItemQuantity(dto, userDetails.getUser());
-        return ResponseEntity.ok(new ApiResponse("장바구니 수량 업데이트 완료"));
+        return new ApiResponse<>("장바구니 수량 변경 완료");
     }
 }

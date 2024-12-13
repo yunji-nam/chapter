@@ -8,7 +8,8 @@
 <section class="py-5">
     <div class="container px-4 px-lg-5 my-5">
         <div class="row gx-4 gx-lg-5 align-items-center">
-            <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" th:src="@{${book.image}}" alt="Book Cover"/></div>
+            <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" th:src="@{${book.image}}" alt="Book Cover"/>
+            </div>
             <div class="col-md-6">
                 <h3 class="fw-bolder" th:text="${book.title}"></h3>
 
@@ -35,111 +36,14 @@
         </div>
     </div>
 </section>
-<!-- Related items-->
+<input type="hidden" id="bookId" th:value="${book.id}"/>
+
 <section class="py-5 bg-light">
-    <div class="container px-4 px-lg-5 mt-5">
-        <h2 class="fw-bolder mb-4">Related products</h2>
-        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-            <div class="col mb-5">
-                <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..."/>
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <!-- Product name-->
-                            <h5 class="fw-bolder">Fancy Product</h5>
-                            <!-- Product price-->
-                            $40.00 - $80.00
-                        </div>
-                    </div>
-                    <!-- Product actions-->
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">View options</a></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col mb-5">
-                <div class="card h-100">
-                    <!-- Sale badge-->
-                    <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale
-                    </div>
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..."/>
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <!-- Product name-->
-                            <h5 class="fw-bolder">Special Item</h5>
-                            <!-- Product reviews-->
-                            <div class="d-flex justify-content-center small text-warning mb-2">
-                                <div class="bi-star-fill"></div>
-                                <div class="bi-star-fill"></div>
-                                <div class="bi-star-fill"></div>
-                                <div class="bi-star-fill"></div>
-                                <div class="bi-star-fill"></div>
-                            </div>
-                            <!-- Product price-->
-                            <span class="text-muted text-decoration-line-through">$20.00</span>
-                            $18.00
-                        </div>
-                    </div>
-                    <!-- Product actions-->
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col mb-5">
-                <div class="card h-100">
-                    <!-- Sale badge-->
-                    <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale
-                    </div>
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..."/>
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <!-- Product name-->
-                            <h5 class="fw-bolder">Sale Item</h5>
-                            <!-- Product price-->
-                            <span class="text-muted text-decoration-line-through">$50.00</span>
-                            $25.00
-                        </div>
-                    </div>
-                    <!-- Product actions-->
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col mb-5">
-                <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..."/>
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <!-- Product name-->
-                            <h5 class="fw-bolder">Popular Item</h5>
-                            <!-- Product reviews-->
-                            <div class="d-flex justify-content-center small text-warning mb-2">
-                                <div class="bi-star-fill"></div>
-                                <div class="bi-star-fill"></div>
-                                <div class="bi-star-fill"></div>
-                                <div class="bi-star-fill"></div>
-                                <div class="bi-star-fill"></div>
-                            </div>
-                            <!-- Product price-->
-                            $40.00
-                        </div>
-                    </div>
-                    <!-- Product actions-->
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                    </div>
-                </div>
-            </div>
+    <div class="container px-4 px-lg-5">
+        <h6 class="fw-bolder mb-4">review</h6>
+        <div class="border-bottom mb-2"></div>
+        <div id="reviews" class="mb-4"></div>
+        <div id="pagination" class="d-flex justify-content-center mt-5">
         </div>
     </div>
 </section>
@@ -180,6 +84,81 @@
     });
 
     /*]]>*/
+
+    let pageNo = 0;
+    const size = 5;
+    const bookId = document.getElementById('bookId').value;
+
+    function loadReviews() {
+        fetch(`/api/book/${bookId}/reviews?pageNo=${pageNo}&size=${size}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.content) {
+                    renderReviews(data.content);
+                    updatePagination(data.page);
+                } else {
+                    console.error("리뷰 조회 실패:", data);
+                }
+            })
+            .catch(error => console.error("리뷰 조회 실패:", error));
+    }
+
+    function renderReviews(reviews) {
+        const reviewsContainer = document.getElementById("reviews");
+        reviewsContainer.innerHTML = reviews.map(review => `
+               <div class="review mb-3">
+                           <div class="d-flex align-items-center">
+                               <div class="rating" style="color: gold;">
+                                   ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
+                               </div>
+                               <div class="ms-3 flex-grow-1">${review.content}</div>
+                               <div class="ms-3">
+                                   <span>${review.username}</span> |
+                                   <span>${review.modifiedDate}</span>
+                               </div>
+                           </div>
+                       </div>
+            `).join('');
+    }
+
+    function updatePagination(data) {
+        const paginationContainer = document.getElementById("pagination");
+        console.log(data.totalPages);
+        console.log(data.number);
+        paginationContainer.innerHTML = `
+            <ul class="pagination h-100 justify-content-center align-items-center" style="margin-top: 20px;">
+                <!-- 이전 페이지 버튼 -->
+                <li class="page-item ${data.first ? 'disabled' : ''}">
+                    <a class="page-link" href="#" aria-label="Previous" onclick="changePage(${data.number - 1})">
+                        &laquo;
+                    </a>
+                </li>
+
+                <!-- 페이지 번호 버튼들 -->
+                ${Array.from({length: data.totalPages}).map((_, pageNo) => `
+                    <li class="page-item ${pageNo === data.number ? 'active' : ''}">
+                        <a class="page-link" href="#" onclick="changePage(${pageNo})">${pageNo + 1}</a>
+                    </li>
+                `).join('')}
+
+                <!-- 다음 페이지 버튼 -->
+                <li class="page-item ${data.last ? 'disabled' : ''}">
+                    <a class="page-link" href="#" aria-label="Next" onclick="changePage(${data.number + 1})">
+                        &raquo;
+                    </a>
+                </li>
+            </ul>
+        `;
+    }
+
+    function changePage(newPage) {
+        if (newPage < 0 || newPage >= data.totalPages) return;
+        pageNo = newPage;
+        loadReviews();
+    }
+
+    loadReviews();
+
 </script>
 </body>
 </html>

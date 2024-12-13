@@ -11,7 +11,6 @@ import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +26,7 @@ public class PaymentApiController {
     private final PaymentService paymentService;
 
     @PostMapping("/payment/prepare")
-    public ResponseEntity<ApiResponse> preparePayment(@RequestBody PaymentPrepareDto requestDto) throws IamportResponseException, IOException {
+    public ApiResponse<String> preparePayment(@RequestBody PaymentPrepareDto requestDto) throws IamportResponseException, IOException {
         return paymentService.preparePayment(requestDto);
     }
 
@@ -37,7 +36,7 @@ public class PaymentApiController {
     }
 
     @PostMapping("/payment/complete/{merchantUid}")
-    public ResponseEntity<ApiResponse> completePayment(@PathVariable String merchantUid, @AuthenticationPrincipal UserDetailsImpl userDetails,
+    public ApiResponse<String> completePayment(@PathVariable String merchantUid, @AuthenticationPrincipal UserDetailsImpl userDetails,
                                   @Valid @RequestBody OrderRequestDto dto) {
         return paymentService.completePayment(merchantUid, userDetails.getUser(), dto);
     }

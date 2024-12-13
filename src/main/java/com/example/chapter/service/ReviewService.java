@@ -2,12 +2,18 @@ package com.example.chapter.service;
 
 import com.example.chapter.dto.ReviewRegistrationDto;
 import com.example.chapter.dto.ReviewResponseDto;
-import com.example.chapter.entity.*;
+import com.example.chapter.entity.Book;
+import com.example.chapter.entity.Review;
+import com.example.chapter.entity.User;
 import com.example.chapter.repository.BookRepository;
 import com.example.chapter.repository.OrderRepository;
 import com.example.chapter.repository.ReviewRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,8 +43,9 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
-    public List<ReviewResponseDto> getReviews() {
-        return reviewRepository.findAllByOrderByModifiedDateDesc().stream().map(ReviewResponseDto::new).toList();
+    public Page<ReviewResponseDto> getReviews(Long bookId, int pageNo, int size) {
+        Pageable pageable = PageRequest.of(pageNo, size, Sort.by(Sort.Direction.DESC, "modifiedDate"));
+        return reviewRepository.findAllByBookId(bookId, pageable).map(ReviewResponseDto::new);
     }
 
     public List<ReviewResponseDto> getAllMyReviews(User user) {

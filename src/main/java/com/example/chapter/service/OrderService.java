@@ -23,6 +23,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final SecureRandom secureRandom = new SecureRandom();
+    private final PaymentService paymentService;
 
     // 주문 번호 생성
     public String generateOrderNumber() {

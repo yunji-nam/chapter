@@ -37,7 +37,4 @@ public class OrderItem {
         getBook().addStock(quantity);
     }
 
-    public int getTotalPrice() {
-        return getBook().getPrice() * getQuantity();
-    }
 }

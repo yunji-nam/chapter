@@ -55,8 +55,8 @@ public class ReviewController {
     // 리뷰 수정
     @PutMapping("/book/{bookId}/review/{reviewId}/edit")
     public String updateReview(@PathVariable Long bookId, @PathVariable Long reviewId,
-                             @Valid ReviewRegistrationDto dto,
-                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                               @Valid ReviewRegistrationDto dto,
+                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
         reviewService.updateReview(reviewId, dto, userDetails.getUser());
         return "redirect:/book/" + bookId + "/review/" + reviewId;
     }
@@ -69,10 +69,12 @@ public class ReviewController {
         return "redirect:/book/" + bookId;
     }
 
-    @GetMapping("/reviews")
+    // 내가 쓴 리뷰 목록
+    @GetMapping("/book/reviews")
     public String getAllMyReviews(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
         List<ReviewResponseDto> MyReviews = reviewService.getAllMyReviews(userDetails.getUser());
         model.addAttribute("reviews", MyReviews);
         return "review/list";
     }
+
 }

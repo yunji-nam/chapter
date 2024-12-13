@@ -39,7 +39,7 @@ public class SecurityConfig {
         //경로별 인가 작업
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/login", "/", "/join", "/css/**", "/images/**",
-                        "/kakao/**", "/admin/join", "/books").permitAll()
+                        "/kakao/**", "/admin/join", "/books", "/api/**").permitAll()
                 .requestMatchers(GET, "/book/**").permitAll()
                 .requestMatchers(GET, "/search").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
