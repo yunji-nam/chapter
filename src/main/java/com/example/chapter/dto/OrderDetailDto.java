@@ -12,18 +12,21 @@ import java.util.stream.Collectors;
 public class OrderDetailDto {
 
     private Long id;
+    private String merchantUid;
     private List<OrderBookInfo> books;
     private int totalPrice;
     private OrderStatus orderStatus;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime orderDate;
     private DeliveryStatus deliveryStatus;
-    private String userName;
+    private String username;
     private String phone;
-    private Address address;
+    private String streetAddress;
+    private String detailAddress;
 
     public OrderDetailDto(Order order) {
         this.id = order.getId();
+        this.merchantUid = order.getMerchantUid();
         this.books = order.getItems().stream()
             .map(OrderBookInfo::new)
             .collect(Collectors.toList());
@@ -33,9 +36,10 @@ public class OrderDetailDto {
         this.orderStatus = order.getStatus();
         this.orderDate = order.getOrderDate();
         this.deliveryStatus = order.getDelivery().getStatus();
-        this.userName = order.getUser().getName();
+        this.username = order.getUser().getName();
         this.phone = order.getUser().getPhone();
-        this.address = order.getDelivery().getAddress();
+        this.streetAddress = order.getDelivery().getAddress().getStreet();
+        this.detailAddress = order.getDelivery().getAddress().getDetail();
     }
 
 }

@@ -11,14 +11,14 @@ import lombok.Setter;
 @NoArgsConstructor
 public class OrderFormDto {
     private String merchantUid;
-    private String userName;
+    private String username;
     private String userEmail;
     private String userPhone;
     private Address userAddress;
 
     public OrderFormDto(String merchantUid, User user) {
         this.merchantUid = merchantUid;
-        this.userName = user.getName();
+        this.username = user.getName();
         this.userEmail = user.getEmail();
         this.userPhone = user.getPhone();
         this.userAddress = user.getAddress();

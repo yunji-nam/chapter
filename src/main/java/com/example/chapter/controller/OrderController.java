@@ -50,12 +50,11 @@ public class OrderController {
                             @RequestParam(required = false) LocalDateTime startDate,
                             @RequestParam(required = false) LocalDateTime endDate,
                             @RequestParam(defaultValue = "0") int pageNo,
-                            @RequestParam(defaultValue = "2") int size,
+                            @RequestParam(defaultValue = "1") int size,
                             Model model) {
         Page<OrderListDto> orders = orderService.getOrders(userDetails.getUser(), startDate, endDate, pageNo, size);
 
         model.addAttribute("orders", orders);
-        model.addAttribute("currentPage", pageNo);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
 

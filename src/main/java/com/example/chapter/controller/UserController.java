@@ -65,8 +65,6 @@ public class UserController {
 
     @GetMapping("/user/me")
     public String getMyPage(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
-        userService.getMyPage(userDetails.getUser());
-        model.addAttribute("username", userDetails.getUser().getName());
         return "user/myPage";
     }
 

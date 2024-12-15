@@ -38,7 +38,7 @@
                         </div>
                         <hr class="my-4">
 
-                        <input type="hidden" id="userName" th:value="${form.userName}">
+                        <input type="hidden" id="username" th:value="${form.username}">
                         <input type="hidden" id="userPhone" th:value="${form.userPhone}">
                         <input type="hidden" id="userZipcode" th:value="${form.userAddress.zipcode}">
                         <input type="hidden" id="userStreetAddress" th:value="${form.userAddress.street}">
@@ -184,13 +184,13 @@
 
     document.getElementById("same-address").addEventListener("change", function () {
         if (this.checked) {
-            const userName = document.getElementById("userName").value;
+            const username = document.getElementById("username").value;
             const userPhone = document.getElementById("userPhone").value;
             const userZipcode = document.getElementById("userZipcode").value;
             const userStreetAddress = document.getElementById("userStreetAddress").value;
             const userDetailAddress = document.getElementById("userDetailAddress").value;
 
-            document.getElementById("deliveryName").value = userName;
+            document.getElementById("deliveryName").value = username;
             document.getElementById("deliveryPhone").value = userPhone;
             document.getElementById("deliveryZipcode").value = userZipcode;
             document.getElementById("deliveryStreet").value = userStreetAddress;
@@ -215,7 +215,7 @@
         const price = localStorage.getItem('totalPrice');
 
         var merchantUid = '[[${form.merchantUid}]]';
-        var buyerName = '[[${form.userName}]]';
+        var buyerName = '[[${form.username}]]';
         var buyerEmail = '[[${form.userEmail}]]';
         var buyerPhone = '[[${form.userPhone}]]';
         var buyerAddress = '[[${form.userAddress.street}]]' + ' ' + '[[${form.userAddress.detail}]]';

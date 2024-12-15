@@ -64,4 +64,8 @@ public class Order {
         }
     }
 
+    public void updateStatus(OrderStatus status) {
+        this.status = status;
+    }
+
 }
