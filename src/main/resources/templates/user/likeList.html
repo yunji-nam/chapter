@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      layout:decorate="~{common/layout}"
+      layout:fragment="content">
+
+<div class="container-fluid">
+    <div class="row">
+        <div th:insert="~{common/sidebar_user::sidebar_user}" class="col-md-4 col-lg-3"></div>
+        <div class="col-md-8 ms-sm-auto col-lg-9">
+            <div class="container mt-4 ms-3">
+                <h6>좋아요 목록</h6>
+                <div class="row mt-3">
+                    <div class="col-md-6" th:each="book : ${likeList}">
+                        <div class="card">
+                          <a th:href="@{'/book/' + ${book.id}}">
+                            <img th:src="@{${book.image}}" class="card-img-top" alt="book cover">
+                          </a>
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <p class="card-text" th:href="@{'/book/' + ${book.id}}" th:text="${book.title} + ' | ' + ${book.author}"></p>
+                                </div>
+                                <p class="card-text"
+                                   th:text="${#numbers.formatInteger(book.price, 3, 'COMMA')} + '원'"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

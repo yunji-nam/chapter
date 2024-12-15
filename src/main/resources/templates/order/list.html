@@ -18,8 +18,7 @@
                         <th scope="col">주문 번호</th>
                         <th scope="col" class="col-wide">도서 정보</th>
                         <th scope="col">주문 날짜</th>
-                        <th scope="col">주문 상태</th>
-                        <th scope="col">배송 상태</th>
+                        <th scope="col">진행 상태</th>
                         <th scope="col">취소</th>
 
                     </tr>
@@ -27,7 +26,9 @@
                     <tbody>
 
                     <tr th:each="order : ${orders}">
-                        <td th:text="${order.merchantUid}"></td>
+                        <td>
+                            <a th:href="@{/order/{orderId}(orderId=${order.id})}" th:text="${order.merchantUid}"></a>
+                        </td>
                         <td>
                             <ul style="list-style: none; padding: 0;">
                                 <li th:each="book : ${order.books}" style="margin-bottom: 10px;">
@@ -41,8 +42,7 @@
                             </ul>
                         </td>
                         <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd')}" class="col-wide"></td>
-                        <td th:text="${order.orderStatus}"></td>
-                        <td th:text="${order.deliveryStatus}"></td>
+                        <td th:text="${order.deliveryStatus != null ? order.deliveryStatus : order.orderStatus}"></td>
                         <td>
                             <form id="deleteForm_{order.id}" method="post"
                                   th:action="@{/order/{orderId}(orderId=${order.id})}" style="display: none;">

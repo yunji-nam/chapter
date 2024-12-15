@@ -1,5 +1,6 @@
 package com.example.chapter.service;
 
+import com.example.chapter.dto.BookListDto;
 import com.example.chapter.entity.Book;
 import com.example.chapter.entity.Like;
 import com.example.chapter.entity.User;
@@ -8,6 +9,8 @@ import com.example.chapter.repository.LikeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +39,12 @@ public class LikeService {
         } else {
             throw new IllegalArgumentException("좋아요가 존재하지 않습니다.");
         }
+    }
+
+    public List<BookListDto> getLikeList(User user) {
+        List<Like> likeList = likeRepository.findAllByUserId(user.getId());
+        List<Book> bookList = likeList.stream().map(Like::getBook).toList();
+        return bookList.stream().map(BookListDto::new).toList();
     }
 
     private Book getBookById(Long bookId) {

@@ -6,7 +6,7 @@
 
 <body>
 <section class="py-5">
-    <div class="container px-4 px-lg-5 my-5">
+    <div class="container-fluid px-4 px-lg-5 my-5" style="max-width: 800px; margin: 0 auto;">
         <div class="row gx-4 gx-lg-5 align-items-center">
             <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" th:src="@{${book.image}}" alt="Book Cover"/>
             </div>
@@ -25,6 +25,9 @@
                 </div>
                 <p class="lead" th:text="${book.description}"></p>
                 <div class="d-flex">
+                    <button id="likeButton" class="btn btn-outline-danger">
+                        <i id="heartIcon" class="bi bi-heart"></i>
+                    </button>
                     <input class="form-control text-center me-3" id='inputQuantity' type="number" value="1"
                            style="max-width: 4rem"/>
                     <button class="btn btn-outline-dark flex-shrink-0" type="button" id="addToCart">
@@ -84,6 +87,48 @@
     });
 
     /*]]>*/
+
+    let isLiked = false;
+
+    document.getElementById('likeButton').addEventListener('click', function () {
+        const heartIcon = document.getElementById('heartIcon');
+
+        if (!isLiked) {
+            fetch(`/api/book/${bookId}/like`, {
+                method: 'POST',
+            })
+                .then(response => {
+                    if (response.status === 401) {
+                        alert("로그인이 필요합니다.");
+                        window.location.href = '/login';
+                        return;
+                    }
+                    if (!response.ok) {
+                        throw new Error('좋아요 요청 실패');
+                    }
+                    heartIcon.classList.remove('bi-heart');
+                    heartIcon.classList.add('bi-heart-fill');
+                    heartIcon.style.color = 'red';
+                    isLiked = true;
+                })
+                .catch(error => console.error('API 호출 오류:', error));
+        } else {
+            // 좋아요가 이미 눌려있다면 좋아요 취소
+            fetch(`/api/book/${bookId}/like`, {
+                method: 'DELETE',
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('좋아요 취소 요청 실패');
+                    }
+                    heartIcon.classList.remove('bi-heart-fill');
+                    heartIcon.classList.add('bi-heart');
+                    heartIcon.style.color = '';
+                    isLiked = false;
+                })
+                .catch(error => console.error('API 호출 오류:', error));
+        }
+    });
 
     let pageNo = 0;
     const size = 5;

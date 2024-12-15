@@ -5,8 +5,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static jakarta.persistence.FetchType.LAZY;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -16,7 +14,7 @@ public class Delivery {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "delivery", fetch = LAZY)
+    @OneToOne(mappedBy = "delivery")
     private Order order;
 
     @Embedded
@@ -35,7 +33,6 @@ public class Delivery {
         this.address = address;
         this.name = name;
         this.phone = phone;
-        this.status = DeliveryStatus.READY;
     }
 
     public void addTrackingNumber(String trackingNumber) {
@@ -45,6 +42,10 @@ public class Delivery {
         } else {
             throw new IllegalStateException("운송장 번호가 이미 등록되어 있습니다.");
         }
+    }
+
+    public void updateDeliveryStatus(DeliveryStatus status) {
+        this.status = status;
     }
 
 }
