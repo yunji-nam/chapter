@@ -2,9 +2,7 @@ package com.example.chapter.service;
 
 import com.example.chapter.dto.ReviewRegistrationDto;
 import com.example.chapter.dto.ReviewResponseDto;
-import com.example.chapter.entity.Book;
-import com.example.chapter.entity.Review;
-import com.example.chapter.entity.User;
+import com.example.chapter.entity.*;
 import com.example.chapter.repository.BookRepository;
 import com.example.chapter.repository.OrderRepository;
 import com.example.chapter.repository.ReviewRepository;
@@ -31,16 +29,22 @@ public class ReviewService {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("책을 찾을 수 없습니다."));
 
-//        boolean isReviewable = orderRepository.existsByUserIdAndItemsBookIdAndStatusAndDeliveryStatus(user.getId(), book.getId(), OrderStatus.ORDER, DeliveryStatus.DELIVERED);
-//        if (!isReviewable) {
-//            throw new IllegalArgumentException("리뷰 작성이 불가합니다.");
-//        }
+        if (!isReviewable(user, book.getId())) {
+            throw new IllegalArgumentException("리뷰 작성 불가합니다.");
+        }
 
         String content = dto.getContent();
         int rating = dto.getRating();
 
         Review review = new Review(content, rating, book, user);
         reviewRepository.save(review);
+    }
+
+    public boolean isReviewable(User user, Long bookId) {
+        boolean checkOrder = orderRepository.existsByUserIdAndItemsBookIdAndOrderStatusAndDeliveryStatus(user.getId(), bookId, OrderStatus.PAID, DeliveryStatus.DELIVERED);
+        boolean hasReview = reviewRepository.existsByBookIdAndUserId(bookId, user.getId());
+
+        return checkOrder && !hasReview;
     }
 
     public Page<ReviewResponseDto> getReviews(Long bookId, int pageNo, int size) {

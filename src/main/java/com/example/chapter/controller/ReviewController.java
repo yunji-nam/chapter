@@ -21,7 +21,9 @@ public class ReviewController {
 
     // 리뷰 등록 폼
     @GetMapping("/book/{bookId}/review")
-    public String addReviewForm(@PathVariable Long bookId, Model model) {
+    public String addReviewForm(@PathVariable Long bookId, @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                Model model) {
+
         model.addAttribute("form", new ReviewRegistrationDto());
         return "review/add";
     }
@@ -32,7 +34,7 @@ public class ReviewController {
                             @Valid ReviewRegistrationDto dto,
                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         reviewService.addReview(bookId, dto, userDetails.getUser());
-        return "redirect:/book/" + bookId;
+        return "redirect:/book/reviews";
     }
 
     // 리뷰 조회

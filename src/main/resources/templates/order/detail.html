@@ -10,56 +10,59 @@
         <div th:insert="~{common/sidebar_user::sidebar_user}" class="col-md-4 col-lg-3"></div>
         <div class="col-md-8 ms-sm-auto col-lg-9">
             <div class="mt-4 ms-3" style="max-width: 700px; margin: 0 auto; padding: 0 15px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold; color: gray">
                     <div>
                         <span>주문 번호</span>
                         <span th:text="${order.merchantUid}"></span>
                     </div>
                     <div>
                         <span>주문 일시</span>
-                        <span th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:MM:SS')}" style="color: gray"></span>
+                        <span th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
                     </div>
                 </div>
-                <table class="table table-striped text-center mt-4">
+                <table class="table text-center mt-4">
                     <thead>
 
                     <tr>
                         <th scope="col" style="width: 50%;">도서 정보</th>
-                        <th scope="col" style="width: 25%;">진행 상태</th>
-                        <th scope="col" style="width: 25%;">취소</th>
+                        <th scope="col" style="width: 10%;">수량</th>
+                        <th scope="col" style="width: 20%;">진행 상태</th>
+                        <th scope="col" style="width: 20%;">취소</th>
 
                     </tr>
                     </thead>
                     <tbody>
 
-                    <tr th:each="orderItems : ${order}">
+                    <tr th:each="orderItems : ${order.books}">
                         <td>
                             <ul style="list-style: none; padding: 0;">
-                                <li th:each="book : ${orderItems.books}" style="margin-bottom: 10px;">
-                                    <img th:src="${book.image}" alt="book cover" style="width: 50px; height: 75px; margin-right: 10px;"/>
+                                <li style="margin-bottom: 10px;">
+                                    <img th:src="${orderItems.image}" alt="book cover"
+                                         style="width: 50px; height: 75px; margin-right: 10px;"/>
                                     <div>
-                                        <strong th:text="${book.title}"></strong>
-                                        | <span th:text="${book.author}"></span>
+                                        <strong th:text="${orderItems.title}"></strong>
+                                        | <span th:text="${orderItems.author}"></span>
                                     </div>
-                                    <span th:text="${#numbers.formatInteger(book.price, 3, 'COMMA')} + '원'"></span>
-                                    | <span th:text="${book.quantity + '개'}"></span>
+                                    <span th:text="${#numbers.formatInteger(orderItems.price, 3, 'COMMA')} + '원'"></span>
                                 </li>
                             </ul>
                         </td>
-                        <td th:text="${orderItems.deliveryStatus != null ? orderItems.deliveryStatus : orderItems.orderStatus}"></td>
+                        <td th:text="${orderItems.quantity + '개'}"></td>
+                        <td th:text="${order.deliveryStatus != null ? order.deliveryStatus : order.orderStatus}"></td>
                         <td>
-                            <form id="deleteForm_{orderItems.id}" method="post"
-                                  th:action="@{/order/{orderId}(orderId=${orderItems.id})}" style="display: none;">
+                            <form id="deleteForm_{order.id}" method="post"
+                                  th:action="@{/order/{orderId}(orderId=${order.id})}" style="display: none;">
                                 <input type="hidden" name="_method" value="DELETE"/>
                             </form>
                             <a href="#" class="btn btn-sm btn-danger"
-                               onclick="if(confirm('정말 취소하시겠습니까?')) document.getElementById('deleteForm').submit(); return false;">주문취소</a>
+                               onclick="if(confirm('정말 취소하시겠습니까?')) document.getElementById('deleteForm_{order.id}').submit(); return false;">주문취소</a>
                         </td>
                     </tr>
 
+
                     </tbody>
                 </table>
-                <div style="display: flex; justify-content: flex-end; align-items: center; margin-top: 13px; margin-bottom: 20px; font-size: 18px; font-weight: bold; color: coral">
+                <div style="display: flex; justify-content: flex-end; align-items: center; margin-top: 13px; margin-bottom: 25px; font-size: 18px; font-weight: bold; color: coral">
                     <span>총 결제 금액 </span>
                     <span th:text="${#numbers.formatInteger(order.totalPrice, 3, 'COMMA')} + ' 원'"
                           style="margin-left: 10px;"></span>

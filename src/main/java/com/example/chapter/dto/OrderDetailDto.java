@@ -24,12 +24,10 @@ public class OrderDetailDto {
     private String streetAddress;
     private String detailAddress;
 
-    public OrderDetailDto(Order order) {
+    public OrderDetailDto(Order order, List<OrderBookInfo> books) {
         this.id = order.getId();
         this.merchantUid = order.getMerchantUid();
-        this.books = order.getItems().stream()
-            .map(OrderBookInfo::new)
-            .collect(Collectors.toList());
+        this.books = books;
         this.totalPrice = books.stream()
             .mapToInt(book -> book.getPrice() * book.getQuantity())
             .sum();
@@ -40,6 +38,10 @@ public class OrderDetailDto {
         this.phone = order.getUser().getPhone();
         this.streetAddress = order.getDelivery().getAddress().getStreet();
         this.detailAddress = order.getDelivery().getAddress().getDetail();
+    }
+
+    public List<Integer> getQuantities() {
+        return books.stream().map(OrderBookInfo::getQuantity).collect(Collectors.toList());
     }
 
 }

@@ -11,13 +11,15 @@ public class OrderBookInfo {
     private String image;
     private int price;
     private int quantity;
+    private boolean reviewable;
 
-    public OrderBookInfo(OrderItem orderItem) {
+    public OrderBookInfo(OrderItem orderItem, boolean reviewable) {
         this.bookId = orderItem.getBook().getId();
         this.title = orderItem.getBook().getTitle();
         this.author = orderItem.getBook().getAuthor();
         this.image = orderItem.getBook().getImage();
         this.price = orderItem.getBook().getPrice();
         this.quantity = orderItem.getQuantity();
+        this.reviewable = reviewable;
     }
 }

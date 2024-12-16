@@ -17,7 +17,7 @@ public class DeliveryAdminController {
     @PostMapping("/{orderId}/tracking")
     public String registerTrackingNumber(@PathVariable Long orderId, TrackingNumberDto dto) {
         deliveryService.registerTrackingNumber(orderId, dto);
-        return "redirect:/admin/delivery/list";
+        return "redirect:/admin/orders";
     }
 
     @PutMapping("/{orderId}/status")

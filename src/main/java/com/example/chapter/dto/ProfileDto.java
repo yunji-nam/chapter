@@ -9,13 +9,13 @@ import lombok.Setter;
 @Setter
 public class ProfileDto {
 
-    private String name;
+    private String username;
     private String email;
     private String phone;
     private Address address;
 
     public ProfileDto(User user) {
-        this.name = user.getName();
+        this.username = user.getName();
         this.email = user.getEmail();
         this.phone = user.getPhone();
         this.address = user.getAddress();

@@ -26,6 +26,7 @@ public class DeliveryService {
     }
 
     // 배송상태 업데이트
+    @Transactional
     public void updateDeliveryStatus(Long orderId, DeliveryStatus status) {
         Delivery delivery = findDelivery(orderId);
         delivery.updateDeliveryStatus(status);

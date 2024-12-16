@@ -3,6 +3,7 @@ package com.example.chapter.controller;
 import com.example.chapter.dto.OrderDetailDto;
 import com.example.chapter.dto.OrderFormDto;
 import com.example.chapter.dto.OrderListDto;
+import com.example.chapter.entity.Order;
 import com.example.chapter.entity.User;
 import com.example.chapter.security.UserDetailsImpl;
 import com.example.chapter.service.OrderService;
@@ -40,7 +41,6 @@ public class OrderController {
                            @AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
         OrderDetailDto dto = orderService.getOrder(orderId, userDetails.getUser());
         model.addAttribute("order", dto);
-
         return "order/detail";
     }
 
@@ -68,11 +68,12 @@ public class OrderController {
         return "redirect:/orders";
     }
 
+    // 주문 성공
     @GetMapping("/order/success/{merchantUid}")
-    public String successOrder(@PathVariable String merchantUid, @AuthenticationPrincipal UserDetailsImpl userDetails,
-                               Model model) {
-        model.addAttribute("merchantUid", merchantUid);
-        model.addAttribute("user", userDetails.getUser());
+    public String successOrder(@PathVariable String merchantUid, Model model) {
+        Order order = orderService.findOrderByMerchantUid(merchantUid);
+        OrderFormDto orderFormDto = new OrderFormDto(order);
+        model.addAttribute("order", orderFormDto);
         return "order/success";
     }
 }

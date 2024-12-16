@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}"
+      layout:fragment="content">
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div th:insert="~{common/sidebar_admin::sidebar_admin}" class="col-md-4 col-lg-3"></div>
+        <div class="col-md-8 ms-sm-auto col-lg-9">
+            <div class="mt-4 ms-3" style="max-width: 1000px; margin: 0 auto; padding: 0 15px;">
+                <h5>주문 목록</h5>
+                <table class="table table-striped text-center mt-4">
+                    <thead>
+
+                    <tr>
+                        <th scope="col">주문 번호</th>
+                        <th scope="col">도서 정보</th>
+                        <th scope="col">주문 날짜</th>
+                        <th scope="col">주문 상태</th>
+                        <th scope="col">배송 상태</th>
+                        <th scope="col">취소</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr th:each="order : ${orders}">
+                        <td>
+                            <a th:href="@{/order/{orderId}(orderId=${order.id})}" th:text="${order.merchantUid}"></a>
+                        </td>
+                        <td>
+                            <ul style="list-style: none; padding: 0;">
+                                <li th:each="book : ${order.books}" style="margin-bottom: 10px;">
+                                    <div>
+                                        <strong th:text="${book.title}"></strong>
+                                        | <span th:text="${book.author}"></span>
+                                    </div>
+                                    <span th:text="${#numbers.formatInteger(book.price, 3, 'COMMA')} + '원'"></span>
+                                    | <span th:text="${book.quantity + '개'}"></span>
+                                </li>
+                            </ul>
+                        </td>
+                        <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd')}" class="col-wide"></td>
+                        <td>
+                            <form method="post" th:action="@{/admin/order/{orderId}/status(orderId=${order.id})}">
+                                <input type="hidden" name="_method" value="PUT"/>
+                                <label>
+                                    <select name="status" th:value="${order.orderStatus.toString()}"
+                                            class="form-select">
+                                        <option value="PAID" th:text="'결제완료'"
+                                                th:selected="${order.orderStatus.name() == 'PAID'}"></option>
+                                        <option value="CANCEL" th:text="'취소'"
+                                                th:selected="${order.orderStatus.name() == 'CANCEL'}"></option>
+                                    </select>
+                                </label>
+                                <button type="submit" class="btn btn-info btn-sm">변경</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form method="post" th:action="@{/admin/delivery/{orderId}/status(orderId=${order.id})}">
+                                <input type="hidden" name="_method" value="PUT"/>
+                                <label>
+                                    <select name="status"
+                                            th:value="${order.deliveryStatus != null ? order.deliveryStatus.toString() : ''}"
+                                            class="form-select">
+                                        <option value="" th:text="'선택'"
+                                                th:selected="${order.deliveryStatus == null}"></option>
+                                        <option value="READY" th:text="'배송준비중'"
+                                                th:selected="${order.deliveryStatus != null && order.deliveryStatus.name() == 'READY'}"></option>
+                                        <option value="SHIPPING" th:text="'배송중'"
+                                                th:selected="${order.deliveryStatus != null && order.deliveryStatus.name() == 'SHIPPING'}"></option>
+                                        <option value="DELIVERED" th:text="'배송완료'"
+                                                th:selected="${order.deliveryStatus != null && order.deliveryStatus.name() == 'DELIVERED'}"></option>
+                                    </select>
+                                </label>
+                                <button type="submit" class="btn btn-info btn-sm">변경</button>
+                            </form>
+                        </td>
+
+                        <td>
+                            <form method="post" th:action="@{/order/{orderId}(orderId=${order.id})}">
+                                <input type="hidden" name="_method" value="DELETE"/>
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('정말 주문을 취소시키겠습니까?')">취소
+                                </button>
+                            </form>
+                        </td>
+
+                    </tr>
+                    </tbody>
+                </table>
+
+                <!--        페이지네이션->-->
+                <ul class="pagination h-100 justify-content-center align-items-center">
+                    <li class="page-item" th:classappend="${orders.hasPrevious()} ? '' : 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/orders(pageNo=${orders.number - 1}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
+                           aria-label="Previous">
+                            &laquo;
+                        </a>
+                    </li>
+                    <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, orders.totalPages - 1)}"
+                        th:classappend="${pageNum == orders.number} ? 'active'">
+                        <a class="page-link"
+                           th:href="@{/orders(pageNo=${pageNum}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
+                           th:text="${pageNum + 1}"></a>
+                    </li>
+
+
+                    <li class="page-item" th:classappend="${orders.hasNext()} ? '' : 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/orders(pageNo=${orders.number + 1}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
+                           aria-label="Next">
+                            &raquo;
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</html>
