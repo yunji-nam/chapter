@@ -3,7 +3,7 @@ package com.example.chapter.dto;
 import com.example.chapter.entity.Review;
 import lombok.Getter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 public class ReviewResponseDto {
@@ -14,15 +14,17 @@ public class ReviewResponseDto {
     private String username;
     private String content;
     private int rating;
-    private LocalDate modifiedDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
 
     public ReviewResponseDto(Review review) {
         this.id = review.getId();
-        this.bookId = review.getBook().getId();
-        this.bookTitle = review.getBook().getTitle();
+        this.bookId = review.getOrderItem().getBook().getId();
+        this.bookTitle = review.getOrderItem().getBook().getTitle();
         this.username = review.getUser().getName();
         this.content = review.getContent();
         this.rating = review.getRating();
+        this.createdDate = review.getCreatedDate();
         this.modifiedDate = review.getModifiedDate();
     }
 }

@@ -1,12 +1,15 @@
 package com.example.chapter.service;
 
+import com.example.chapter.dto.BookDetailDto;
 import com.example.chapter.dto.BookListDto;
 import com.example.chapter.dto.BookRegistrationDto;
-import com.example.chapter.dto.BookDetailDto;
+import com.example.chapter.dto.ReviewResponseDto;
 import com.example.chapter.entity.Book;
 import com.example.chapter.entity.Category;
+import com.example.chapter.entity.Review;
 import com.example.chapter.entity.User;
 import com.example.chapter.repository.BookRepository;
+import com.example.chapter.repository.ReviewRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,11 +19,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final ReviewRepository reviewRepository;
 //    private final S3Service s3Service;
 
     // 도서 등록
@@ -52,7 +58,9 @@ public class BookService {
     // 도서 상세 조회
     public BookDetailDto getBook(Long id) {
         Book book = findBook(id);
-        return new BookDetailDto(book);
+        List<Review> reviews = reviewRepository.findAllByBookId(id);
+        List<ReviewResponseDto> reviewResponseDto = reviews.stream().map(ReviewResponseDto::new).toList();
+        return new BookDetailDto(book, reviewResponseDto);
     }
 
     // 도서 수정

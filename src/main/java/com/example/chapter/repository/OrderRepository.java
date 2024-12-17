@@ -16,5 +16,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Page<Order> findByOrderDateBetween(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
     Optional<Order> findByMerchantUid(String merchantUid);
 
-    boolean existsByUserIdAndItemsBookIdAndOrderStatusAndDeliveryStatus(Long userId, Long bookId, OrderStatus orderStatus, DeliveryStatus deliveryStatus);
+    boolean existsByIdAndUserIdAndItemsIdAndStatusAndDeliveryStatus(Long orderId, Long userId, Long orderItemId, OrderStatus orderStatus, DeliveryStatus deliveryStatus);
 }

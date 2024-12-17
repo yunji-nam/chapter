@@ -48,7 +48,7 @@
                                   th:action="@{/order/{orderId}(orderId=${order.id})}" style="display: none;">
                                 <input type="hidden" name="_method" value="DELETE"/>
                             </form>
-                            <a href="#" class="btn btn-sm btn-danger"
+                            <a href="#" class="btn btn-sm btn-outline-dark"
                                onclick="if(confirm('정말 취소하시겠습니까?')) document.getElementById('deleteForm').submit(); return false;">주문취소</a>
                         </td>
                     </tr>

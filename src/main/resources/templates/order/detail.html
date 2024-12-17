@@ -24,10 +24,11 @@
                     <thead>
 
                     <tr>
-                        <th scope="col" style="width: 50%;">도서 정보</th>
+                        <th scope="col" style="width: 30%;">도서 정보</th>
                         <th scope="col" style="width: 10%;">수량</th>
-                        <th scope="col" style="width: 20%;">진행 상태</th>
+                        <th scope="col" style="width: 15%;">진행 상태</th>
                         <th scope="col" style="width: 20%;">취소</th>
+                        <th scope="col" style="width: 15%;">리뷰</th>
 
                     </tr>
                     </thead>
@@ -54,8 +55,22 @@
                                   th:action="@{/order/{orderId}(orderId=${order.id})}" style="display: none;">
                                 <input type="hidden" name="_method" value="DELETE"/>
                             </form>
-                            <a href="#" class="btn btn-sm btn-danger"
-                               onclick="if(confirm('정말 취소하시겠습니까?')) document.getElementById('deleteForm_{order.id}').submit(); return false;">주문취소</a>
+                            <button type="button" class="btn btn-sm btn-outline-dark"
+                                    onclick="if(confirm('정말 취소하시겠습니까?')) document.getElementById('deleteForm_{order.id}').submit(); return false;">
+                                주문취소
+                            </button>
+                        </td>
+                        <td th:switch="${orderItems.reviewStatus != null ? orderItems.reviewStatus.name() : 'NOT_ALLOWED'}">
+                            <a th:case="'CAN_WRITE'" class="btn btn-sm btn-primary"
+                                    th:href="@{/book/{orderItemId}/review(orderItemId=${orderItems.orderItemId})}">
+                                작성하기
+                            </a>
+                            <button th:case="'COMPLETED'" class="btn btn-sm btn-secondary" disabled>
+                                작성완료
+                            </button>
+                            <button th:case="'NOT_ALLOWED'" class="btn btn-sm btn-secondary" disabled>
+                                작성불가
+                            </button>
                         </td>
                     </tr>
 

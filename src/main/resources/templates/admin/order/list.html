@@ -80,9 +80,9 @@
                         </td>
 
                         <td>
-                            <form method="post" th:action="@{/order/{orderId}(orderId=${order.id})}">
+                            <form method="post" th:action="@{/order/{orderId}(orderId=${order.id})}" >
                                 <input type="hidden" name="_method" value="DELETE"/>
-                                <button type="submit" class="btn btn-sm btn-danger"
+                                <button type="submit" class="btn btn-sm btn-outline-danger"
                                         onclick="return confirm('정말 주문을 취소시키겠습니까?')">취소
                                 </button>
                             </form>
@@ -96,7 +96,7 @@
                 <ul class="pagination h-100 justify-content-center align-items-center">
                     <li class="page-item" th:classappend="${orders.hasPrevious()} ? '' : 'disabled'">
                         <a class="page-link"
-                           th:href="@{/orders(pageNo=${orders.number - 1}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
+                           th:href="@{/admin/orders(pageNo=${orders.number - 1}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
                            aria-label="Previous">
                             &laquo;
                         </a>
@@ -104,14 +104,12 @@
                     <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, orders.totalPages - 1)}"
                         th:classappend="${pageNum == orders.number} ? 'active'">
                         <a class="page-link"
-                           th:href="@{/orders(pageNo=${pageNum}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
+                           th:href="@{/admin/orders(pageNo=${pageNum}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
                            th:text="${pageNum + 1}"></a>
                     </li>
-
-
                     <li class="page-item" th:classappend="${orders.hasNext()} ? '' : 'disabled'">
                         <a class="page-link"
-                           th:href="@{/orders(pageNo=${orders.number + 1}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
+                           th:href="@{/admin/orders(pageNo=${orders.number + 1}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
                            aria-label="Next">
                             &raquo;
                         </a>

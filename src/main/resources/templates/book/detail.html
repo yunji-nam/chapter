@@ -148,6 +148,11 @@
             .catch(error => console.error("리뷰 조회 실패:", error));
     }
 
+    function formatDate(dateString) {
+        const date = new Date(dateString.replace(' ', 'T'));
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+    }
+
     function renderReviews(reviews) {
         const reviewsContainer = document.getElementById("reviews");
         reviewsContainer.innerHTML = reviews.map(review => `
@@ -156,10 +161,14 @@
                                <div class="rating" style="color: gold;">
                                    ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
                                </div>
-                               <div class="ms-3 flex-grow-1">${review.content}</div>
+                               <div class="ms-3 flex-grow-1">
+                               <a href="/book/${review.bookId}/review/${review.id}" class="review-link">
+                                    ${review.content}
+                               </a>
+                               </div>
                                <div class="ms-3">
                                    <span>${review.username}</span> |
-                                   <span>${review.modifiedDate}</span>
+                                   <span>${formatDate(review.createdDate)}</span>
                                </div>
                            </div>
                        </div>

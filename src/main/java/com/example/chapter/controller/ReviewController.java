@@ -6,6 +6,7 @@ import com.example.chapter.security.UserDetailsImpl;
 import com.example.chapter.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,13 +16,14 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class ReviewController {
 
     private final ReviewService reviewService;
 
     // 리뷰 등록 폼
-    @GetMapping("/book/{bookId}/review")
-    public String addReviewForm(@PathVariable Long bookId, @AuthenticationPrincipal UserDetailsImpl userDetails,
+    @GetMapping("/book/{orderItemId}/review")
+    public String addReviewForm(@PathVariable Long orderItemId, @AuthenticationPrincipal UserDetailsImpl userDetails,
                                 Model model) {
 
         model.addAttribute("form", new ReviewRegistrationDto());
@@ -29,11 +31,11 @@ public class ReviewController {
     }
 
     // 리뷰 등록
-    @PostMapping("/book/{bookId}/review")
-    public String addReview(@PathVariable Long bookId,
+    @PostMapping("/book/{orderItemId}/review")
+    public String addReview(@PathVariable Long orderItemId,
                             @Valid ReviewRegistrationDto dto,
                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        reviewService.addReview(bookId, dto, userDetails.getUser());
+        reviewService.addReview(orderItemId, dto, userDetails.getUser());
         return "redirect:/book/reviews";
     }
 
@@ -68,7 +70,7 @@ public class ReviewController {
     public String deleteReview(@PathVariable Long bookId, @PathVariable Long reviewId,
                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
         reviewService.deleteReview(reviewId, userDetails.getUser());
-        return "redirect:/book/" + bookId;
+        return "redirect:/book/reviews";
     }
 
     // 내가 쓴 리뷰 목록

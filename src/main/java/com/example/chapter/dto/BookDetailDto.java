@@ -26,7 +26,7 @@ public class BookDetailDto {
     private List<ReviewResponseDto> reviews;
 
 
-    public BookDetailDto(Book book) {
+    public BookDetailDto(Book book, List<ReviewResponseDto> reviews) {
         this.id = book.getId();
         this.title = book.getTitle();
         this.author = book.getAuthor();
@@ -39,9 +39,7 @@ public class BookDetailDto {
         this.description = book.getDescription();
         this.stockQuantity = book.getStockQuantity();
         this.image = book.getImage();
-        this.reviews = book.getReviews().stream()
-                .map(ReviewResponseDto::new)
-                .collect(Collectors.toList());
+        this.reviews = reviews;
     }
 
 }

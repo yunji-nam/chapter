@@ -27,15 +27,18 @@
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center mt-auto">
                                     <div class="d-flex justify-content-center flex-grow-1">
-                                        <span th:text="${#temporals.format(review.modifiedDate, 'yyyy-MM-dd')}"></span>
+                                        <span th:text="${#temporals.format(review.modifiedDate, 'yyyy-MM-dd HH:mm')}"></span>
                                     </div>
 
                                     <div class="d-flex">
-                                        <a th:href="@{/book/{bookId}/review/{reviewId}/edit(bookId=${review.id})}"
+                                        <a th:href="@{/book/{bookId}/review/{reviewId}/edit(bookId=${review.bookId}, reviewId=${review.id})}"
                                            class="btn btn-sm btn-outline-secondary mt-2">
                                             수정
                                         </a>
-                                        <form th:action="@{/review/delete/{id}(id=${review.id})}" method="post">
+
+                                        <form th:action="@{/book/{bookId}/review/{reviewId}(bookId=${review.bookId}, reviewId=${review.id})}"
+                                              method="post">
+                                            <input type="hidden" name="_method" value="delete">
                                             <button type="submit" class="btn btn-sm btn-outline-secondary mt-2 ms-2">
                                                 삭제
                                             </button>

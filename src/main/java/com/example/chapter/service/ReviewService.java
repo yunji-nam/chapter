@@ -3,11 +3,12 @@ package com.example.chapter.service;
 import com.example.chapter.dto.ReviewRegistrationDto;
 import com.example.chapter.dto.ReviewResponseDto;
 import com.example.chapter.entity.*;
-import com.example.chapter.repository.BookRepository;
+import com.example.chapter.repository.OrderItemRepository;
 import com.example.chapter.repository.OrderRepository;
 import com.example.chapter.repository.ReviewRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,32 +20,34 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final BookRepository bookRepository;
     private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
 
-    public void addReview(Long id, ReviewRegistrationDto dto, User user) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("책을 찾을 수 없습니다."));
-
-        if (!isReviewable(user, book.getId())) {
-            throw new IllegalArgumentException("리뷰 작성 불가합니다.");
-        }
+    public void addReview(Long orderItemId, ReviewRegistrationDto dto, User user) {
+        log.info("add review 들어옴");
+        OrderItem orderItem = orderItemRepository.findById(orderItemId).orElseThrow(() -> new EntityNotFoundException("주문한 책을 찾을 수 없습니다."));
 
         String content = dto.getContent();
         int rating = dto.getRating();
 
-        Review review = new Review(content, rating, book, user);
+        Review review = new Review(content, rating, orderItem, user);
         reviewRepository.save(review);
     }
 
-    public boolean isReviewable(User user, Long bookId) {
-        boolean checkOrder = orderRepository.existsByUserIdAndItemsBookIdAndOrderStatusAndDeliveryStatus(user.getId(), bookId, OrderStatus.PAID, DeliveryStatus.DELIVERED);
-        boolean hasReview = reviewRepository.existsByBookIdAndUserId(bookId, user.getId());
+    public ReviewStatus getReviewStatus(Long orderId, User user, Long orderItemId) {
+        boolean checkOrder = orderRepository.existsByIdAndUserIdAndItemsIdAndStatusAndDeliveryStatus(orderId, user.getId(), orderItemId, OrderStatus.PAID, DeliveryStatus.DELIVERED);
+        boolean hasReview = reviewRepository.existsByOrderItemIdAndUserId(orderItemId, user.getId());
 
-        return checkOrder && !hasReview;
+        if (checkOrder && !hasReview) {
+            return ReviewStatus.CAN_WRITE;
+        } else if (checkOrder && hasReview) {
+            return ReviewStatus.COMPLETED;
+        }
+        return ReviewStatus.NOT_ALLOWED;
     }
 
     public Page<ReviewResponseDto> getReviews(Long bookId, int pageNo, int size) {
@@ -53,7 +56,7 @@ public class ReviewService {
     }
 
     public List<ReviewResponseDto> getAllMyReviews(User user) {
-        return reviewRepository.findAllByUserId(user.getId()).stream().map(ReviewResponseDto::new).toList();
+        return reviewRepository.findAllByUserIdOrderByCreatedDate(user.getId()).stream().map(ReviewResponseDto::new).toList();
     }
 
     public ReviewResponseDto getReview(Long id) {

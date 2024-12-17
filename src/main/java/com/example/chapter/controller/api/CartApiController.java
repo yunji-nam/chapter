@@ -6,7 +6,6 @@ import com.example.chapter.security.UserDetailsImpl;
 import com.example.chapter.service.CartService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 

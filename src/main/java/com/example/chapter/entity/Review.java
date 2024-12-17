@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -21,30 +21,30 @@ public class Review {
 
     private int rating;
 
-    private LocalDate createdDate;
+    private LocalDateTime createdDate;
 
-    private LocalDate modifiedDate;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id", nullable = false)
-    private Book book;
+    private LocalDateTime modifiedDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @JoinColumn(name = "order_item_id", nullable = false)
+    private OrderItem orderItem;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public Review(String content, int rating, Book book, User user) {
+    public Review(String content, int rating, OrderItem orderItem, User user) {
         this.content = content;
         this.rating = rating;
-        this.createdDate = LocalDate.now();
-        this.modifiedDate = LocalDate.now();
-        this.book = book;
+        this.createdDate = LocalDateTime.now();
+        this.modifiedDate = LocalDateTime.now();
+        this.orderItem = orderItem;
         this.user = user;
     }
 
     public void update(String content, int rating) {
         this.content = content;
         this.rating = rating;
-        this.modifiedDate = LocalDate.now();
+        this.modifiedDate = LocalDateTime.now();
     }
 }
