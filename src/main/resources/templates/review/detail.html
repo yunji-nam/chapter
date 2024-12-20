@@ -7,24 +7,67 @@
 <body>
 
 <div class="container mt-4">
-    <h4 class="mb-4">리뷰</h4>
 
-    <form id="review" th:action="@{/book/{bookId}/review(bookId=${bookId})}" th:object="${review}" method="post">
+    <form id="review" th:object="${review}">
+        <h5 class="mb-4">
+            <a th:href="@{/book/{bookId}(bookId=${review.bookId})}"
+               th:text="${review.bookTitle}"
+               style="color: #078080; font-size: 1.0rem;">
+            </a>
+            <span> 에 대한 리뷰</span>
+        </h5>
+
         <fieldset>
-            <span class="text-bold">별점</span>
-            <input type="radio" name="rating" value="5" id="rate1" th:field="*{rating}" disabled><label for="rate1">★</label>
-            <input type="radio" name="rating" value="4" id="rate2" th:field="*{rating}" disabled><label for="rate2">★</label>
-            <input type="radio" name="rating" value="3" id="rate3" th:field="*{rating}" disabled><label for="rate3">★</label>
-            <input type="radio" name="rating" value="2" id="rate4" th:field="*{rating}" disabled><label for="rate4">★</label>
-            <input type="radio" name="rating" value="1" id="rate5" th:field="*{rating}" disabled><label for="rate5">★</label>
+            <input type="radio" name="rating" value="5" id="rate1" th:field="*{rating}" disabled>
+            <label for="rate1">★</label>
+            <input type="radio" name="rating" value="4" id="rate2" th:field="*{rating}" disabled>
+            <label for="rate2">★</label>
+            <input type="radio" name="rating" value="3" id="rate3" th:field="*{rating}" disabled>
+            <label for="rate3">★</label>
+            <input type="radio" name="rating" value="2" id="rate4" th:field="*{rating}" disabled>
+            <label for="rate4">★</label>
+            <input type="radio" name="rating" value="1" id="rate5" th:field="*{rating}" disabled>
+            <label for="rate5">★</label>
         </fieldset>
         <div th:text="${review.content}" class="mt-3"></div>
-        <div class="text-center mt-4">
-            <button type="submit" class="btn btn-outline-danger">수정</button>
-            <button type="submit" class="btn btn-outline-dark">삭제</button>
+        <div class="d-flex mt-3">
+            <a th:href="@{/book/{bookId}/review/{reviewId}/edit(bookId=${review.bookId}, reviewId=${review.id})}"
+               class="btn btn-sm btn-outline-secondary"
+               th:if="${#authorization.expression('hasAuthority(''ROLE_ADMIN'')') or (#authentication.name == review.username)}">
+                수정
+            </a>
+            <button type="button" class="btn btn-sm btn-outline-secondary ms-2"
+                    th:data-book-id="${review.bookId}"
+                    th:data-review-id="${review.id}"
+                    onclick="deleteReview(this)"
+                    th:if="${#authorization.expression('hasAuthority(''ROLE_ADMIN'')') or (#authentication.name == review.username)}">
+                삭제
+            </button>
+
         </div>
     </form>
 </div>
-
 </body>
+<script>
+    function deleteReview(button) {
+        const bookId = button.getAttribute("data-book-id");
+        const reviewId = button.getAttribute("data-review-id");
+
+        if (!confirm("리뷰를 삭제하시겠습니까?")) {
+            return;
+        }
+        $.ajax({
+            type: 'DELETE',
+            url: `/api/book/${bookId}/review/${reviewId}`,
+            success: function () {
+                alert('리뷰 삭제 완료');
+                location.href = '/book/reviews';
+            },
+            error: function () {
+                alert('리뷰 삭제 실패');
+            },
+        })
+    }
+</script>
+
 </html>

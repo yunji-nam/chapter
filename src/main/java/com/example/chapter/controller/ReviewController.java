@@ -65,14 +65,6 @@ public class ReviewController {
         return "redirect:/book/" + bookId + "/review/" + reviewId;
     }
 
-    // 리뷰 삭제
-    @DeleteMapping("/book/{bookId}/review/{reviewId}")
-    public String deleteReview(@PathVariable Long bookId, @PathVariable Long reviewId,
-                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        reviewService.deleteReview(reviewId, userDetails.getUser());
-        return "redirect:/book/reviews";
-    }
-
     // 내가 쓴 리뷰 목록
     @GetMapping("/book/reviews")
     public String getAllMyReviews(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {

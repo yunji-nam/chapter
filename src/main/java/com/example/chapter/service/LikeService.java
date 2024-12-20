@@ -20,25 +20,15 @@ public class LikeService {
     private final BookRepository bookRepository;
 
     public void likeBook(Long bookId, User user) {
-        Long userId = user.getId();
         Book book = getBookById(bookId);
 
-        if (likeRepository.existsByBookIdAndUserId(bookId, userId)) {
-            throw new IllegalArgumentException("이미 좋아요 한 책입니다.");
-        } else {
-            Like like = new Like(user, book);
-            likeRepository.save(like);
-        }
+        Like like = new Like(user, book);
+        likeRepository.save(like);
     }
 
     public void unlikeBook(Long bookId, User user) {
         Long userId = user.getId();
-
-        if (likeRepository.existsByBookIdAndUserId(bookId, userId)) {
-            likeRepository.deleteByBookIdAndUserId(bookId, userId);
-        } else {
-            throw new IllegalArgumentException("좋아요가 존재하지 않습니다.");
-        }
+        likeRepository.deleteByBookIdAndUserId(bookId, userId);
     }
 
     public List<BookListDto> getLikeList(User user) {

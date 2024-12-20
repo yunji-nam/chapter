@@ -5,9 +5,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "likes")
+@Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "likes", uniqueConstraints = @UniqueConstraint(
+        name = "likes_uk",
+        columnNames = {"user_id", "book_id"}))
 public class Like {
 
     @Id

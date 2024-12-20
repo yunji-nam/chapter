@@ -9,7 +9,7 @@
 <div class="container mt-4">
     <h4 class="mb-4">리뷰 등록</h4>
 
-    <form id="review" th:action="@{/book/{bookId}/review(bookId=${bookId})}" th:object="${form}" method="post">
+    <form id="review" th:action="@{/book/{orderItemId}/review(orderItemId=${orderItemId})}" th:object="${form}" method="post">
         <fieldset>
             <span class="text-bold">별점을 선택해주세요</span>
             <input type="radio" name="rating" value="5" id="rate1" th:field="*{rating}"><label for="rate1">★</label>

@@ -50,8 +50,7 @@ public class CartService {
 
     // 장바구니 조회
     public List<CartItemDto> getCart(User user) {
-        Cart cart = findCart(user);
-
+        Cart cart = cartRepository.findByUserId(user.getId()).orElseGet(() -> new Cart(user));
         List<CartItem> items = cart.getItems().stream().sorted(Comparator.comparing(CartItem::getId).reversed()).toList();
 
         return items.stream().map(CartItemDto::new).toList();
@@ -71,7 +70,8 @@ public class CartService {
     // 전체 삭제
     @Transactional
     public void deleteCart(User user) {
-        Cart cart = findCart(user);
+        Cart cart = cartRepository.findByUserId(user.getId())
+                        .orElseThrow(() -> new EntityNotFoundException("cart을 찾을 수 없습니다."));
         cartRepository.delete(cart);
     }
 
@@ -95,12 +95,6 @@ public class CartService {
             throw new OutOfStockException("재고가 부족합니다.");
         }
         return book;
-    }
-
-    private Cart findCart(User user) {
-        Cart cart = cartRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new EntityNotFoundException("cart을 찾을 수 없습니다."));
-        return cart;
     }
 
 }

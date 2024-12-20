@@ -88,8 +88,8 @@ public class ReviewService {
     }
 
     private static void checkUser(User user, Review review) {
-        if (!user.getId().equals(review.getUser().getId())) {
-            throw new IllegalArgumentException("작성자가 아닙니다.");
+        if (!user.getId().equals(review.getUser().getId()) && !user.isAdmin()) {
+            throw new IllegalArgumentException("권한이 없습니다.");
         }
     }
 }

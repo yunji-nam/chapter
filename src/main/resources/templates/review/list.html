@@ -23,7 +23,10 @@
                                     <span th:text="${#strings.repeat('★', review.rating)}" style="color: gold;"></span>
                                 </div>
                                 <div>
-                                    <p th:text="${review.content}"></p>
+                                    <a th:href="@{/book/{bookId}/review/{reviewId}(bookId=${review.bookId}, reviewId=${review.id})}"
+                                       style="text-decoration: none; color: inherit;">
+                                        <p th:text="${review.content}"></p>
+                                    </a>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center mt-auto">
                                     <div class="d-flex justify-content-center flex-grow-1">
@@ -35,14 +38,13 @@
                                            class="btn btn-sm btn-outline-secondary mt-2">
                                             수정
                                         </a>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary mt-2 ms-2"
+                                                th:data-book-id="${review.bookId}"
+                                                th:data-review-id="${review.id}"
+                                                onclick="deleteReview(this)">
+                                            삭제
+                                        </button>
 
-                                        <form th:action="@{/book/{bookId}/review/{reviewId}(bookId=${review.bookId}, reviewId=${review.id})}"
-                                              method="post">
-                                            <input type="hidden" name="_method" value="delete">
-                                            <button type="submit" class="btn btn-sm btn-outline-secondary mt-2 ms-2">
-                                                삭제
-                                            </button>
-                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -55,4 +57,25 @@
 
 </main>
 </body>
+<script>
+    function deleteReview(button) {
+        const bookId = button.getAttribute("data-book-id");
+        const reviewId = button.getAttribute("data-review-id");
+
+        if (!confirm("리뷰를 삭제하시겠습니까?")) {
+            return;
+        }
+        $.ajax({
+            type: 'DELETE',
+            url: `/api/book/${bookId}/review/${reviewId}`,
+            success: function () {
+                alert('리뷰 삭제 완료');
+                location.href = '/book/reviews';
+            },
+            error: function () {
+                alert('리뷰 삭제 실패');
+            },
+        })
+    }
+</script>
 </html>
