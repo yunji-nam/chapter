@@ -1,29 +1,37 @@
 package com.example.chapter.service;
 
+import com.example.chapter.dto.OrderBookInfo;
 import com.example.chapter.dto.OrderDetailDto;
 import com.example.chapter.dto.OrderListDto;
 import com.example.chapter.entity.Order;
+import com.example.chapter.entity.OrderStatus;
+import com.example.chapter.entity.ReviewStatus;
 import com.example.chapter.entity.User;
 import com.example.chapter.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
 
     private final OrderRepository orderRepository;
     private final SecureRandom secureRandom = new SecureRandom();
-    private final PaymentService paymentService;
+    private final ReviewService reviewService;
 
     // 주문 번호 생성
     public String generateOrderNumber() {
@@ -46,15 +54,20 @@ public class OrderService {
     }
 
     // 주문 상세 조회
-    public OrderDetailDto getOrder(Long id, User user) {
-        Order order = findOrderById(id);
+    public OrderDetailDto getOrder(Long orderId, User user) {
+        Order order = findOrderById(orderId);
         checkUser(user, order);
-        return new OrderDetailDto(order);
+        List<OrderBookInfo> books = order.getItems().stream().map(orderItem -> {
+            ReviewStatus reviewStatus = reviewService.getReviewStatus(orderId, user, orderItem.getId());
+            return new OrderBookInfo(orderItem, reviewStatus);
+        }).toList();
+
+        return new OrderDetailDto(order, books);
     }
 
     // 주문 목록 조회 (최근 2년 내)
     public Page<OrderListDto> getOrders(User user, LocalDateTime startDate, LocalDateTime endDate, int pageNo, int size) {
-        Pageable pageable = PageRequest.of(pageNo, size);
+        Pageable pageable = getPageable(pageNo, size);
         LocalDateTime twoYearAgo = LocalDateTime.now().minusYears(2);
         LocalDateTime now = LocalDateTime.now();
 
@@ -64,8 +77,13 @@ public class OrderService {
         if (endDate == null || endDate.isAfter(now)) {
             endDate = now;
         }
+        Page<Order> page;
+        if (user.isAdmin()) {
+            page = orderRepository.findByOrderDateBetween(startDate, endDate, pageable);
+        } else {
+            page = orderRepository.findByUserIdAndOrderDateBetween(user.getId(), startDate, endDate, pageable);
+        }
 
-        Page<Order> page = orderRepository.findByUserIdAndOrderDateBetween(user.getId(), startDate, endDate, pageable);
         return page.map(OrderListDto::new);
     }
 
@@ -77,25 +95,19 @@ public class OrderService {
         order.cancel();
     }
 
-    public Page<OrderListDto> getAllOrders(LocalDateTime startDate, LocalDateTime endDate, int pageNo, int size) {
-        Pageable pageable = PageRequest.of(pageNo, size);
-        LocalDateTime twoYearAgo = LocalDateTime.now().minusYears(2);
-        LocalDateTime now = LocalDateTime.now();
+    private PageRequest getPageable(int pageNo, int size) {
+        return PageRequest.of(pageNo, size, Sort.by(Sort.Direction.DESC, "orderDate"));
+    }
 
-        if (startDate == null || startDate.isBefore(twoYearAgo)) {
-            startDate = twoYearAgo;
-        }
-        if (endDate == null || endDate.isAfter(now)) {
-            endDate = now;
-        }
-
-        Page<Order> page = orderRepository.findByOrderDateBetween(startDate, endDate, pageable);
-        return page.map(OrderListDto::new);
+    @Transactional
+    public void updateOrderStatus(Long orderId, OrderStatus status) {
+        Order order = findOrderById(orderId);
+        order.updateStatus(status);
     }
 
     private static void checkUser(User user, Order order) {
-        if (!order.getUser().getId().equals(user.getId())) {
-            throw new IllegalArgumentException("유저가 다릅니다.");
+        if (!user.isAdmin() && !order.getUser().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("권한이 없습니다.");
         }
     }
 
@@ -103,4 +115,10 @@ public class OrderService {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("주문을 찾을 수 없습니다."));
     }
+
+    public Order findOrderByMerchantUid(String merchantUid) {
+        return orderRepository.findByMerchantUid(merchantUid)
+                .orElseThrow(() -> new EntityNotFoundException("주문을 찾을 수 없습니다."));
+    }
+
 }
