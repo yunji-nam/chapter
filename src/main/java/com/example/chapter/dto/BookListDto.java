@@ -19,6 +19,7 @@ public class BookListDto {
     private int price;
     private int stockQuantity;
     private String image;
+    private boolean likeStatus;
 
     public BookListDto(Book book) {
         this.id = book.getId();
@@ -32,5 +33,10 @@ public class BookListDto {
         this.stockQuantity = book.getStockQuantity();
         this.image = book.getImage();
     }
+
+    public void setLikeStatus(boolean likeStatus) {
+        this.likeStatus = likeStatus;
+    }
+
 
 }

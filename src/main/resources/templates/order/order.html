@@ -6,7 +6,7 @@
 
 <body class="bg-light">
 
-<div class="container">
+<div class="container-fluid" style="max-width: 800px;">
     <main>
         <div class="py-5 text-center">
             <h2>주문/결제</h2>
@@ -15,8 +15,8 @@
         <div class="row g-5">
             <div class="col-md-5 col-lg-4 order-md-last">
                 <h4 class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="text-primary">장바구니</span>
-                    <span class="badge bg-primary rounded-pill" id="cartItemCount"></span> <!--장바구니 항목 수-->
+                    <span class="text-primary">선택 항목</span>
+                    <span class="badge bg-primary rounded-pill" id="cartItemCount"></span> <!--선택 항목 수-->
                 </h4>
                 <ul class="list-group mb-3" id="cartItemList">
                     <!--항목 리스트-->
@@ -62,18 +62,20 @@
                             </div>
                         </div>
 
-                        <div class="col-md-5">
+                        <div class="col-md-8">
                             <label for="deliveryZipcode" class="form-label">우편 번호</label>
-                            <input type="text" class="form-control" id="deliveryZipcode" name="deliveryZipcode" required
-                                   readonly="readonly">
+                            <div class="d-flex">
+                                <input type="text" class="form-control mr-1" id="deliveryZipcode" name="deliveryZipcode"
+                                       required readonly="readonly">
+                                <div class="col-md-3">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="execPostCode()"
+                                            style="font-size: 14px;">우편번호 찾기
+                                    </button>
+                                </div>
+                            </div>
                             <div class="invalid-feedback">
                                 우편 번호를 입력해주세요.
                             </div>
-                        </div>
-                        <div class="col-md-3">
-                            <button type="button" class="btn btn-outline-secondary" onclick="execPostCode()"
-                                    style="font-size: 14px;">우편번호 찾기
-                            </button>
                         </div>
 
                         <div class="col-12">
@@ -250,7 +252,7 @@
                             requestPrice: price
                         })
                     })
-                        .then(res=> {
+                        .then(res => {
                             if (!res.ok) {
                                 return res.json().then(errorData => {
                                     throw new Error(JSON.stringify(errorData));
