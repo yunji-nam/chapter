@@ -44,8 +44,7 @@
                                     style="height: 100%; flex-shrink: 0;">
                                 변경
                             </button>
-                            <form id="deleteForm" method="post"
-                                  th:action="@{/cart/items/{cartItemId}(cartItemId=${item.id})}"
+                            <form method="post" th:action="@{/cart/items/{cartItemId}(cartItemId=${item.id})}"
                                   style="display: inline;">
                                 <input type="hidden" name="_method" value="DELETE"/>
                                 <button class="btn btn-sm btn-outline-dark mt-2"
@@ -59,14 +58,16 @@
             </div>
         </div>
     </div>
-    <div class="total-price-container" style="margin-top: 20px; padding-top: 10px; border-top: 2px solid #000;">
+    <div class="total-price-container border-top mt-5 mb-1" style="max-width: 800px; margin: 0 auto;">
         <div class="d-flex justify-content-center">
             <span>총 주문 예정 금액</span>
             <span id="totalPrice" style="margin-left: 10px; font-weight: bold;">0 원</span>
         </div>
     </div>
 
-    <button class="btn btn-primary btn-lg" id="proceedToOrder" type="button">주문하기</button>
+    <div class="button-container d-flex justify-content-center align-items-center" style="height: 100px;">
+        <button class="btn btn-outline-primary" id="proceedToOrder" type="button">주문하기</button>
+    </div>
 
 </main>
 <script th:inline="javascript">
