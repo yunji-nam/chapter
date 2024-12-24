@@ -1,12 +1,9 @@
 package com.example.chapter.service;
 
-import com.example.chapter.dto.ApiResponse;
-import com.example.chapter.dto.OrderRequestDto;
-import com.example.chapter.dto.PaymentCallbackDto;
-import com.example.chapter.dto.PaymentPrepareDto;
+import com.example.chapter.dto.*;
 import com.example.chapter.entity.*;
 import com.example.chapter.exception.PaymentAmountMismatchException;
-import com.example.chapter.repository.CartItemRepository;
+import com.example.chapter.repository.BookRepository;
 import com.example.chapter.repository.OrderRepository;
 import com.example.chapter.repository.PaymentRepository;
 import com.siot.IamportRestClient.IamportClient;
@@ -15,9 +12,11 @@ import com.siot.IamportRestClient.request.CancelData;
 import com.siot.IamportRestClient.request.PrepareData;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -31,8 +30,8 @@ public class PaymentService {
 
     private final IamportClient iamportClient;
     private final PaymentRepository paymentRepository;
-    private final CartItemRepository cartItemRepository;
     private final OrderRepository orderRepository;
+    private final BookRepository bookRepository;
 
     // 사전 검증
     public ApiResponse<String> preparePayment(PaymentPrepareDto prepareDto) throws IamportResponseException, IOException {
@@ -66,10 +65,9 @@ public class PaymentService {
         return new CancelData(response.getResponse().getImpUid(), true);
     }
 
+    @Transactional
     public ApiResponse<String> completePayment(String merchantUid, User user, OrderRequestDto dto) {
-        List<Long> cartItemIds = dto.getCartItemIds();
-        List<CartItem> cartItems = cartItemRepository.findAllById(cartItemIds);
-
+        List<OrderItemDto> items = dto.getOrderItems();
         Address address = dto.getDeliveryAddress();
         String name = dto.getDeliveryName();
         String phone = dto.getDeliveryPhone();
@@ -78,10 +76,13 @@ public class PaymentService {
         List<OrderItem> orderItems = new ArrayList<>();
 
         Order order = new Order(merchantUid, user, delivery, orderItems);
-        for (CartItem cartItem : cartItems) {
-            Book book = cartItem.getBook();
-            int quantity = cartItem.getQuantity();
 
+        for (OrderItemDto item : items) {
+            Long bookId = item.getBookId();
+            int quantity = item.getQuantity();
+            Book book = bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("book not found"));
+
+            book.decreaseStock(quantity);
             order.addOrderItem(book, quantity);
         }
         orderRepository.save(order);

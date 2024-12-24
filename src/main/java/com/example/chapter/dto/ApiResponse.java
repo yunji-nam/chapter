@@ -11,11 +11,11 @@ import lombok.Setter;
 @Builder
 public class ApiResponse<T> {
 
-    private String msg;
+    private String message;
     private T data;
 
-    public ApiResponse(String msg) {
-        this.msg = msg;
+    public ApiResponse(String message) {
+        this.message = message;
         this.data = null;
     }
 

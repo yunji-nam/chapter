@@ -137,7 +137,6 @@
 
         checkboxes.forEach(checkbox => {
             if (checkbox.checked) {
-                const cartItemId = checkbox.getAttribute('data-cart-item-id');
                 const bookId = checkbox.getAttribute('data-book-id');
                 const bookTitleElement = checkbox.closest('.card').querySelector('.card-body .card-title a');
                 const bookTitle = bookTitleElement.innerText;
@@ -145,7 +144,7 @@
                 const quantityInput = document.getElementById(`inputQuantity_${bookId}`);
                 const quantity = parseInt(quantityInput.value, 10);
 
-                cartList.push({cartItemId, bookTitle, bookPrice, quantity});
+                cartList.push({bookId, bookTitle, bookPrice, quantity});
             }
         });
 

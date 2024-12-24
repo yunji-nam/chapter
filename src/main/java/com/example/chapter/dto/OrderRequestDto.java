@@ -16,7 +16,7 @@ import java.util.List;
 public class OrderRequestDto {
 
     @NotEmpty
-    private List<Long> cartItemIds;
+    private List<OrderItemDto> orderItems;
     @NotEmpty
     private String deliveryName;
     @NotEmpty

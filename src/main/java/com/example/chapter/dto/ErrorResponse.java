@@ -10,11 +10,11 @@ import org.springframework.http.HttpStatus;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponse {
 
-    private String msg;
+    private String message;
     private int status;
 
-    public ErrorResponse(String msg, HttpStatus status) {
-        this.msg = msg;
+    public ErrorResponse(String message, HttpStatus status) {
+        this.message = message;
         this.status = status.value();
     }
 }

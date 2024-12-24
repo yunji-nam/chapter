@@ -212,7 +212,6 @@
     function request_pay() {
 
         const cartItems = JSON.parse(localStorage.getItem('cartItems'));
-        const cartItemIds = cartItems.map(item => item.cartItemId);
         const itemName = cartItems[0].bookTitle;
         const price = localStorage.getItem('totalPrice');
 
@@ -223,7 +222,7 @@
         var buyerAddress = '[[${form.userAddress.street}]]' + ' ' + '[[${form.userAddress.detail}]]';
         var buyerPostcode = '[[${form.userAddress.zipcode}]]';
 
-        console.log(merchantUid, itemName, price, buyerName, buyerEmail, buyerPhone, buyerAddress, buyerPostcode);
+        console.log(merchantUid, price, buyerName, buyerEmail, buyerPhone, buyerAddress, buyerPostcode);
 
         IMP.request_pay(
             {
@@ -253,9 +252,10 @@
                         })
                     })
                         .then(res => {
+                            console.log(res);
                             if (!res.ok) {
                                 return res.json().then(errorData => {
-                                    throw new Error(JSON.stringify(errorData));
+                                    throw new Error(errorData.message);
                                 });
                             }
                             return res.json();
@@ -270,7 +270,10 @@
                                     'Content-Type': 'application/json'
                                 },
                                 body: JSON.stringify({
-                                    cartItemIds: cartItemIds,
+                                    orderItems: cartItems.map(item => ({
+                                        bookId: item.bookId,
+                                        quantity: item.quantity
+                                    })),
                                     deliveryName: document.getElementById("deliveryName").value,
                                     deliveryPhone: document.getElementById("deliveryPhone").value,
                                     deliveryAddress: {
@@ -294,7 +297,10 @@
 
                                     window.location.href = `/order/success/${merchantUid}`;
                                 })
-                                .catch(() => alert("결제 완료 처리 중 오류가 발생했습니다."));
+                                .catch(error => {
+                                    console.error('Error: ', error);
+                                    alert(error.message);
+                                });
                         })
                         .catch(error => {
                             alert(error.message);

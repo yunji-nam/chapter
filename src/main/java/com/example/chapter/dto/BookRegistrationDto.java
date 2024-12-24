@@ -36,7 +36,7 @@ public class BookRegistrationDto {
     private int price;
     @NotEmpty
     private String description;
-    @Min(1)
+    @Min(0)
     private int quantity;
     private MultipartFile image;
 

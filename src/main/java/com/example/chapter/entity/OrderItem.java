@@ -30,7 +30,6 @@ public class OrderItem {
         this.order = order;
         this.book = book;
         this.quantity = quantity;
-        book.decreaseStock(quantity);
     }
 
     public void cancel() {

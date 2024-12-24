@@ -6,11 +6,13 @@ import com.example.chapter.security.UserDetailsImpl;
 import com.example.chapter.service.CartService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/api/cart")
 public class CartApiController {
 
