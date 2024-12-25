@@ -29,7 +29,7 @@
                     <tbody>
 
                     <tr th:each="book : ${bookList.content}">
-                        <td th:text="${book.category}"></td>
+                        <td th:text="${book.category.categoryName}"></td>
                         <td th:text="${book.title}" class="col-wide"></td>
                         <td th:text="${book.author}"></td>
                         <td th:text="${book.publisher}"></td>

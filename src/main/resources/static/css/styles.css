@@ -1,11 +1,12 @@
 
 a {
-    color: inherit;
+    color: black;
     text-decoration: none;
 }
 
 a:hover {
     color: black;
+    font-weight: bold;
 }
 
 .card-text {
@@ -124,11 +125,20 @@ body {
     padding: 0;
 }
 
-.sidebar {
+.sidebar_my {
     height: 100vh;
     position: fixed;
     top: 56px;
     left: 0;
     overflow-y: auto;
     width: 230px;
+}
+
+.sidebar {
+    height: 100vh;
+    margin-left: 20px;
+    top: 56px;
+    left: 0;
+    overflow-y: auto;
+    width: 150px;
 }

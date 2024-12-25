@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body th:fragment="sidebar">
+
+<nav class="bg-transparent sidebar">
+    <div class="pt-3">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" style="color: black" th:href="@{/books}">
+                    전체
+                </a>
+            </li>
+            <li class="nav-item" th:each="category : ${categories}">
+                <a class="nav-link" style="color: black; font-size: 15px;" th:href="@{/books(category=${category})}"
+                   th:text="${category.categoryName}">
+                </a>
+            </li>
+        </ul>
+
+    </div>
+</nav>
+
+
+</body>
+</html>

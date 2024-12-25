@@ -6,9 +6,9 @@
 <body>
 <main>
     <div class="container-list mt-4">
-        <div class="row row-cols-1 g-3">
-            <div th:each="book : ${searchResults.content}">
-                <div class="card shadow-sm d-flex flex-row" style="height: 270px">
+        <div class="row row-cols-1 g-3 justify-content-center">
+            <div th:each="book : ${searchResults.content}" class="col">
+                <div class="card shadow-sm d-flex flex-row" style="height: 270px; max-width: 600px; margin: 0 auto;">
                     <a th:href="@{'/book/' + ${book.id}}">
                         <img th:src="${book.image}" alt="Book Cover"
                              style="width: 150px; height: 100%; object-fit: cover;"/>

@@ -3,7 +3,7 @@
 
 <body th:fragment="sidebar_user">
 
-<nav class="bg-light sidebar">
+<nav class="bg-light sidebar_my">
     <div class="pt-3">
         <div class="d-flex ms-3 fw-bold mt-3 pb-3 mb-4 link-dark border-bottom" style="font-size: 18px;">
             <span sec:authentication="name" th:text="${#authentication.name} + ' 님'"></span>

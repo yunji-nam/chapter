@@ -28,34 +28,34 @@ public class BookController {
 
     // 도서 모두 조회
     @GetMapping("/books")
-    public String getAllBooks(@RequestParam(required = false) String category,
+    public String getAllBooks(@RequestParam(required = false) Category category,
                               @RequestParam(defaultValue = "id") String sortType,
                               @RequestParam(defaultValue = "0") int pageNo,
-                              @RequestParam(defaultValue = "2") int size,
+                              @RequestParam(defaultValue = "3") int size,
                               @AuthenticationPrincipal UserDetailsImpl userDetails,
                               Model model) {
         Page<BookListDto> bookDtos;
 
-        if (category == null || category.isEmpty()) {
+        if (category == null) {
             bookDtos = bookService.getBooks(sortType, pageNo, size);
         } else {
             try {
-                bookDtos = bookService.getBooksByCategory(Category.valueOf(category), sortType, pageNo, size);
+                bookDtos = bookService.getBooksByCategory(category, sortType, pageNo, size);
             } catch (IllegalArgumentException e) {
                 bookDtos = bookService.getBooks(sortType, pageNo, size);
             }
         }
 
-        boolean likeStatus = false;
         if (userDetails != null) {
             for (BookListDto book : bookDtos.getContent()) {
-                likeStatus = likeService.getLikeStatus(userDetails.getUser(), book.getId());
-                book.setLikeStatus(likeStatus);
+                book.setLikeStatus(likeService.getLikeStatus(userDetails.getUser(), book.getId()));
                 log.info("book Id:{}", book.getId());
-                log.info("likeStatus:{}", likeStatus);
+                log.info("likeStatus:{}", book.isLikeStatus());
             }
         }
 
+        model.addAttribute("categories", Category.values());
+        model.addAttribute("requestedCategory", category);
         model.addAttribute("bookList", bookDtos);
 
         return "book/list";
