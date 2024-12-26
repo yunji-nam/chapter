@@ -8,11 +8,11 @@ import com.example.chapter.entity.User;
 import com.example.chapter.security.UserDetailsImpl;
 import com.example.chapter.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -59,13 +59,6 @@ public class OrderController {
         model.addAttribute("endDate", endDate);
 
         return "order/list";
-    }
-
-    // 주문 취소
-    @DeleteMapping("/order/{orderId}")
-    public String cancelOrder(@PathVariable Long orderId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        orderService.cancelOrder(orderId, userDetails.getUser());
-        return "redirect:/orders";
     }
 
     // 주문 성공

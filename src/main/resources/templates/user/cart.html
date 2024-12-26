@@ -158,7 +158,7 @@
 
         const merchantUid = '[[${merchantUid}]]';
 
-        fetch('payment/prepare', {
+        fetch('/api/payment/prepare', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

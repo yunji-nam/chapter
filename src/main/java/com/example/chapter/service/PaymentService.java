@@ -10,18 +10,23 @@ import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.CancelData;
 import com.siot.IamportRestClient.request.PrepareData;
+import com.siot.IamportRestClient.response.AccessToken;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -32,9 +37,10 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
     private final BookRepository bookRepository;
+    private final RestTemplate restTemplate;
 
     // 사전 검증
-    public ApiResponse<String> preparePayment(PaymentPrepareDto prepareDto) throws IamportResponseException, IOException {
+    public ApiResponse<String> preparePayment(PaymentDto prepareDto) throws IamportResponseException, IOException {
         BigDecimal amount = prepareDto.getAmount();
         PrepareData prepareData = new PrepareData(prepareDto.getMerchant_uid(), amount);
         iamportClient.postPrepare(prepareData);
@@ -95,4 +101,40 @@ public class PaymentService {
 
         return new ApiResponse<>("결제 완료");
     }
+
+    private String prepareRefund(PaymentDto dto) throws IamportResponseException, IOException {
+        Order order = orderRepository.findByMerchantUid(dto.getMerchant_uid()).orElseThrow(() ->
+                new EntityNotFoundException("order를 찾을 수 없습니다."));
+        PaymentEntity payment = paymentRepository.findByOrderId(order.getId()).orElseThrow(() ->
+                new EntityNotFoundException("payment를 찾을 수 없습니다."));
+        log.info("payment amount{}", payment.getAmount());
+        log.info("request amount{}", dto.getAmount());
+
+        if (payment.getAmount().compareTo(dto.getAmount()) != 0) {
+            throw new IllegalArgumentException("잘못된 요청");
+        }
+
+        IamportResponse<AccessToken> accessTokenIamportResponse = iamportClient.getAuth();
+        return accessTokenIamportResponse.getResponse().getToken();
+    }
+
+    public ResponseEntity<?> cancelPayment(PaymentDto dto) throws IamportResponseException, IOException {
+        String iamportToken = prepareRefund(dto);
+
+        String url = "https://api.iamport.kr/payments/cancel";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", iamportToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("merchant_uid", dto.getMerchant_uid());
+        requestBody.put("amount", dto.getAmount());
+        requestBody.put("reason", "테스트");
+
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        return restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+    }
+
 }

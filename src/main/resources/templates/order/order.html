@@ -241,7 +241,7 @@
                 if (response.success) {
                     alert("결제 요청 성공");
                     // 금액 검증
-                    fetch('/payment/validate', {
+                    fetch('/api/payment/validate', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -264,7 +264,7 @@
                             const payMethod = data.response.payMethod;
                             const amount = data.response.amount;
 
-                            fetch(`/payment/complete/${merchantUid}`, {
+                            fetch(`/api/payment/complete/${merchantUid}`, {
                                 method: "POST",
                                 headers: {
                                     'Content-Type': 'application/json'

@@ -54,10 +54,12 @@ public class Order {
     }
 
     public void cancel() {
-        if (delivery.getStatus() == DeliveryStatus.DELIVERED) {
-            throw new IllegalStateException("이미 배송이 완료된 상품입니다.");
+        if (this.status == OrderStatus.CANCEL) {
+            throw new IllegalStateException("취소된 주문입니다.");
         }
-
+        if (delivery.getStatus() != null) {
+            throw new IllegalStateException("배송상태에 따라 취소가 불가능합니다.");
+        }
         this.status = OrderStatus.CANCEL;
         for (OrderItem orderItem : items) {
             orderItem.cancel();

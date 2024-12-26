@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-public class PaymentPrepareDto {
+public class PaymentDto {
 
     private String merchant_uid;
     private BigDecimal amount;
