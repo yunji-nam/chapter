@@ -9,7 +9,7 @@
     <div class="row">
         <div th:insert="~{common/sidebar_user::sidebar_user}" class="col-md-4 col-lg-3"></div>
         <div class="col-md-8 ms-sm-auto col-lg-9">
-            <div class="mt-4 ms-3" style="max-width: 700px; margin: 0 auto; padding: 0 15px;">
+            <div class="mt-4 ms-3" style="max-width: 600px; margin: 0 auto; padding: 0 15px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold; color: gray">
                     <div>
                         <span>주문 번호</span>
@@ -27,7 +27,6 @@
                         <th scope="col" style="width: 30%;">도서 정보</th>
                         <th scope="col" style="width: 10%;">수량</th>
                         <th scope="col" style="width: 15%;">진행 상태</th>
-                        <th scope="col" style="width: 20%;">취소</th>
                         <th scope="col" style="width: 15%;">리뷰</th>
 
                     </tr>
@@ -50,24 +49,15 @@
                         </td>
                         <td th:text="${orderItems.quantity + '개'}"></td>
                         <td th:text="${order.deliveryStatus != null ? order.deliveryStatus : order.orderStatus}"></td>
-                        <td>
-                            <form id="deleteForm_{order.id}" method="post"
-                                  th:action="@{/order/{orderId}(orderId=${order.id})}" style="display: none;">
-                                <input type="hidden" name="_method" value="DELETE"/>
-                            </form>
-                            <button type="button" class="btn btn-sm btn-outline-dark"
-                                    onclick="if(confirm('정말 취소하시겠습니까?')) document.getElementById('deleteForm_{order.id}').submit(); return false;">
-                                주문취소
-                            </button>
-                        </td>
                         <td th:switch="${orderItems.reviewStatus != null ? orderItems.reviewStatus.name() : 'NOT_ALLOWED'}">
                             <a th:case="'CAN_WRITE'" class="btn btn-sm btn-primary"
-                                    th:href="@{/book/{orderItemId}/review(orderItemId=${orderItems.orderItemId})}">
+                               th:href="@{/book/{orderItemId}/review(orderItemId=${orderItems.orderItemId})}">
                                 작성하기
                             </a>
-                            <button th:case="'COMPLETED'" class="btn btn-sm btn-secondary" disabled>
+                            <a th:case="'COMPLETED'" class="btn btn-sm btn-secondary"
+                               th:href="@{/book/{bookId}/review/{reviewId}(bookId=${orderItems.bookId}, reviewId=${})}">>
                                 작성완료
-                            </button>
+                            </a>
                             <button th:case="'NOT_ALLOWED'" class="btn btn-sm btn-secondary" disabled>
                                 작성불가
                             </button>
@@ -100,11 +90,48 @@
                     </tbody>
                 </table>
 
+                <button type="button" class="btn btn-sm btn-outline-dark"
+                        th:onclick="'cancelPay(' + ${order.id} + ')'">
+                    주문취소
+                </button>
 
             </div>
         </div>
     </div>
 </div>
+<script>
+    function cancelPay(orderId) {
+        const merchant_uid = '[[${order.merchantUid}]]';
+        const amount = '[[${order.totalPrice}]]';
+        $.ajax({
+            url: '/api/payment/cancel',
+            type: "POST",
+            contentType: 'application/json',
+            data: JSON.stringify({
+                merchant_uid: merchant_uid,
+                amount: amount
+            }),
+            success: function () {
+                $.ajax({
+                    url: `/order/${orderId}`,
+                    method: 'DELETE',
+                    success: function () {
+                        alert("주문이 취소되었습니다.");
+                        window.location.href = "/orders";
+                    },
+                    error: function (err) {
+                        console.error('주문 취소 요청 실패:', err);
+                        alert("주문 취소에 실패했습니다. 다시 시도해주세요.");
+                    }
+                });
+            },
+            error: function (err) {
+                console.error('아임포트 결제 취소 실패:', err);
+                alert("결제 취소에 실패했습니다. 다시 시도해주세요.");
+            }
+        });
+    }
+</script>
 
 
 </html>
