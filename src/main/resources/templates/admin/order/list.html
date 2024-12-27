@@ -80,12 +80,19 @@
                         </td>
 
                         <td>
-                            <form method="post" th:action="@{/order/{orderId}(orderId=${order.id})}" >
-                                <input type="hidden" name="_method" value="DELETE"/>
-                                <button type="submit" class="btn btn-sm btn-outline-danger"
-                                        onclick="return confirm('정말 주문을 취소시키겠습니까?')">취소
-                                </button>
-                            </form>
+                            <span th:if="${order.orderStatus.name() == 'CANCEL'}" class="text-muted">
+                                취소 완료
+                            </span>
+                            <span th:if="${order.deliveryStatus != null}" class="text-muted">
+                                취소 불가
+                            </span>
+                            <a class="btn btn-sm btn-outline-dark"
+                               th:if="${order.orderStatus.name() != 'CANCEL' and order.deliveryStatus == null}"
+                               th:data-order-id="${order.id}"
+                               th:data-merchant-uid="${order.merchantUid}"
+                               th:data-total-price="${order.totalPrice}" onclick="cancelPay(this)">
+                                주문 취소
+                            </a>
                         </td>
 
                     </tr>
@@ -121,5 +128,39 @@
     </div>
 </div>
 
+<script>
+    function cancelPay(element) {
+        const orderId = element.getAttribute('data-order-id');
+        const merchantUid = element.getAttribute('data-merchant-uid');
+        const totalPrice = element.getAttribute('data-total-price');
+        $.ajax({
+            url: '/api/payment/cancel',
+            type: "POST",
+            contentType: 'application/json',
+            data: JSON.stringify({
+                merchant_uid: merchantUid,
+                amount: totalPrice
+            }),
+            success: function () {
+                $.ajax({
+                    url: `/order/${orderId}`,
+                    method: 'DELETE',
+                    success: function () {
+                        alert("주문이 취소되었습니다.");
+                        window.location.href = "/orders";
+                    },
+                    error: function (err) {
+                        console.error('주문 취소 요청 실패:', err);
+                        alert("주문 취소에 실패했습니다. 다시 시도해주세요.");
+                    }
+                });
+            },
+            error: function (err) {
+                console.error('아임포트 결제 취소 실패:', err);
+                alert("결제 취소에 실패했습니다. 다시 시도해주세요.");
+            }
+        });
+    }
+</script>
 
 </html>

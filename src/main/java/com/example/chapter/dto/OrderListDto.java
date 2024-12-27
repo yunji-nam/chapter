@@ -19,6 +19,7 @@ public class OrderListDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime orderDate;
     private DeliveryStatus deliveryStatus;
+    private int totalPrice;
 
     public OrderListDto(Order order) {
         this.id = order.getId();
@@ -29,6 +30,9 @@ public class OrderListDto {
         this.orderStatus = order.getStatus();
         this.orderDate = order.getOrderDate();
         this.deliveryStatus = order.getDelivery().getStatus();
+        this.totalPrice = books.stream()
+                .mapToInt(book -> book.getPrice() * book.getQuantity())
+                .sum();
     }
 
 }

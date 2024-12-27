@@ -35,17 +35,20 @@
 
                     <tr th:each="orderItems : ${order.books}">
                         <td>
-                            <ul style="list-style: none; padding: 0;">
-                                <li style="margin-bottom: 10px;">
-                                    <img th:src="${orderItems.image}" alt="book cover"
-                                         style="width: 50px; height: 75px; margin-right: 10px;"/>
-                                    <div>
-                                        <strong th:text="${orderItems.title}"></strong>
-                                        | <span th:text="${orderItems.author}"></span>
-                                    </div>
-                                    <span th:text="${#numbers.formatInteger(orderItems.price, 3, 'COMMA')} + '원'"></span>
-                                </li>
-                            </ul>
+                            <a th:href="@{/book/{bookId}(bookId=${orderItems.bookId})}">
+                                <ul style="list-style: none; padding: 0;">
+                                    <li style="margin-bottom: 10px;">
+                                        <img th:src="${orderItems.image}" alt="book cover"
+                                             style="width: 50px; height: 75px; margin-right: 10px;"/>
+                                        <div>
+                                            <strong th:text="${orderItems.title}"></strong>
+                                            | <span th:text="${orderItems.author}"></span>
+                                        </div>
+                                        <span th:text="${#numbers.formatInteger(orderItems.price, 3, 'COMMA')} + '원'"></span>
+                                    </li>
+                                </ul>
+                            </a>
+
                         </td>
                         <td th:text="${orderItems.quantity + '개'}"></td>
                         <td th:text="${order.deliveryStatus != null ? order.deliveryStatus : order.orderStatus}"></td>
@@ -54,8 +57,7 @@
                                th:href="@{/book/{orderItemId}/review(orderItemId=${orderItems.orderItemId})}">
                                 작성하기
                             </a>
-                            <a th:case="'COMPLETED'" class="btn btn-sm btn-secondary"
-                               th:href="@{/book/{bookId}/review/{reviewId}(bookId=${orderItems.bookId}, reviewId=${})}">>
+                            <a th:case="'COMPLETED'" class="btn btn-sm btn-secondary">
                                 작성완료
                             </a>
                             <button th:case="'NOT_ALLOWED'" class="btn btn-sm btn-secondary" disabled>
@@ -71,6 +73,14 @@
                     <span>총 결제 금액 </span>
                     <span th:text="${#numbers.formatInteger(order.totalPrice, 3, 'COMMA')} + ' 원'"
                           style="margin-left: 10px;"></span>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; margin-top: 13px; margin-bottom: 25px;">
+                    <button type="button" class="btn btn-outline-danger"
+                            th:if="${order.orderStatus.name() != 'CANCEL' and order.deliveryStatus == null}"
+                            th:onclick="'cancelPay(' + ${order.id} + ')'">
+                        취소하기
+                    </button>
                 </div>
 
                 <div style="font-weight: bold">배송 정보</div>
@@ -90,10 +100,6 @@
                     </tbody>
                 </table>
 
-                <button type="button" class="btn btn-sm btn-outline-dark"
-                        th:onclick="'cancelPay(' + ${order.id} + ')'">
-                    주문취소
-                </button>
 
             </div>
         </div>
