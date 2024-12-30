@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -38,7 +39,6 @@ public class BookService {
         bookRepository.save(book);
     }
 
-
     // 도서 모두 조회
     public Page<BookListDto> getBooks(String sortType, int pageNo, int size) {
         Pageable pageable = PageRequest.of(pageNo, size, Sort.by(Sort.Direction.DESC, sortType));
@@ -51,7 +51,20 @@ public class BookService {
     public Page<BookListDto> getBooksByCategory(Category category, String sortType, int pageNo, int size) {
         Pageable pageable = PageRequest.of(pageNo, size, Sort.by(Sort.Direction.DESC, sortType));
         Page<Book> page = bookRepository.findByCategory(category, pageable);
+        return page.map(BookListDto::new);
+    }
 
+    // 주간 베스트 도서 조회
+    public Page<BookListDto> getBooksByBestSelling(Pageable pageable) {
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusDays(7);
+        return bookRepository.findBestSellingBooks(oneWeekAgo, pageable);
+    }
+
+    // 최신 도서 조회
+    public Page<BookListDto> getBooksByLatest(Pageable pageable) {
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusDays(30);
+        LocalDateTime now = LocalDateTime.now();
+        Page<Book> page = bookRepository.findByCreatedAtBetweenOrderByIdDesc(oneWeekAgo, now, pageable);
         return page.map(BookListDto::new);
     }
 
@@ -81,6 +94,11 @@ public class BookService {
     }
 
     // 도서 검색
+    public Page<BookListDto> searchBook(String keyword, Pageable pageable) {
+        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
+        return bookRepository.findAllByKeywordIgnoreCase(keyword, pageRequest);
+    }
+
     private Book findBook(Long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("책을 찾을 수 없습니다."));
@@ -92,7 +110,4 @@ public class BookService {
         }
     }
 
-    public Page<BookListDto> searchBook(String keyword, Pageable pageable) {
-        return bookRepository.findAllByKeywordContainsIgnoreCase(keyword, pageable);
-    }
 }

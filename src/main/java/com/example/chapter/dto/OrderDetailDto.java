@@ -32,7 +32,7 @@ public class OrderDetailDto {
             .mapToInt(book -> book.getPrice() * book.getQuantity())
             .sum();
         this.orderStatus = order.getStatus();
-        this.orderDate = order.getOrderDate();
+        this.orderDate = order.getCreatedAt();
         this.deliveryStatus = order.getDelivery().getStatus();
         this.username = order.getUser().getName();
         this.phone = order.getUser().getPhone();

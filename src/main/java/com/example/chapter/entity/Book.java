@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Book {
+public class Book extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class Book {
     @Column(nullable = false)
     private String publisher;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String isbn;
 
     private int pages;
@@ -34,6 +34,7 @@ public class Book {
     @Enumerated(EnumType.STRING)
     private Category category;
 
+    @Column(nullable = false)
     private LocalDate publishedDate;
 
     private int price;

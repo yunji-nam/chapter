@@ -28,7 +28,6 @@ public class ReviewService {
     private final OrderItemRepository orderItemRepository;
 
     public void addReview(Long orderItemId, ReviewRegistrationDto dto, User user) {
-        log.info("add review 들어옴");
         OrderItem orderItem = orderItemRepository.findById(orderItemId).orElseThrow(() -> new EntityNotFoundException("주문한 책을 찾을 수 없습니다."));
 
         String content = dto.getContent();
@@ -51,12 +50,12 @@ public class ReviewService {
     }
 
     public Page<ReviewResponseDto> getReviews(Long bookId, int pageNo, int size) {
-        Pageable pageable = PageRequest.of(pageNo, size, Sort.by(Sort.Direction.DESC, "modifiedDate"));
+        Pageable pageable = PageRequest.of(pageNo, size, Sort.by(Sort.Direction.DESC, "modifiedAt"));
         return reviewRepository.findAllByBookId(bookId, pageable).map(ReviewResponseDto::new);
     }
 
     public List<ReviewResponseDto> getAllMyReviews(User user) {
-        return reviewRepository.findAllByUserIdOrderByCreatedDate(user.getId()).stream().map(ReviewResponseDto::new).toList();
+        return reviewRepository.findAllByUserIdOrderByCreatedAt(user.getId()).stream().map(ReviewResponseDto::new).toList();
     }
 
     public ReviewResponseDto getReview(Long id) {

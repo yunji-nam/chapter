@@ -1,7 +1,6 @@
 package com.example.chapter.controller;
 
 import com.example.chapter.dto.OrderListDto;
-import com.example.chapter.entity.OrderStatus;
 import com.example.chapter.security.UserDetailsImpl;
 import com.example.chapter.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 
@@ -37,10 +38,4 @@ public class OrderAdminController {
         return "admin/order/list";
     }
 
-    // 주문 상태 변경
-    @PutMapping("/order/{orderId}/status")
-    public String updateOrderStatus(@PathVariable Long orderId, @RequestParam("status") OrderStatus status) {
-        orderService.updateOrderStatus(orderId, status);
-        return "redirect:/admin/orders";
-    }
 }

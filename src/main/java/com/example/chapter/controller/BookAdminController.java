@@ -52,7 +52,7 @@ public class BookAdminController {
                              @Valid BookRegistrationDto form,
                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
         bookService.updateBook(bookId, form, userDetails.getUser());
-        return "redirect:/book/" + bookId;
+        return "redirect:/admin/books";
     }
 
     // 도서 삭제
@@ -62,6 +62,7 @@ public class BookAdminController {
         return "redirect:/admin/books";
     }
 
+    // 도서 목록 조회
     @GetMapping("/books")
     public String getAllBooks(@RequestParam(required = false) String category,
                               @RequestParam(defaultValue = "id") String sortType,

@@ -43,21 +43,7 @@
                             </ul>
                         </td>
                         <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd')}" class="col-wide"></td>
-                        <td>
-                            <form method="post" th:action="@{/admin/order/{orderId}/status(orderId=${order.id})}">
-                                <input type="hidden" name="_method" value="PUT"/>
-                                <label>
-                                    <select name="status" th:value="${order.orderStatus.toString()}"
-                                            class="form-select">
-                                        <option value="PAID" th:text="'결제완료'"
-                                                th:selected="${order.orderStatus.name() == 'PAID'}"></option>
-                                        <option value="CANCEL" th:text="'취소'"
-                                                th:selected="${order.orderStatus.name() == 'CANCEL'}"></option>
-                                    </select>
-                                </label>
-                                <button type="submit" class="btn btn-info btn-sm">변경</button>
-                            </form>
-                        </td>
+                        <td th:text="${order.orderStatus.getStatusName()}"></td>
                         <td>
                             <form method="post" th:action="@{/admin/delivery/{orderId}/status(orderId=${order.id})}">
                                 <input type="hidden" name="_method" value="PUT"/>
@@ -143,7 +129,7 @@
             }),
             success: function () {
                 $.ajax({
-                    url: `/order/${orderId}`,
+                    url: `/api/order/${orderId}`,
                     method: 'DELETE',
                     success: function () {
                         alert("주문이 취소되었습니다.");

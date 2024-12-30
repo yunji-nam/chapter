@@ -4,7 +4,6 @@ import com.example.chapter.dto.OrderBookInfo;
 import com.example.chapter.dto.OrderDetailDto;
 import com.example.chapter.dto.OrderListDto;
 import com.example.chapter.entity.Order;
-import com.example.chapter.entity.OrderStatus;
 import com.example.chapter.entity.ReviewStatus;
 import com.example.chapter.entity.User;
 import com.example.chapter.repository.OrderRepository;
@@ -78,9 +77,9 @@ public class OrderService {
         }
         Page<Order> page;
         if (user.isAdmin()) {
-            page = orderRepository.findByOrderDateBetween(startDate, endDate, pageable);
+            page = orderRepository.findByCreatedAtBetween(startDate, endDate, pageable);
         } else {
-            page = orderRepository.findByUserIdAndOrderDateBetween(user.getId(), startDate, endDate, pageable);
+            page = orderRepository.findByUserIdAndCreatedAtBetween(user.getId(), startDate, endDate, pageable);
         }
 
         return page.map(OrderListDto::new);
@@ -95,13 +94,7 @@ public class OrderService {
     }
 
     private PageRequest getPageable(int pageNo, int size) {
-        return PageRequest.of(pageNo, size, Sort.by(Sort.Direction.DESC, "orderDate"));
-    }
-
-    @Transactional
-    public void updateOrderStatus(Long orderId, OrderStatus status) {
-        Order order = findOrderById(orderId);
-        order.updateStatus(status);
+        return PageRequest.of(pageNo, size, Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 
     private static void checkUser(User user, Order order) {

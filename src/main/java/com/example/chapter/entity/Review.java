@@ -5,12 +5,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Review {
+public class Review extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,10 +18,6 @@ public class Review {
     private String content;
 
     private int rating;
-
-    private LocalDateTime createdDate;
-
-    private LocalDateTime modifiedDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_item_id", nullable = false)
@@ -36,8 +30,6 @@ public class Review {
     public Review(String content, int rating, OrderItem orderItem, User user) {
         this.content = content;
         this.rating = rating;
-        this.createdDate = LocalDateTime.now();
-        this.modifiedDate = LocalDateTime.now();
         this.orderItem = orderItem;
         this.user = user;
     }
@@ -45,6 +37,5 @@ public class Review {
     public void update(String content, int rating) {
         this.content = content;
         this.rating = rating;
-        this.modifiedDate = LocalDateTime.now();
     }
 }

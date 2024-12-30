@@ -83,10 +83,23 @@ public class BookController {
                              @PageableDefault(size = 3) Pageable pageable,
                              Model model) {
         Page<BookListDto> searchResults = bookService.searchBook(keyword, pageable);
-        model.addAttribute("searchResults", searchResults);
+        model.addAttribute("bookList", searchResults);
         model.addAttribute("keyword", keyword);
 
         return "book/search";
     }
 
+    @GetMapping("/books/best")
+    public String getBooksByBestSelling(@PageableDefault(size = 3) Pageable pageable, Model model) {
+        Page<BookListDto> booksByBestSelling = bookService.getBooksByBestSelling(pageable);
+        model.addAttribute("bookList", booksByBestSelling);
+        return "book/best";
+    }
+
+    @GetMapping("/books/new")
+    public String getBooksByLatest(@PageableDefault(size = 3) Pageable pageable, Model model) {
+        Page<BookListDto> booksByLatest = bookService.getBooksByLatest(pageable);
+        model.addAttribute("bookList", booksByLatest);
+        return "book/new";
+    }
 }

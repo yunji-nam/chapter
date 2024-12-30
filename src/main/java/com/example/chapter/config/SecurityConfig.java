@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .requestMatchers("/login", "/", "/join", "/css/**", "/images/**",
                         "/kakao/**", "/admin/join", "/books", "/api/**").permitAll()
                 .requestMatchers(GET, "/book/**").permitAll()
+                .requestMatchers(GET, "/books/**").permitAll()
                 .requestMatchers(GET, "/search").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated());

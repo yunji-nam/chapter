@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +14,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Table(name = "orders")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Order {
+public class Order extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,8 +30,6 @@ public class Order {
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
-    private LocalDateTime orderDate;
-
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
@@ -42,7 +39,6 @@ public class Order {
     public Order(String merchantUid, User user, Delivery delivery, List<OrderItem> items) {
         this.merchantUid = merchantUid;
         this.user = user;
-        this.orderDate = LocalDateTime.now();
         this.delivery = delivery;
         this.status = OrderStatus.PAID;
         this.items = items;
@@ -64,10 +60,6 @@ public class Order {
         for (OrderItem orderItem : items) {
             orderItem.cancel();
         }
-    }
-
-    public void updateStatus(OrderStatus status) {
-        this.status = status;
     }
 
 }

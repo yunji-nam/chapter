@@ -1,13 +1,15 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       layout:decorate="~{common/layout}"
       layout:fragment="content">
 
 
 <div class="container-fluid">
     <div class="row">
-        <div th:insert="~{common/sidebar_user::sidebar_user}" class="col-md-4 col-lg-3"></div>
+        <div sec:authorize="hasRole('ROLE_ADMIN')" th:include="~{common/sidebar_admin::sidebar_admin}" class="col-md-4 col-lg-3"></div>
+        <div sec:authorize="hasRole('ROLE_USER')" th:include="~{common/sidebar_user::sidebar_user}" class="col-md-4 col-lg-3"></div>
         <div class="col-md-8 ms-sm-auto col-lg-9">
             <div class="mt-4 ms-3" style="max-width: 1000px; margin: 0 auto; padding: 0 15px;">
                 <h5>주문 목록</h5>
@@ -108,7 +110,7 @@
             }),
             success: function () {
                 $.ajax({
-                    url: `/order/${orderId}`,
+                    url: `/api/order/${orderId}`,
                     method: 'DELETE',
                     success: function () {
                         alert("주문이 취소되었습니다.");

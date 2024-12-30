@@ -24,7 +24,7 @@ public class ReviewResponseDto {
         this.username = review.getUser().getName();
         this.content = review.getContent();
         this.rating = review.getRating();
-        this.createdDate = review.getCreatedDate();
-        this.modifiedDate = review.getModifiedDate();
+        this.createdDate = review.getCreatedAt();
+        this.modifiedDate = review.getModifiedAt();
     }
 }

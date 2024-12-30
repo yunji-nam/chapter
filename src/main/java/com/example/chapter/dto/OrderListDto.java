@@ -28,7 +28,7 @@ public class OrderListDto {
                 .map(OrderBookInfo::new)
                 .collect(Collectors.toList());
         this.orderStatus = order.getStatus();
-        this.orderDate = order.getOrderDate();
+        this.orderDate = order.getCreatedAt();
         this.deliveryStatus = order.getDelivery().getStatus();
         this.totalPrice = books.stream()
                 .mapToInt(book -> book.getPrice() * book.getQuantity())
