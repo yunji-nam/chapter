@@ -47,20 +47,14 @@
                         <td>
                             <form method="post" th:action="@{/admin/delivery/{orderId}/status(orderId=${order.id})}">
                                 <input type="hidden" name="_method" value="PUT"/>
-                                <label>
-                                    <select name="status"
-                                            th:value="${order.deliveryStatus != null ? order.deliveryStatus.toString() : ''}"
-                                            class="form-select">
-                                        <option value="" th:text="'선택'"
-                                                th:selected="${order.deliveryStatus == null}"></option>
-                                        <option value="READY" th:text="'배송준비중'"
-                                                th:selected="${order.deliveryStatus != null && order.deliveryStatus.name() == 'READY'}"></option>
-                                        <option value="SHIPPING" th:text="'배송중'"
-                                                th:selected="${order.deliveryStatus != null && order.deliveryStatus.name() == 'SHIPPING'}"></option>
-                                        <option value="DELIVERED" th:text="'배송완료'"
-                                                th:selected="${order.deliveryStatus != null && order.deliveryStatus.name() == 'DELIVERED'}"></option>
-                                    </select>
-                                </label>
+                                <select name="status" class="form-select form-select-sm">
+                                    <option value="" th:selected="${order.deliveryStatus == null}" disabled>선택</option>
+                                    <option th:each="status : ${deliveryStatus}"
+                                            th:value="${status}"
+                                            th:text="${status.statusName}"
+                                            th:selected="${status == order.deliveryStatus}">
+                                    </option>
+                                </select>
                                 <button type="submit" class="btn btn-info btn-sm">변경</button>
                             </form>
                         </td>
@@ -89,7 +83,7 @@
                 <ul class="pagination h-100 justify-content-center align-items-center">
                     <li class="page-item" th:classappend="${orders.hasPrevious()} ? '' : 'disabled'">
                         <a class="page-link"
-                           th:href="@{/admin/orders(pageNo=${orders.number - 1}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
+                           th:href="@{/orders(pageNo=${orders.number - 1}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
                            aria-label="Previous">
                             &laquo;
                         </a>
@@ -97,12 +91,12 @@
                     <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, orders.totalPages - 1)}"
                         th:classappend="${pageNum == orders.number} ? 'active'">
                         <a class="page-link"
-                           th:href="@{/admin/orders(pageNo=${pageNum}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
+                           th:href="@{/orders(pageNo=${pageNum}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
                            th:text="${pageNum + 1}"></a>
                     </li>
                     <li class="page-item" th:classappend="${orders.hasNext()} ? '' : 'disabled'">
                         <a class="page-link"
-                           th:href="@{/admin/orders(pageNo=${orders.number + 1}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
+                           th:href="@{/orders(pageNo=${orders.number + 1}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
                            aria-label="Next">
                             &raquo;
                         </a>

@@ -44,7 +44,7 @@
                             </ul>
                         </td>
                         <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd')}" class="col-wide"></td>
-                        <td th:text="${order.deliveryStatus != null ? order.deliveryStatus : order.orderStatus}"></td>
+                        <td th:text="${order.deliveryStatus != null ? order.deliveryStatus.getStatusName() : order.orderStatus.getStatusName()}"></td>
                         <td>
                             <span th:if="${order.orderStatus.name() == 'CANCEL'}" class="text-muted">
                                 취소 완료

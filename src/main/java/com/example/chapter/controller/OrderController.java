@@ -3,6 +3,7 @@ package com.example.chapter.controller;
 import com.example.chapter.dto.OrderDetailDto;
 import com.example.chapter.dto.OrderFormDto;
 import com.example.chapter.dto.OrderListDto;
+import com.example.chapter.entity.DeliveryStatus;
 import com.example.chapter.entity.Order;
 import com.example.chapter.entity.User;
 import com.example.chapter.security.UserDetailsImpl;
@@ -56,7 +57,11 @@ public class OrderController {
         model.addAttribute("orders", orders);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
+        model.addAttribute("deliveryStatus", DeliveryStatus.values());
 
+        if (userDetails.getUser().isAdmin()) {
+            return "admin/order/list";
+        }
         return "order/list";
     }
 

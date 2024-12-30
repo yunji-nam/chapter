@@ -8,8 +8,10 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div sec:authorize="hasRole('ROLE_ADMIN')" th:include="~{common/sidebar_admin::sidebar_admin}" class="col-md-4 col-lg-3"></div>
-        <div sec:authorize="hasRole('ROLE_USER')" th:include="~{common/sidebar_user::sidebar_user}" class="col-md-4 col-lg-3"></div>
+        <div sec:authorize="hasRole('ROLE_ADMIN')" th:include="~{common/sidebar_admin::sidebar_admin}"
+             class="col-md-4 col-lg-3"></div>
+        <div sec:authorize="hasRole('ROLE_USER')" th:include="~{common/sidebar_user::sidebar_user}"
+             class="col-md-4 col-lg-3"></div>
         <div class="col-md-8 ms-sm-auto col-lg-9">
             <div class="mt-4 ms-3" style="max-width: 600px; margin: 0 auto; padding: 0 15px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold; color: gray">
@@ -66,6 +68,7 @@
                                 작성불가
                             </button>
                         </td>
+
                     </tr>
 
 

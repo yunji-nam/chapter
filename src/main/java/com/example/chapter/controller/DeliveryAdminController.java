@@ -17,13 +17,13 @@ public class DeliveryAdminController {
     @PostMapping("/{orderId}/tracking")
     public String registerTrackingNumber(@PathVariable Long orderId, TrackingNumberDto dto) {
         deliveryService.registerTrackingNumber(orderId, dto);
-        return "redirect:/admin/orders";
+        return "redirect:/orders";
     }
 
     @PutMapping("/{orderId}/status")
     public String updateDeliveryStatus(@PathVariable Long orderId, @RequestParam DeliveryStatus status) {
         deliveryService.updateDeliveryStatus(orderId, status);
-        return "redirect:/admin/orders";
+        return "redirect:/orders";
     }
 
 }
