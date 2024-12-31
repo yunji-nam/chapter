@@ -46,6 +46,8 @@ public class Book extends TimeStamped {
 
     private String image;
 
+    private BookStatus status;
+
     public Book(String title, String author, String publisher, String isbn, int pages, Category category,
                 LocalDate publishedDate, int price, String description, int quantity, String image) {
         this.title = title;
@@ -59,6 +61,7 @@ public class Book extends TimeStamped {
         this.description = description;
         this.stockQuantity = quantity;
         this.image = image;
+        this.status = BookStatus.SELL;
     }
 
     public void update(Book book) {
@@ -72,6 +75,7 @@ public class Book extends TimeStamped {
         this.price = book.getPrice();
         this.description = book.getDescription();
         this.stockQuantity = book.getStockQuantity();
+        this.status = book.getStatus();
     }
 
     public void addStock(int quantity) {
@@ -84,6 +88,10 @@ public class Book extends TimeStamped {
             throw new OutOfStockException("재고가 부족합니다.");
         }
         this.stockQuantity = restStock;
+    }
+
+    public void updateStatus(BookStatus status) {
+        this.status = status;
     }
 
 }

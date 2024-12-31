@@ -79,30 +79,30 @@
                     </tbody>
                 </table>
 
-                <!--        페이지네이션->-->
-                <ul class="pagination h-100 justify-content-center align-items-center">
-                    <li class="page-item" th:classappend="${orders.hasPrevious()} ? '' : 'disabled'">
-                        <a class="page-link"
-                           th:href="@{/orders(pageNo=${orders.number - 1}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
-                           aria-label="Previous">
-                            &laquo;
-                        </a>
-                    </li>
-                    <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, orders.totalPages - 1)}"
-                        th:classappend="${pageNum == orders.number} ? 'active'">
-                        <a class="page-link"
-                           th:href="@{/orders(pageNo=${pageNum}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
-                           th:text="${pageNum + 1}"></a>
-                    </li>
-                    <li class="page-item" th:classappend="${orders.hasNext()} ? '' : 'disabled'">
-                        <a class="page-link"
-                           th:href="@{/orders(pageNo=${orders.number + 1}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
-                           aria-label="Next">
-                            &raquo;
-                        </a>
-                    </li>
-                </ul>
-
+                <div th:if="${orders.totalElements > 0}">
+                    <ul class="pagination h-100 justify-content-center align-items-center">
+                        <li class="page-item" th:classappend="${orders.hasPrevious()} ? '' : 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/orders(pageNo=${orders.number - 1}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
+                               aria-label="Previous">
+                                &laquo;
+                            </a>
+                        </li>
+                        <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, orders.totalPages - 1)}"
+                            th:classappend="${pageNum == orders.number} ? 'active'">
+                            <a class="page-link"
+                               th:href="@{/orders(pageNo=${pageNum}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
+                               th:text="${pageNum + 1}"></a>
+                        </li>
+                        <li class="page-item" th:classappend="${orders.hasNext()} ? '' : 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/orders(pageNo=${orders.number + 1}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
+                               aria-label="Next">
+                                &raquo;
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

@@ -5,9 +5,9 @@ import com.example.chapter.dto.BookListDto;
 import com.example.chapter.dto.BookRegistrationDto;
 import com.example.chapter.dto.ReviewResponseDto;
 import com.example.chapter.entity.Book;
+import com.example.chapter.entity.BookStatus;
 import com.example.chapter.entity.Category;
 import com.example.chapter.entity.Review;
-import com.example.chapter.entity.User;
 import com.example.chapter.repository.BookRepository;
 import com.example.chapter.repository.ReviewRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -31,10 +31,8 @@ public class BookService {
 //    private final S3Service s3Service;
 
     // 도서 등록
-    public void registerBook(BookRegistrationDto dto, User user) {
-        checkAuthority(user);
+    public void registerBook(BookRegistrationDto dto) {
         String imageUrl = "url";
-
         Book book = dto.toEntity(imageUrl);
         bookRepository.save(book);
     }
@@ -78,18 +76,16 @@ public class BookService {
 
     // 도서 수정
     @Transactional
-    public void updateBook(Long id, BookRegistrationDto dto, User user) {
+    public void updateBook(Long id, BookRegistrationDto dto) {
         Book book = findBook(id);
-        checkAuthority(user);
 
         book.update(dto.toEntity("url"));
     }
 
     // 도서 삭제
     @Transactional
-    public void deleteBook(Long id, User user) {
+    public void deleteBook(Long id) {
         Book book = findBook(id);
-        checkAuthority(user);
         bookRepository.delete(book);
     }
 
@@ -99,15 +95,17 @@ public class BookService {
         return bookRepository.findAllByKeywordIgnoreCase(keyword, pageRequest);
     }
 
+    // 도서 상태변경
+    @Transactional
+    public void updateBookStatus(Long bookId, BookStatus status) {
+        Book book = findBook(bookId);
+        book.updateStatus(status);
+    }
+
     private Book findBook(Long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("책을 찾을 수 없습니다."));
     }
 
-    private static void checkAuthority(User user) {
-        if (!user.isAdmin()) {
-            throw new IllegalArgumentException("접근 권한이 없습니다.");
-        }
-    }
 
 }

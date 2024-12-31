@@ -56,31 +56,33 @@
         </div>
     </div>
 
-    <ul class="pagination h-100 justify-content-center align-items-center" style="margin-top: 20px;">
-        <li class="page-item" th:classappend="${bookList.hasPrevious()} ? '' : 'disabled'">
+    <div th:if="${bookList.totalElements > 0}">
+        <ul class="pagination h-100 justify-content-center align-items-center" style="margin-top: 20px;">
+            <li class="page-item" th:classappend="${bookList.hasPrevious()} ? '' : 'disabled'">
 
-            <a class="page-link"
-               th:href="@{/books/new(page=${bookList.number - 1}, size=${bookList.size})}"
-               aria-label="Previous">
-                &laquo;
-            </a>
-        </li>
-        <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, bookList.totalPages - 1)}"
-            th:classappend="${pageNum == bookList.number} ? 'active'">
-            <a class="page-link"
-               th:href="@{/books/new(page=${pageNum}, size=${bookList.size})}"
-               th:text="${pageNum + 1}"></a>
-        </li>
+                <a class="page-link"
+                   th:href="@{/books/new(page=${bookList.number - 1}, size=${bookList.size})}"
+                   aria-label="Previous">
+                    &laquo;
+                </a>
+            </li>
+            <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, bookList.totalPages - 1)}"
+                th:classappend="${pageNum == bookList.number} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/books/new(page=${pageNum}, size=${bookList.size})}"
+                   th:text="${pageNum + 1}"></a>
+            </li>
 
 
-        <li class="page-item" th:classappend="${bookList.hasNext()} ? '' : 'disabled'">
-            <a class="page-link"
-               th:href="@{/books/new(page=${bookList.number + 1}, size=${bookList.size})}"
-               aria-label="Next">
-                &raquo;
-            </a>
-        </li>
-    </ul>
+            <li class="page-item" th:classappend="${bookList.hasNext()} ? '' : 'disabled'">
+                <a class="page-link"
+                   th:href="@{/books/new(page=${bookList.number + 1}, size=${bookList.size})}"
+                   aria-label="Next">
+                    &raquo;
+                </a>
+            </li>
+        </ul>
+    </div>
 
 </main>
 <script th:inline="javascript">

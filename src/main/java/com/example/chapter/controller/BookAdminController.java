@@ -1,15 +1,14 @@
 package com.example.chapter.controller;
 
+import com.example.chapter.dto.BookDetailDto;
 import com.example.chapter.dto.BookListDto;
 import com.example.chapter.dto.BookRegistrationDto;
-import com.example.chapter.dto.BookDetailDto;
+import com.example.chapter.entity.BookStatus;
 import com.example.chapter.entity.Category;
-import com.example.chapter.security.UserDetailsImpl;
 import com.example.chapter.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,9 +30,8 @@ public class BookAdminController {
 
     // 도서 등록
     @PostMapping("/book")
-    public String registerBook(@Valid BookRegistrationDto form,
-                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        bookService.registerBook(form, userDetails.getUser());
+    public String registerBook(@Valid BookRegistrationDto form) {
+        bookService.registerBook(form);
         return "redirect:/admin/books";
     }
 
@@ -49,16 +47,21 @@ public class BookAdminController {
     // 도서 수정
     @PutMapping("/book/{bookId}/edit")
     public String updateBook(@PathVariable Long bookId,
-                             @Valid BookRegistrationDto form,
-                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        bookService.updateBook(bookId, form, userDetails.getUser());
+                             @Valid BookRegistrationDto form) {
+        bookService.updateBook(bookId, form);
         return "redirect:/admin/books";
     }
 
     // 도서 삭제
     @DeleteMapping("/book/{bookId}")
-    public String deleteBook(@PathVariable Long bookId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        bookService.deleteBook(bookId, userDetails.getUser());
+    public String deleteBook(@PathVariable Long bookId) {
+        bookService.deleteBook(bookId);
+        return "redirect:/admin/books";
+    }
+
+    @PutMapping("/book/{bookId}/status")
+    public String updateBookStatus(@PathVariable Long bookId, @RequestParam BookStatus status) {
+        bookService.updateBookStatus(bookId, status);
         return "redirect:/admin/books";
     }
 
