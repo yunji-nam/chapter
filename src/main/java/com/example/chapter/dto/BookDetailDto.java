@@ -1,12 +1,12 @@
 package com.example.chapter.dto;
 
 import com.example.chapter.entity.Book;
+import com.example.chapter.entity.BookStatus;
 import com.example.chapter.entity.Category;
 import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class BookDetailDto {
@@ -23,6 +23,7 @@ public class BookDetailDto {
     private String description;
     private int stockQuantity;
     private String image;
+    private BookStatus status;
     private List<ReviewResponseDto> reviews;
 
 
@@ -39,6 +40,7 @@ public class BookDetailDto {
         this.description = book.getDescription();
         this.stockQuantity = book.getStockQuantity();
         this.image = book.getImage();
+        this.status = book.getStatus();
         this.reviews = reviews;
     }
 

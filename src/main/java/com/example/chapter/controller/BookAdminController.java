@@ -3,7 +3,6 @@ package com.example.chapter.controller;
 import com.example.chapter.dto.BookDetailDto;
 import com.example.chapter.dto.BookListDto;
 import com.example.chapter.dto.BookRegistrationDto;
-import com.example.chapter.entity.BookStatus;
 import com.example.chapter.entity.Category;
 import com.example.chapter.service.BookService;
 import jakarta.validation.Valid;
@@ -59,18 +58,13 @@ public class BookAdminController {
         return "redirect:/admin/books";
     }
 
-    @PutMapping("/book/{bookId}/status")
-    public String updateBookStatus(@PathVariable Long bookId, @RequestParam BookStatus status) {
-        bookService.updateBookStatus(bookId, status);
-        return "redirect:/admin/books";
-    }
 
     // 도서 목록 조회
     @GetMapping("/books")
     public String getAllBooks(@RequestParam(required = false) String category,
                               @RequestParam(defaultValue = "id") String sortType,
                               @RequestParam(defaultValue = "0") int pageNo,
-                              @RequestParam(defaultValue = "1") int size,
+                              @RequestParam(defaultValue = "5") int size,
                               Model model) {
         Page<BookListDto> bookDtos;
 

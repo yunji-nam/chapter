@@ -1,17 +1,14 @@
 package com.example.chapter.service;
 
-import com.example.chapter.dto.BookDetailDto;
-import com.example.chapter.dto.BookListDto;
-import com.example.chapter.dto.BookRegistrationDto;
-import com.example.chapter.dto.ReviewResponseDto;
+import com.example.chapter.dto.*;
 import com.example.chapter.entity.Book;
-import com.example.chapter.entity.BookStatus;
 import com.example.chapter.entity.Category;
 import com.example.chapter.entity.Review;
 import com.example.chapter.repository.BookRepository;
 import com.example.chapter.repository.ReviewRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class BookService {
 
@@ -97,9 +95,9 @@ public class BookService {
 
     // 도서 상태변경
     @Transactional
-    public void updateBookStatus(Long bookId, BookStatus status) {
-        Book book = findBook(bookId);
-        book.updateStatus(status);
+    public void updateBookStatus(BookStatusUpdateDto dto) {
+        List<Book> books = bookRepository.findAllById(dto.getBookIds());
+        books.forEach(book -> book.updateStatus(dto.getStatus()));
     }
 
     private Book findBook(Long id) {

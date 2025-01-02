@@ -40,12 +40,15 @@
                             </div>
                             <div class="d-flex flex-column align-items-end justify-content-center" style="flex: 1;">
                                 <button class="btn btn-sm btn-outline-danger mt-2" type="button"
-                                        th:id="'addToCart_' + ${book.id}" th:data-book-id="${book.id}">
+                                        th:id="'addToCart_' + ${book.id}" th:data-book-id="${book.id}"
+                                        th:classappend="${book.status.statusName == '품절' ? 'd-none' : ''}">
                                     장바구니
                                 </button>
                             </div>
                             <div class="d-flex flex-column align-items-end justify-content-center" style="flex: 1;">
-                                <button class="btn btn-sm btn-outline-primary mt-2" type="button" id="proceedToOrder">
+                                <button class="btn btn-sm btn-outline-dark mt-2" type="button" id="proceedToOrder"
+                                        th:text="${book.status.statusName == '품절' ? '품절' : '구매하기'}"
+                                        th:disabled="${book.status.statusName == '품절'} ? 'disabled'">
                                     구매하기
                                 </button>
                             </div>

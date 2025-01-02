@@ -46,6 +46,7 @@ public class Book extends TimeStamped {
 
     private String image;
 
+    @Enumerated(EnumType.STRING)
     private BookStatus status;
 
     public Book(String title, String author, String publisher, String isbn, int pages, Category category,

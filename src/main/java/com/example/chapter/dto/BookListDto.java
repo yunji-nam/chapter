@@ -1,6 +1,7 @@
 package com.example.chapter.dto;
 
 import com.example.chapter.entity.Book;
+import com.example.chapter.entity.BookStatus;
 import com.example.chapter.entity.Category;
 import lombok.Getter;
 
@@ -19,6 +20,7 @@ public class BookListDto {
     private int price;
     private int stockQuantity;
     private String image;
+    private BookStatus status;
     private boolean likeStatus;
 
     public BookListDto(Book book) {
@@ -32,6 +34,7 @@ public class BookListDto {
         this.price = book.getPrice();
         this.stockQuantity = book.getStockQuantity();
         this.image = book.getImage();
+        this.status = book.getStatus();
     }
 
     public void setLikeStatus(boolean likeStatus) {

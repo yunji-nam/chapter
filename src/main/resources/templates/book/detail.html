@@ -30,9 +30,11 @@
                     </button>
                     <input class="form-control text-center me-3" id='inputQuantity' type="number" value="1"
                            style="max-width: 4rem"/>
-                    <button class="btn btn-outline-dark flex-shrink-0" type="button" id="addToCart">
-                        <i class="bi-cart-fill me-1"></i>
-                        장바구니 담기
+                    <button class="btn btn-outline-dark flex-shrink-0" type="button" id="addToCart"
+                            th:disabled="${book.status.statusName == '품절'} ? 'disabled'">
+                        <i th:classappend="${book.status.statusName == '품절' ? 'd-none' : ''}" class="bi-cart-fill me-1"></i>
+                        <span th:text="${book.status.statusName == '품절' ? '품절' : '장바구니 담기'}">
+                        </span>
                     </button>
                 </div>
             </div>
@@ -43,7 +45,13 @@
 
 <section class="py-5 bg-light">
     <div class="container px-4 px-lg-5">
-        <h6 class="fw-bolder mb-4">review</h6>
+        <h6 class="fw-bolder mb-2">상세 정보</h6>
+        <div class="border-bottom mb-2"></div>
+        <div th:text="'분류 : ' + ${book.category.categoryName}"></div>
+        <div th:text="'ISBN : ' + ${book.isbn}"></div>
+        <div th:text="'발행일자 : ' + ${#temporals.format(book.publishedDate, 'yyyy년 MM월 dd일')}"></div>
+        <div class="mb-5" th:text="'쪽수 : ' + ${book.pages} + '쪽'"></div>
+        <h6 class="fw-bolder mb-2">review</h6>
         <div class="border-bottom mb-2"></div>
         <div id="reviews" class="mb-4"></div>
         <div id="pagination" class="d-flex justify-content-center mt-5">
