@@ -7,6 +7,7 @@ import com.example.chapter.entity.Category;
 import com.example.chapter.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/admin")
 public class BookAdminController {
 
@@ -38,12 +40,13 @@ public class BookAdminController {
     @GetMapping("/book/{bookId}/edit")
     public String updateBookForm(@PathVariable Long bookId, Model model) {
         BookDetailDto responseDto = bookService.getBook(bookId);
+        BookRegistrationDto form = new BookRegistrationDto(responseDto);
         model.addAttribute("form", new BookRegistrationDto(responseDto));
         model.addAttribute("categories", Category.values());
         return "admin/book/update";
     }
 
-    // 도서 수정
+    // 도서 정보 수정
     @PutMapping("/book/{bookId}/edit")
     public String updateBook(@PathVariable Long bookId,
                              @Valid BookRegistrationDto form) {

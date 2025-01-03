@@ -1,5 +1,6 @@
 package com.example.chapter.entity;
 
+import com.example.chapter.dto.BookRegistrationDto;
 import com.example.chapter.exception.OutOfStockException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -65,18 +66,17 @@ public class Book extends TimeStamped {
         this.status = BookStatus.SELL;
     }
 
-    public void update(Book book) {
-        this.title = book.getTitle();
-        this.author = book.getAuthor();
-        this.publisher = book.getPublisher();
-        this.isbn = book.getIsbn();
-        this.pages = book.getPages();
-        this.category = book.getCategory();
-        this.publishedDate = book.getPublishedDate();
-        this.price = book.getPrice();
-        this.description = book.getDescription();
-        this.stockQuantity = book.getStockQuantity();
-        this.status = book.getStatus();
+    public void update(BookRegistrationDto dto) {
+        this.title = dto.getTitle();
+        this.author = dto.getAuthor();
+        this.publisher = dto.getPublisher();
+        this.isbn = dto.getIsbn();
+        this.pages = dto.getPages();
+        this.category = dto.getCategory();
+        this.publishedDate = dto.getPublishedDate();
+        this.price = dto.getPrice();
+        this.description = dto.getDescription();
+        this.stockQuantity = dto.getQuantity();
     }
 
     public void addStock(int quantity) {
@@ -93,6 +93,10 @@ public class Book extends TimeStamped {
 
     public void updateStatus(BookStatus status) {
         this.status = status;
+    }
+
+    public void updateImage(String image) {
+        this.image = image;
     }
 
 }

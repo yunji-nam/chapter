@@ -9,6 +9,7 @@ import jakarta.validation.constraints.PastOrPresent;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -31,6 +32,7 @@ public class BookRegistrationDto {
     @NotNull
     private Category category;
     @PastOrPresent
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate publishedDate;
     @Min(1)
     private int price;
@@ -39,6 +41,7 @@ public class BookRegistrationDto {
     @Min(0)
     private int quantity;
     private MultipartFile image;
+    private String imageUrl;
 
     public BookRegistrationDto(BookDetailDto dto) {
         this.title = dto.getTitle();
@@ -51,10 +54,10 @@ public class BookRegistrationDto {
         this.price = dto.getPrice();
         this.description = dto.getDescription();
         this.quantity = dto.getStockQuantity();
+        this.imageUrl = dto.getImage();
     }
 
     public Book toEntity(String imageUrl) {
         return new Book(title, author, publisher, isbn, pages, category, publishedDate, price, description, quantity, imageUrl);
     }
-
 }

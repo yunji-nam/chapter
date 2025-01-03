@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,11 +27,11 @@ public class BookService {
 
     private final BookRepository bookRepository;
     private final ReviewRepository reviewRepository;
-//    private final S3Service s3Service;
+    private final S3Service s3Service;
 
     // 도서 등록
     public void registerBook(BookRegistrationDto dto) {
-        String imageUrl = "url";
+        String imageUrl = s3Service.upload(dto.getImage());
         Book book = dto.toEntity(imageUrl);
         bookRepository.save(book);
     }
@@ -67,8 +68,7 @@ public class BookService {
     // 도서 상세 조회
     public BookDetailDto getBook(Long id) {
         Book book = findBook(id);
-        List<Review> reviews = reviewRepository.findAllByBookId(id);
-        List<ReviewResponseDto> reviewResponseDto = reviews.stream().map(ReviewResponseDto::new).toList();
+        List<ReviewResponseDto> reviewResponseDto = reviewRepository.findAllByBookId(id);
         return new BookDetailDto(book, reviewResponseDto);
     }
 
@@ -76,8 +76,15 @@ public class BookService {
     @Transactional
     public void updateBook(Long id, BookRegistrationDto dto) {
         Book book = findBook(id);
+        book.update(dto);
+    }
 
-        book.update(dto.toEntity("url"));
+    // 도서 이미지 변경
+    @Transactional
+    public void updateBookImage(Long bookId, MultipartFile file) {
+        Book book = findBook(bookId);
+        String imageUrl = s3Service.upload(file);
+        book.updateImage(imageUrl);
     }
 
     // 도서 삭제
@@ -104,6 +111,5 @@ public class BookService {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("책을 찾을 수 없습니다."));
     }
-
 
 }
