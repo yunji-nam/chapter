@@ -81,10 +81,16 @@ public class BookService {
 
     // 도서 이미지 변경
     @Transactional
-    public void updateBookImage(Long bookId, MultipartFile file) {
+    public String updateBookImage(Long bookId, MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("file이 비어 있습니다.");
+        }
         Book book = findBook(bookId);
-        String imageUrl = s3Service.upload(file);
-        book.updateImage(imageUrl);
+        String imageUrl = book.getImage();
+        String newImageUrl = s3Service.upload(file);
+        book.updateImage(newImageUrl);
+        s3Service.delete(imageUrl);
+        return newImageUrl;
     }
 
     // 도서 삭제

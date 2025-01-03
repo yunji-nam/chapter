@@ -11,6 +11,7 @@ public class ReviewResponseDto {
     private Long id;
     private Long bookId;
     private String bookTitle;
+    private String bookAuthor;
     private String username;
     private String content;
     private int rating;
@@ -21,6 +22,7 @@ public class ReviewResponseDto {
         this.id = review.getId();
         this.bookId = review.getOrderItem().getBook().getId();
         this.bookTitle = review.getOrderItem().getBook().getTitle();
+        this.bookAuthor = review.getOrderItem().getBook().getAuthor();
         this.username = review.getUser().getName();
         this.content = review.getContent();
         this.rating = review.getRating();

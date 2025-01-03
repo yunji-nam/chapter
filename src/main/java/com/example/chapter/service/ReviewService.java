@@ -16,8 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -29,6 +27,11 @@ public class ReviewService {
 
     public void addReview(Long orderItemId, ReviewRegistrationDto dto, User user) {
         OrderItem orderItem = orderItemRepository.findById(orderItemId).orElseThrow(() -> new EntityNotFoundException("주문한 책을 찾을 수 없습니다."));
+        Order order = orderRepository.findByItemsId(orderItemId).orElseThrow(() -> new EntityNotFoundException("주문을 찾을 수 없습니다."));
+        ReviewStatus reviewStatus = getReviewStatus(order.getId(), user, orderItemId);
+        if (!(reviewStatus == ReviewStatus.CAN_WRITE)) {
+            throw new IllegalArgumentException("잘못된 접근입니다.");
+        }
 
         String content = dto.getContent();
         int rating = dto.getRating();
@@ -49,13 +52,19 @@ public class ReviewService {
         return ReviewStatus.NOT_ALLOWED;
     }
 
-    public Page<ReviewResponseDto> getReviews(Long bookId, int pageNo, int size) {
+    // 하나의 책에 대한 리뷰 리스트
+    public Page<ReviewResponseDto> getBookReviews(Long bookId, int pageNo, int size) {
         Pageable pageable = PageRequest.of(pageNo, size, Sort.by(Sort.Direction.DESC, "modifiedAt"));
-        return reviewRepository.findAllByBookId(bookId, pageable).map(ReviewResponseDto::new);
+        return reviewRepository.findAllByBookId(bookId, pageable);
     }
 
-    public List<ReviewResponseDto> getAllMyReviews(User user) {
-        return reviewRepository.findAllByUserIdOrderByCreatedAt(user.getId()).stream().map(ReviewResponseDto::new).toList();
+    // 리뷰 목록 조회
+    public Page<ReviewResponseDto> getReviews(User user, Pageable pageable) {
+        Page<Review> reviews = reviewRepository.findAllByUserIdOrderByCreatedAt(user.getId(), pageable);
+        if (user.isAdmin()) {
+            reviews = reviewRepository.findAll(pageable);
+        }
+        return reviews.map(ReviewResponseDto::new);
     }
 
     public ReviewResponseDto getReview(Long id) {
@@ -87,7 +96,7 @@ public class ReviewService {
     }
 
     private static void checkUser(User user, Review review) {
-        if (!user.getId().equals(review.getUser().getId()) && !user.isAdmin()) {
+        if (!user.getId().equals(review.getUser().getId()) || !user.isAdmin()) {
             throw new IllegalArgumentException("권한이 없습니다.");
         }
     }

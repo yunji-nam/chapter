@@ -16,10 +16,10 @@ public class ReviewApiController {
     private final ReviewService reviewService;
 
     @GetMapping("/api/book/{bookId}/reviews")
-    public Page<ReviewResponseDto> getReviews(@PathVariable Long bookId,
+    public Page<ReviewResponseDto> getBookReviews(@PathVariable Long bookId,
                                               @RequestParam(defaultValue = "0") int pageNo,
                                               @RequestParam(defaultValue = "5") int size) {
-        return reviewService.getReviews(bookId, pageNo, size);
+        return reviewService.getBookReviews(bookId, pageNo, size);
     }
 
     @DeleteMapping("/api/book/{bookId}/review/{reviewId}")

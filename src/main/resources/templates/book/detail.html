@@ -32,7 +32,8 @@
                            style="max-width: 4rem"/>
                     <button class="btn btn-outline-dark flex-shrink-0" type="button" id="addToCart"
                             th:disabled="${book.status.statusName == '품절'} ? 'disabled'">
-                        <i th:classappend="${book.status.statusName == '품절' ? 'd-none' : ''}" class="bi-cart-fill me-1"></i>
+                        <i th:classappend="${book.status.statusName == '품절' ? 'd-none' : ''}"
+                           class="bi-cart-fill me-1"></i>
                         <span th:text="${book.status.statusName == '품절' ? '품절' : '장바구니 담기'}">
                         </span>
                     </button>
@@ -51,6 +52,10 @@
         <div th:text="'ISBN : ' + ${book.isbn}"></div>
         <div th:text="'발행일자 : ' + ${#temporals.format(book.publishedDate, 'yyyy년 MM월 dd일')}"></div>
         <div class="mb-5" th:text="'쪽수 : ' + ${book.pages} + '쪽'"></div>
+    </div>
+</section>
+<section class="py-5">
+    <div class="container px-4 px-lg-5" style="max-width: 800px;">
         <h6 class="fw-bolder mb-2">review</h6>
         <div class="border-bottom mb-2"></div>
         <div id="reviews" class="mb-4"></div>
@@ -106,7 +111,7 @@
         $.ajax({
             type: method,
             url: `/api/book/${bookId}/like`,
-            success: function() {
+            success: function () {
                 if (method === "POST") {
                     heartIcon.removeClass("bi-heart").addClass("bi-heart-fill");
                     heartIcon.css('color', 'red');
@@ -155,24 +160,32 @@
 
     function renderReviews(reviews) {
         const reviewsContainer = document.getElementById("reviews");
-        reviewsContainer.innerHTML = reviews.map(review => `
-               <div class="review mb-3">
-                           <div class="d-flex align-items-center">
-                               <div class="rating" style="color: gold;">
-                                   ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
-                               </div>
-                               <div class="ms-3 flex-grow-1">
-                               <a href="/book/${review.bookId}/review/${review.id}" class="review-link">
-                                    ${review.content}
-                               </a>
-                               </div>
-                               <div class="ms-3">
-                                   <span>${review.username}</span> |
-                                   <span>${formatDate(review.createdDate)}</span>
-                               </div>
-                           </div>
-                       </div>
-            `).join('');
+        reviewsContainer.innerHTML = reviews.map(review => {
+                const maxLength = 30;
+                let content = review.content;
+                if (content.length > maxLength) {
+                    content = content.substring(0, maxLength) + '···';
+                }
+                return `
+                    <div class="review mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="rating" style="color: gold;">
+                                ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
+                            </div>
+                            <div class="ms-3 flex-grow-1">
+                                <a href="/book/${review.bookId}/review/${review.id}" class="review-link">
+                                    ${content}
+                                </a>
+                            </div>
+                            <div class="ms-3">
+                                <span>${review.username}</span> |
+                                <span>${formatDate(review.createdDate)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        ).join('');
     }
 
     function updatePagination(data) {

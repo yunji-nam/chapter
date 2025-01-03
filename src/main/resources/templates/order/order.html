@@ -40,9 +40,9 @@
 
                         <input type="hidden" id="username" th:value="${form.username}">
                         <input type="hidden" id="userPhone" th:value="${form.userPhone}">
-                        <input type="hidden" id="userZipcode" th:value="${form.userAddress.zipcode}">
-                        <input type="hidden" id="userStreetAddress" th:value="${form.userAddress.street}">
-                        <input type="hidden" id="userDetailAddress" th:value="${form.userAddress.detail}">
+                        <input type="hidden" id="userZipcode" th:value="${form.userAddress?.zipcode != null ? form.userAddress.zipcode : ''}">
+                        <input type="hidden" id="userStreetAddress" th:value="${form.userAddress?.street != null ? form.userAddress.street : ''}">
+                        <input type="hidden" id="userDetailAddress" th:value="${form.userAddress?.detail != null ? form.userAddress.detail : ''}">
 
                         <div class="col-sm-6">
                             <label for="deliveryName" class="form-label">수령인</label>
@@ -219,8 +219,8 @@
         var buyerName = '[[${form.username}]]';
         var buyerEmail = '[[${form.userEmail}]]';
         var buyerPhone = '[[${form.userPhone}]]';
-        var buyerAddress = '[[${form.userAddress.street}]]' + ' ' + '[[${form.userAddress.detail}]]';
-        var buyerPostcode = '[[${form.userAddress.zipcode}]]';
+        var buyerAddress = document.getElementById("userStreetAddress").value + ' ' + document.getElementById("userDetailAddress").value;
+        var buyerPostcode = document.getElementById("userZipcode").value;
 
         console.log(merchantUid, price, buyerName, buyerEmail, buyerPhone, buyerAddress, buyerPostcode);
 

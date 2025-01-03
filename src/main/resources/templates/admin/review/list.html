@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}"
+      layout:fragment="content">
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div th:insert="~{common/sidebar_admin::sidebar_admin}" class="col-md-3 col-lg-2"></div>
+        <div class="col-md-9 ms-sm-auto col-lg-10">
+            <div class="mt-4 ms-3" style="max-width: 1000px; margin: 0 auto; padding: 0 15px;">
+                <h5>리뷰 목록</h5>
+                <table class="table table-striped text-center mt-4">
+                    <thead>
+
+                    <tr>
+                        <th scope="col">도서 정보</th>
+                        <th scope="col">별점(5)</th>
+                        <th scope="col">내용</th>
+                        <th scope="col">작성일자</th>
+                        <th scope="col">수정일자</th>
+                        <th scope="col">작성자</th>
+                        <th scope="col">삭제</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr th:each="review : ${reviews}">
+                        <td>
+                            <a th:href="@{/book/{bookId}(bookId=${review.bookId})}">
+                                <div>
+                                    <strong th:text="${review.bookTitle}"></strong>
+                                    | <span th:text="${review.bookAuthor}"></span>
+                                </div>
+                            </a>
+                        </td>
+                        <td th:text="${review.rating}"></td>
+                        <td>
+                            <a th:href="@{/book/{bookId}/review/{reviewId}(bookId=${review.bookId}, reviewId=${review.id})}">
+                                <span th:text="${review.content}"/>
+                            </a>
+                        </td>
+                        <td th:text="${#temporals.format(review.createdDate, 'yyyy-MM-dd')}" class="col-wide"></td>
+                        <td th:text="${#temporals.format(review.modifiedDate, 'yyyy-MM-dd')}" class="col-wide"></td>
+                        <td th:text="${review.username}"></td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-danger"
+                                    th:data-book-id="${review.bookId}"
+                                    th:data-review-id="${review.id}"
+                                    onclick="deleteReview(this)">
+                                삭제
+                            </button>
+                        </td>
+
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div th:if="${reviews.totalElements > 0}">
+                    <ul class="pagination h-100 justify-content-center align-items-center">
+                        <li class="page-item" th:classappend="${reviews.hasPrevious()} ? '' : 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/book/reviews(pageNo=${reviews.number - 1}, size=${reviews.size})}"
+                               aria-label="Previous">
+                                &laquo;
+                            </a>
+                        </li>
+                        <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, reviews.totalPages - 1)}"
+                            th:classappend="${pageNum == reviews.number} ? 'active'">
+                            <a class="page-link"
+                               th:href="@{/book/reviews(pageNo=${pageNum}, size=${reviews.size})}"
+                               th:text="${pageNum + 1}"></a>
+                        </li>
+                        <li class="page-item" th:classappend="${reviews.hasNext()} ? '' : 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/book/reviews(pageNo=${reviews.number + 1}, size=${reviews.size})}"
+                               aria-label="Next">
+                                &raquo;
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function deleteReview(button) {
+        const bookId = button.getAttribute("data-book-id");
+        const reviewId = button.getAttribute("data-review-id");
+
+        if (!confirm("리뷰를 삭제하시겠습니까?")) {
+            return;
+        }
+        $.ajax({
+            type: 'DELETE',
+            url: `/api/book/${bookId}/review/${reviewId}`,
+            success: function () {
+                alert('리뷰 삭제 완료');
+                location.href = '/book/reviews';
+            },
+            error: function () {
+                alert('리뷰 삭제 실패');
+            },
+        })
+    }
+</script>
+
+</html>

@@ -7,12 +7,15 @@ import com.example.chapter.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,9 +26,7 @@ public class ReviewController {
 
     // 리뷰 등록 폼
     @GetMapping("/book/{orderItemId}/review")
-    public String addReviewForm(@PathVariable Long orderItemId, @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                Model model) {
-
+    public String addReviewForm(@PathVariable Long orderItemId, Model model) {
         model.addAttribute("form", new ReviewRegistrationDto());
         return "review/add";
     }
@@ -65,11 +66,14 @@ public class ReviewController {
         return "redirect:/book/" + bookId + "/review/" + reviewId;
     }
 
-    // 내가 쓴 리뷰 목록
+    // 리뷰 목록
     @GetMapping("/book/reviews")
-    public String getAllMyReviews(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
-        List<ReviewResponseDto> MyReviews = reviewService.getAllMyReviews(userDetails.getUser());
-        model.addAttribute("reviews", MyReviews);
+    public String getReviews(@AuthenticationPrincipal UserDetailsImpl userDetails, Pageable pageable, Model model) {
+        Page<ReviewResponseDto> reviews = reviewService.getReviews(userDetails.getUser(), pageable);
+        model.addAttribute("reviews", reviews);
+        if (userDetails.getUser().isAdmin()) {
+            return "admin/review/list";
+        }
         return "review/list";
     }
 
