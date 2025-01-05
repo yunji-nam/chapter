@@ -1,6 +1,7 @@
 package com.example.chapter.service;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.chapter.exception.UploadException;
@@ -13,6 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -45,10 +49,34 @@ public class S3Service {
         }
     }
 
+    public void delete(String imageUrl) {
+        if (StringUtils.hasText(imageUrl)) {
+            String fileName = extractObjectKeyFromUrl(imageUrl);
+            try {
+                String decodedFileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8);
+                if (!amazonS3.doesObjectExist(bucket, decodedFileName)) {
+                    throw new AmazonS3Exception(decodedFileName + " 은 존재하지 않습니다.");
+                }
+                amazonS3.deleteObject(bucket, decodedFileName);
+            } catch (IllegalArgumentException e) {
+                throw new UploadException("파일 삭제 실패: " + e.getMessage());
+            }
+        }
+    }
+
+    private String extractObjectKeyFromUrl(String imageUrl) {
+        try{
+            URL url = new URL(imageUrl);
+            return url.getPath().substring(1);
+        } catch (Exception e) {
+            throw new UploadException("객체 키 추출 실패: " + e.getMessage());
+        }
+    }
+
     private boolean checkExtension(String originalFilename) {
         List<String> allowedTypes = Arrays.asList("jpg", "jpeg", "png");
         String ext = extractExtension(originalFilename);
-        log.info("ext{}", ext);
+        log.info("ext:{} ", ext);
         return allowedTypes.contains(ext);
     }
 

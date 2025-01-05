@@ -34,12 +34,12 @@
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" th:href="@{/books}">All Products</a></li>
+                        <li><a class="dropdown-item" th:href="@{/books}">All</a></li>
                         <li>
                             <hr class="dropdown-divider"/>
                         </li>
-                        <li><a class="dropdown-item" th:href="@{/books/best}">Popular Items</a></li>
-                        <li><a class="dropdown-item" th:href="@{/books/new}">New Arrivals</a></li>
+                        <li><a class="dropdown-item" th:href="@{/books/best}">Best</a></li>
+                        <li><a class="dropdown-item" th:href="@{/books/new}">New</a></li>
                     </ul>
                 </li>
             </ul>
@@ -66,7 +66,7 @@
                 <button class="btn btn-outline-dark" style="display: inline-flex; align-items: center; gap: 6px;">
                     <i class="bi-cart-fill me-1"></i>
                     Cart
-                    <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                    <span class="badge bg-dark text-white ms-1 rounded-pill" th:value="${cartList.size()}"></span>
                 </button>
             </form>
         </div>

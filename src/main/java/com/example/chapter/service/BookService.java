@@ -3,7 +3,6 @@ package com.example.chapter.service;
 import com.example.chapter.dto.*;
 import com.example.chapter.entity.Book;
 import com.example.chapter.entity.Category;
-import com.example.chapter.entity.Review;
 import com.example.chapter.repository.BookRepository;
 import com.example.chapter.repository.ReviewRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -31,7 +30,11 @@ public class BookService {
 
     // 도서 등록
     public void registerBook(BookRegistrationDto dto) {
-        String imageUrl = s3Service.upload(dto.getImage());
+        MultipartFile image = dto.getImage();
+        if (image == null || image.isEmpty()) {
+            throw new IllegalArgumentException("file이 비어 있습니다.");
+        }
+        String imageUrl = s3Service.upload(image);
         Book book = dto.toEntity(imageUrl);
         bookRepository.save(book);
     }
@@ -40,7 +43,6 @@ public class BookService {
     public Page<BookListDto> getBooks(String sortType, int pageNo, int size) {
         Pageable pageable = PageRequest.of(pageNo, size, Sort.by(Sort.Direction.DESC, sortType));
         Page<Book> page = bookRepository.findAll(pageable);
-
         return page.map(BookListDto::new);
     }
 
@@ -57,11 +59,11 @@ public class BookService {
         return bookRepository.findBestSellingBooks(oneWeekAgo, pageable);
     }
 
-    // 최신 도서 조회
+    // 최신(30일 내) 등록 도서 조회
     public Page<BookListDto> getBooksByLatest(Pageable pageable) {
-        LocalDateTime oneWeekAgo = LocalDateTime.now().minusDays(30);
+        LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(30);
         LocalDateTime now = LocalDateTime.now();
-        Page<Book> page = bookRepository.findByCreatedAtBetweenOrderByIdDesc(oneWeekAgo, now, pageable);
+        Page<Book> page = bookRepository.findByCreatedAtBetweenOrderByIdDesc(thirtyDaysAgo, now, pageable);
         return page.map(BookListDto::new);
     }
 
