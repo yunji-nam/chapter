@@ -12,6 +12,7 @@ import com.example.chapter.repository.CartItemRepository;
 import com.example.chapter.repository.CartRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class CartService {
 
@@ -86,6 +88,11 @@ public class CartService {
         Cart cart = cartItem.getCart();
         cart.getItems().remove(cartItem);
         cartItemRepository.delete(cartItem);
+    }
+
+    // 장바구니 아이템 수량 계산
+    public int getCartItemQuantity(User user) {
+        return cartRepository.getCartItemQuantityByUserId(user.getId());
     }
 
     private Book findBook(Long id) {
