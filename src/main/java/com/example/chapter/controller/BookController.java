@@ -58,6 +58,9 @@ public class BookController {
         model.addAttribute("requestedCategory", category);
         model.addAttribute("bookList", bookDtos);
 
+        if (bookDtos.getContent().isEmpty()) {
+            return "book/empty";
+        }
         return "book/list";
     }
 
@@ -86,7 +89,10 @@ public class BookController {
         model.addAttribute("bookList", searchResults);
         model.addAttribute("keyword", keyword);
 
-        return "book/search";
+        if (searchResults.getContent().isEmpty()) {
+            return "search/empty";
+        }
+        return "search/result";
     }
 
     @GetMapping("/books/best")

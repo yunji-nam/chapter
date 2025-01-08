@@ -1,0 +1,13 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}"
+      layout:fragment="content">
+
+<body>
+<div style="margin-top: 3rem; margin-bottom: 4rem; font-size: 20px; text-align: center;">
+    <i class="bi bi-exclamation-circle-fill text-secondary" style="font-size: 4.5rem;"></i>
+    <div class="mt-1" th:text="'\'' + ${keyword} + '\'' + ' 검색결과가 없습니다.'"></div>
+</div>
+</body>
+</html>
