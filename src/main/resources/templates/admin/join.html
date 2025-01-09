@@ -8,22 +8,26 @@
 
 <div class="container">
 
-    <form th:action="@{/admin/join}" th:object="${form}" method="post">
+    <form th:action="@{/admin/join}" th:object="${signUpDto}" method="post">
         <div class="form-group">
             <label for="name">이름</label>
             <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="이름을 입력하세요">
+            <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger">Name Error</p>
         </div>
         <div class="form-group">
             <label for="password">비밀번호</label>
             <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력하세요">
+            <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger">Password Error</p>
         </div>
         <div class="form-group">
             <label for="email">이메일</label>
             <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="이메일을 입력하세요">
+            <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger">Email Error</p>
         </div>
         <div class="form-group">
             <label for="phone">휴대폰 번호</label>
             <input type="tel" id="phone" th:field="*{phone}" class="form-control" placeholder="휴대폰 번호를 입력하세요">
+            <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="text-danger">Phone Error</p>
         </div>
 
 

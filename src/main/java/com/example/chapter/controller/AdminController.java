@@ -20,16 +20,16 @@ public class AdminController {
 
     @GetMapping("/join")
     public String signUpForm(Model model) {
-        model.addAttribute("form", new SignUpDto());
+        model.addAttribute("signUpDto", new SignUpDto());
         return "admin/join";
     }
 
     @PostMapping("/join")
-    public String signUp(@Valid SignUpDto form, BindingResult result) {
+    public String signUp(@Valid SignUpDto signUpDto, BindingResult result) {
         if (result.hasErrors()) {
             return "admin/join";
         }
-        adminService.join(form);
+        adminService.join(signUpDto);
         return "redirect:/login";
     }
 
