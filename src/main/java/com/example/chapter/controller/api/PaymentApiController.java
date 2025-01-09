@@ -36,7 +36,7 @@ public class PaymentApiController {
 
     @PostMapping("/complete/{merchantUid}")
     public ApiResponse<String> completePayment(@PathVariable String merchantUid, @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                               @Valid @RequestBody OrderRequestDto dto) {  // binding
+                                               @Valid @RequestBody OrderRequestDto dto) {
         return paymentService.completePayment(merchantUid, userDetails.getUser(), dto);
     }
 

@@ -12,7 +12,7 @@
             <div class="mt-4 ms-3" style="max-width: 1100px; margin: 0 auto; padding: 0 15px;">
                 <h5>도서 목록</h5>
                 <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
-                    <button class="btn btn-outline-primary btn-sm ms-3" th:href="@{/admin/book}">도서 등록하기</button>
+                    <a class="btn btn-outline-primary btn-sm ms-3" th:href="@{/admin/book}">도서 등록하기</a>
                     <button class="btn btn-outline-danger btn-sm ms-3" onclick="updateBookStatus('OUT_OF_STOCK')">품절 처리</button>
                     <button class="btn btn-outline-danger btn-sm ms-3" onclick="updateBookStatus('SELL')">판매중 처리</button>
                 </div>

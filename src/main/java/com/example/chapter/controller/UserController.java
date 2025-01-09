@@ -52,16 +52,16 @@ public class UserController {
 
     @GetMapping("/join")
     public String signUpForm(Model model) {
-        model.addAttribute("form", new SignUpDto());
+        model.addAttribute("signUpDto", new SignUpDto());
         return "user/join";
     }
 
     @PostMapping("/join")
-    public String signUp(@Valid SignUpDto form, BindingResult result) {
+    public String signUp(@Valid SignUpDto signUpDto, BindingResult result) {
         if (result.hasErrors()) {
             return "user/join";
         }
-        userService.join(form);
+        userService.join(signUpDto);
         return "redirect:/login";
     }
 
@@ -81,27 +81,33 @@ public class UserController {
     public String updateProfileForm(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
         ProfileDto profileDto = userService.getProfile(userDetails.getUser());
         UpdateProfileDto profile = new UpdateProfileDto(profileDto);
-        model.addAttribute("form", profile);
+        model.addAttribute("updateProfileDto", profile);
 
         return "user/profile/edit";
     }
 
     @PutMapping("/user/profile/edit")
     public String updateProfile(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                @Valid UpdateProfileDto dto) {
-        userService.updateProfile(userDetails.getUser(), dto);
+                                @Valid UpdateProfileDto updateProfileDto, BindingResult result) {
+        if (result.hasErrors()) {
+            return "user/profile/edit";
+        }
+        userService.updateProfile(userDetails.getUser(), updateProfileDto);
         return "redirect:/user/profile";
     }
 
     @GetMapping("/user/password")
     public String updatePasswordForm(Model model) {
-        model.addAttribute("form", new PasswordDto());
+        model.addAttribute("passwordDto", new PasswordDto());
         return "user/profile/editPassword";
     }
 
     @PutMapping("/user/password")
-    public String updatePassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid PasswordDto dto) {
-        userService.updatePassword(userDetails.getUser(), dto);
+    public String updatePassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid PasswordDto passwordDto, BindingResult result) {
+        if (result.hasErrors()) {
+            return "user/profile/editPassword";
+        }
+        userService.updatePassword(userDetails.getUser(), passwordDto);
         return "redirect:/user/profile";
     }
 

@@ -14,16 +14,18 @@
             <div class="container mt-4 ms-3">
                 <h5>프로필 수정</h5>
 
-                <form th:action="@{/user/profile/edit}" th:object="${form}" th:method="put">
+                <form th:action="@{/user/profile/edit}" th:object="${updateProfileDto}" th:method="put">
                     <div class="form-group mt-3">
                         <label th:for="email">이메일</label>
                         <input type="email" id="email" th:field="*{email}" class="form-control"
                                placeholder="이메일을 입력하세요">
+                        <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger">Email Error</p>
                     </div>
                     <div class="form-group mt-3">
                         <label th:for="phone">휴대폰 번호</label>
                         <input type="tel" id="phone" th:field="*{phone}" class="form-control"
                                placeholder="휴대폰 번호를 입력하세요">
+                        <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="text-danger">Phone Error</p>
                     </div>
                     <div class="form-group mt-3">
                         <label th:for="zipcode">우편 번호</label>

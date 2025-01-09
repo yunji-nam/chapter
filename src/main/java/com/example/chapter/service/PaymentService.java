@@ -74,7 +74,7 @@ public class PaymentService {
     @Transactional
     public ApiResponse<String> completePayment(String merchantUid, User user, OrderRequestDto dto) {
         List<OrderItemDto> items = dto.getOrderItems();
-        Address address = dto.getDeliveryAddress();
+        Address address = new Address(dto.getDeliveryZipcode(), dto.getDeliveryStreet(), dto.getDeliveryDetail());
         String name = dto.getDeliveryName();
         String phone = dto.getDeliveryPhone();
         Delivery delivery = new Delivery(address, name, phone);

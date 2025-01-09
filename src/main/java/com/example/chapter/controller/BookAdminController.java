@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -24,15 +25,19 @@ public class BookAdminController {
     // 도서 등록 폼
     @GetMapping("/book")
     public String registerBookForm(Model model) {
-        model.addAttribute("form", new BookRegistrationDto());
+        model.addAttribute("bookRegistrationDto", new BookRegistrationDto());
         model.addAttribute("categories", Category.values());
         return "admin/book/add";
     }
 
     // 도서 등록
     @PostMapping("/book")
-    public String registerBook(@Valid BookRegistrationDto form) {
-        bookService.registerBook(form);
+    public String registerBook(@Valid BookRegistrationDto bookRegistrationDto, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("categories", Category.values());
+            return "admin/book/add";
+        }
+        bookService.registerBook(bookRegistrationDto);
         return "redirect:/admin/books";
     }
 
@@ -40,17 +45,19 @@ public class BookAdminController {
     @GetMapping("/book/{bookId}/edit")
     public String updateBookForm(@PathVariable Long bookId, Model model) {
         BookDetailDto responseDto = bookService.getBook(bookId);
-        BookRegistrationDto form = new BookRegistrationDto(responseDto);
-        model.addAttribute("form", new BookRegistrationDto(responseDto));
+        model.addAttribute("bookRegistrationDto", new BookRegistrationDto(responseDto));
         model.addAttribute("categories", Category.values());
         return "admin/book/update";
     }
 
     // 도서 정보 수정
     @PutMapping("/book/{bookId}/edit")
-    public String updateBook(@PathVariable Long bookId,
-                             @Valid BookRegistrationDto form) {
-        bookService.updateBook(bookId, form);
+    public String updateBook(@PathVariable Long bookId, @Valid BookRegistrationDto bookRegistrationDto, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("categories", Category.values());
+            return "admin/book/update";
+        }
+        bookService.updateBook(bookId, bookRegistrationDto);
         return "redirect:/admin/books";
     }
 
