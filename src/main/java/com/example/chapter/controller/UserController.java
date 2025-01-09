@@ -8,6 +8,7 @@ import com.example.chapter.security.UserDetailsImpl;
 import com.example.chapter.service.KakaoService;
 import com.example.chapter.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,8 +44,9 @@ public class UserController {
     }
 
     @GetMapping("/kakao/callback")
-    public String callback(@RequestParam String code) throws JsonProcessingException {
-        kakaoService.login(code);
+    public String callback(@RequestParam String code, HttpSession session) throws JsonProcessingException {
+        kakaoService.login(code, session);
+
         return "redirect:/";
     }
 

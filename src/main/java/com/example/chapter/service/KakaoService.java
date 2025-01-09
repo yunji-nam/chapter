@@ -4,9 +4,11 @@ import com.example.chapter.dto.KakaoUserInfo;
 import com.example.chapter.entity.User;
 import com.example.chapter.entity.UserRoleEnum;
 import com.example.chapter.repository.UserRepository;
+import com.example.chapter.security.UserDetailsServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,8 +17,9 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -36,6 +39,7 @@ public class KakaoService {
     private final RestTemplate restTemplate;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserDetailsServiceImpl userDetailsService;
 
     @Value("${kakao.restapi.key}")
     private String clientId;
@@ -43,19 +47,21 @@ public class KakaoService {
     @Value("${kakao.redirect.uri}")
     private String redirectUri;
 
-    public void login(String code) throws JsonProcessingException {
+    public void login(String code, HttpSession session) throws JsonProcessingException {
         String accessToken = getToken(code);
-        log.info("kakao access token = " + accessToken);
+        log.info("kakao access token = {}" , accessToken);
         KakaoUserInfo info = getKakaoUserInfo(accessToken);
-        log.info("kakao email = " + info.getEmail());
+        log.info("kakao email = {}", info.getEmail());
         User user = registerKakaoUser(info);
 
+        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
         Authentication authentication = new UsernamePasswordAuthenticationToken(
-                user, null, AuthorityUtils.createAuthorityList(user.getRole().name())
+                userDetails, null, userDetails.getAuthorities()
         );
 
-        // 인증을 SecurityContext에 저장
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+        session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
     }
 
