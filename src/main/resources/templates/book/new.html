@@ -7,7 +7,7 @@
 <main>
     <div class="container-list mt-4">
         <div class="row row-cols-1 g-3 justify-content-center">
-            <h5>신간</h5>
+            <h5>신간 도서</h5>
             <div th:each="book : ${bookList.content}" class="col">
                 <div class="card shadow-sm d-flex flex-row" style="height: 230px; max-width: 600px; margin: 0 auto;">
                     <a th:href="@{'/book/' + ${book.id}}"

@@ -20,7 +20,10 @@ public class LikeController {
     @GetMapping("/user/book/likes")
     public String getLikes(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
         List<BookListDto> likeList = likeService.getLikeList(userDetails.getUser());
+        if (likeList.isEmpty()) {
+            return "like/empty";
+        }
         model.addAttribute("likeList", likeList);
-        return "user/likeList";
+        return "like/list";
     }
 }
