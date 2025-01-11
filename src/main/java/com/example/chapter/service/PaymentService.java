@@ -86,7 +86,7 @@ public class PaymentService {
         for (OrderItemDto item : items) {
             Long bookId = item.getBookId();
             int quantity = item.getQuantity();
-            Book book = bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("book not found"));
+            Book book = bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("book을 찾을 수 없습니다."));
 
             book.decreaseStock(quantity);
             order.addOrderItem(book, quantity);

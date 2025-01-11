@@ -11,20 +11,22 @@ import org.springframework.data.jpa.repository.Query;
 import java.time.LocalDateTime;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
-    Page<Book> findByCategory(Category category, Pageable pageable);
+    Page<Book> findAllByDeletedFalse(Pageable pageable);
+
+    Page<Book> findByCategoryAndDeletedFalse(Category category, Pageable pageable);
 
     @Query(value = "select b from Book b where b.title like %:kw% " +
             "or b.author like %:kw% " +
             "or b.publisher like %:kw%")
-    Page<BookListDto> findAllByKeywordIgnoreCase(String kw, Pageable pageable);
+    Page<BookListDto> findAllByKeywordIgnoreCaseAndDeletedFalse(String kw, Pageable pageable);
 
     @Query(value = "select b from Book b " +
             "left join OrderItem oi on b.id = oi.book.id " +
             "left join Order o on oi.order.id = o.id " +
-            "where o.createdAt >= :startedAt group by b.id " +
+            "where o.createdAt >= :startedAt and b.deleted = false group by b.id " +
             "order by sum(oi.quantity) desc")
     Page<BookListDto> findBestSellingBooks(LocalDateTime startedAt, Pageable pageable);
 
-    Page<Book> findByCreatedAtBetweenOrderByIdDesc(LocalDateTime startedAt, LocalDateTime endedAt, Pageable pageable);
+    Page<Book> findByCreatedAtBetweenAndDeletedFalseOrderByIdDesc(LocalDateTime startedAt, LocalDateTime endedAt, Pageable pageable);
 
 }

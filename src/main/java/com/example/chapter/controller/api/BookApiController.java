@@ -26,4 +26,11 @@ public class BookApiController {
         String imageUrl = bookService.updateBookImage(bookId, file);
         return ApiResponse.builder().data(imageUrl).message("도서 이미지 변경 완료").build();
     }
+
+    // 도서 삭제
+    @DeleteMapping("/admin/book/{bookId}")
+    public ApiResponse<String> deleteBook(@PathVariable Long bookId) {
+        bookService.deleteBook(bookId);
+        return new ApiResponse<>("도서 삭제 처리 완료");
+    }
 }

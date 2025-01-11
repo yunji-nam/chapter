@@ -13,8 +13,11 @@
                 <h5>도서 목록</h5>
                 <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
                     <a class="btn btn-outline-primary btn-sm ms-3" th:href="@{/admin/book}">도서 등록하기</a>
-                    <button class="btn btn-outline-danger btn-sm ms-3" onclick="updateBookStatus('OUT_OF_STOCK')">품절 처리</button>
-                    <button class="btn btn-outline-danger btn-sm ms-3" onclick="updateBookStatus('SELL')">판매중 처리</button>
+                    <button class="btn btn-outline-danger btn-sm ms-3" onclick="updateBookStatus('OUT_OF_STOCK')">품절
+                        처리
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm ms-3" onclick="updateBookStatus('SELL')">판매중 처리
+                    </button>
                 </div>
                 <table class="table table-striped text-center mt-4">
                     <thead>
@@ -53,7 +56,12 @@
                         <td th:text="${book.status.statusName}"></td>
                         <td>
                             <a th:href="@{/admin/book/{bookId}/edit(bookId=${book.id})}"
-                               class="btn btn-sm btn-primary">정보 수정</a>
+                               class="btn btn-sm btn-primary">수정</a>
+                            <a class="btn btn-sm btn-outline-danger"
+                               th:data-book-id="${book.id}"
+                               onclick="deleteBook(this)">
+                                삭제
+                            </a>
                         </td>
                     </tr>
                     </tbody>
@@ -124,6 +132,25 @@
                 alert('오류 발생');
             }
         });
+    }
+
+    function deleteBook(button) {
+        const bookId = button.getAttribute("data-book-id");
+
+        if (!confirm("도서를 삭제 처리하시겠습니까?")) {
+            return;
+        }
+        $.ajax({
+            type: 'DELETE',
+            url: `/api/admin/book/${bookId}`,
+            success: function () {
+                alert('도서 삭제 완료');
+                location.href = '/admin/books';
+            },
+            error: function () {
+                alert('도서 삭제 실패');
+            },
+        })
     }
 
 </script>

@@ -61,13 +61,6 @@ public class BookAdminController {
         return "redirect:/admin/books";
     }
 
-    // 도서 삭제
-    @DeleteMapping("/book/{bookId}")
-    public String deleteBook(@PathVariable Long bookId) {
-        bookService.deleteBook(bookId);
-        return "redirect:/admin/books";
-    }
-
 
     // 도서 목록 조회
     @GetMapping("/books")

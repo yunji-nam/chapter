@@ -47,6 +47,8 @@ public class Book extends TimeStamped {
 
     private String image;
 
+    private boolean deleted;
+
     @Enumerated(EnumType.STRING)
     private BookStatus status;
 
@@ -63,6 +65,7 @@ public class Book extends TimeStamped {
         this.description = description;
         this.stockQuantity = quantity;
         this.image = image;
+        this.deleted = false;
         this.status = BookStatus.SELL;
     }
 
@@ -86,6 +89,7 @@ public class Book extends TimeStamped {
     public void decreaseStock(int quantity) {
         int restStock = this.stockQuantity - quantity;
         if (restStock < 0) {
+            this.updateStatus(BookStatus.OUT_OF_STOCK);
             throw new OutOfStockException("재고가 부족합니다.");
         }
         this.stockQuantity = restStock;
@@ -97,6 +101,10 @@ public class Book extends TimeStamped {
 
     public void updateImage(String image) {
         this.image = image;
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 
 }
