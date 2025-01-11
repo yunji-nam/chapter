@@ -105,6 +105,7 @@ public class Book extends TimeStamped {
 
     public void delete() {
         this.deleted = true;
+        this.status = BookStatus.DELETED;
     }
 
 }

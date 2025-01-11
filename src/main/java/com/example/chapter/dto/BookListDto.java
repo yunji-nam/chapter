@@ -4,10 +4,12 @@ import com.example.chapter.entity.Book;
 import com.example.chapter.entity.BookStatus;
 import com.example.chapter.entity.Category;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Getter
+@NoArgsConstructor
 public class BookListDto {
 
     private Long id;

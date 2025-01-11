@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum BookStatus {
-    SELL("판매중"), OUT_OF_STOCK("품절");
+    SELL("판매중"), OUT_OF_STOCK("품절"), DELETED("삭제");
 
     private final String statusName;
 

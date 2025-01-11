@@ -8,6 +8,8 @@ import com.example.chapter.repository.ReviewRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.example.chapter.constant.CacheConstant.BOOK_LIST;
+import static com.example.chapter.constant.CacheConstant.FEATURED_BOOK_LIST;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -29,6 +34,7 @@ public class BookService {
     private final S3Service s3Service;
 
     // 도서 등록
+    @CacheEvict(cacheNames = {BOOK_LIST, FEATURED_BOOK_LIST}, allEntries = true)
     public void registerBook(BookRegistrationDto dto) {
         MultipartFile image = dto.getImage();
         if (image == null || image.isEmpty()) {
@@ -40,31 +46,36 @@ public class BookService {
     }
 
     // 도서 모두 조회
+    @Cacheable(cacheNames = BOOK_LIST, key = "'page:' + #p1")
     public Page<BookListDto> getBooks(String sortType, int pageNo, int size) {
         Pageable pageable = PageRequest.of(pageNo, size, Sort.by(Sort.Direction.DESC, sortType));
-        Page<Book> page = bookRepository.findAll(pageable);
-        return page.map(BookListDto::new);
+        Page<Book> page = bookRepository.findAllByDeletedFalse(pageable);
+        return new CustomPageImpl<>(page.map(BookListDto::new));
     }
 
     // 카테고리 별 조회
+    @Cacheable(cacheNames = BOOK_LIST, key = "'category:' + #p0 + 'page:' + #p2")
     public Page<BookListDto> getBooksByCategory(Category category, String sortType, int pageNo, int size) {
         Pageable pageable = PageRequest.of(pageNo, size, Sort.by(Sort.Direction.DESC, sortType));
-        Page<Book> page = bookRepository.findByCategory(category, pageable);
-        return page.map(BookListDto::new);
+        Page<Book> page = bookRepository.findByCategoryAndDeletedFalse(category, pageable);
+        return new CustomPageImpl<>(page.map(BookListDto::new));
     }
 
     // 주간 베스트 도서 조회
+    @Cacheable(cacheNames = FEATURED_BOOK_LIST, key = "'best:' + #pageable.pageNumber")
     public Page<BookListDto> getBooksByBestSelling(Pageable pageable) {
         LocalDateTime oneWeekAgo = LocalDateTime.now().minusDays(7);
-        return bookRepository.findBestSellingBooks(oneWeekAgo, pageable);
+        Page<BookListDto> bestSellingBooks = bookRepository.findBestSellingBooks(oneWeekAgo, pageable);
+        return new CustomPageImpl<>(bestSellingBooks);
     }
 
     // 최신(30일 내) 등록 도서 조회
+    @Cacheable(cacheNames = FEATURED_BOOK_LIST, key = "'new:' + #pageable.pageNumber")
     public Page<BookListDto> getBooksByLatest(Pageable pageable) {
         LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(30);
         LocalDateTime now = LocalDateTime.now();
-        Page<Book> page = bookRepository.findByCreatedAtBetweenOrderByIdDesc(thirtyDaysAgo, now, pageable);
-        return page.map(BookListDto::new);
+        Page<Book> page = bookRepository.findByCreatedAtBetweenAndDeletedFalseOrderByIdDesc(thirtyDaysAgo, now, pageable);
+        return new CustomPageImpl<>(page.map(BookListDto::new));
     }
 
     // 도서 상세 조회
@@ -76,6 +87,7 @@ public class BookService {
 
     // 도서 수정
     @Transactional
+    @CacheEvict(cacheNames = {BOOK_LIST, FEATURED_BOOK_LIST}, allEntries = true)
     public void updateBook(Long id, BookRegistrationDto dto) {
         Book book = findBook(id);
         book.update(dto);
@@ -83,6 +95,7 @@ public class BookService {
 
     // 도서 이미지 변경
     @Transactional
+    @CacheEvict(cacheNames = {BOOK_LIST, FEATURED_BOOK_LIST}, allEntries = true)
     public String updateBookImage(Long bookId, MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("file이 비어 있습니다.");
@@ -97,22 +110,24 @@ public class BookService {
 
     // 도서 삭제
     @Transactional
+    @CacheEvict(cacheNames = {BOOK_LIST, FEATURED_BOOK_LIST}, allEntries = true)
     public void deleteBook(Long id) {
         Book book = findBook(id);
-        bookRepository.delete(book);
+        book.delete();
+    }
+
+    // 도서 상태변경
+    @Transactional
+    @CacheEvict(cacheNames = {BOOK_LIST, FEATURED_BOOK_LIST}, allEntries = true)
+    public void updateBookStatus(BookStatusUpdateDto dto) {
+        List<Book> books = bookRepository.findAllById(dto.getBookIds());
+        books.forEach(book -> book.updateStatus(dto.getStatus()));
     }
 
     // 도서 검색
     public Page<BookListDto> searchBook(String keyword, Pageable pageable) {
         PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
-        return bookRepository.findAllByKeywordIgnoreCase(keyword, pageRequest);
-    }
-
-    // 도서 상태변경
-    @Transactional
-    public void updateBookStatus(BookStatusUpdateDto dto) {
-        List<Book> books = bookRepository.findAllById(dto.getBookIds());
-        books.forEach(book -> book.updateStatus(dto.getStatus()));
+        return bookRepository.findAllByKeywordIgnoreCaseAndDeletedFalse(keyword, pageRequest);
     }
 
     private Book findBook(Long id) {
