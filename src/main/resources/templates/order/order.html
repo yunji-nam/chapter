@@ -40,9 +40,12 @@
 
                         <input type="hidden" id="username" th:value="${form.username}">
                         <input type="hidden" id="userPhone" th:value="${form.userPhone}">
-                        <input type="hidden" id="userZipcode" th:value="${form.userAddress?.zipcode != null ? form.userAddress.zipcode : ''}">
-                        <input type="hidden" id="userStreetAddress" th:value="${form.userAddress?.street != null ? form.userAddress.street : ''}">
-                        <input type="hidden" id="userDetailAddress" th:value="${form.userAddress?.detail != null ? form.userAddress.detail : ''}">
+                        <input type="hidden" id="userZipcode"
+                               th:value="${form.userAddress?.zipcode != null ? form.userAddress.zipcode : ''}">
+                        <input type="hidden" id="userStreetAddress"
+                               th:value="${form.userAddress?.street != null ? form.userAddress.street : ''}">
+                        <input type="hidden" id="userDetailAddress"
+                               th:value="${form.userAddress?.detail != null ? form.userAddress.detail : ''}">
 
                         <div class="col-sm-6">
                             <label for="deliveryName" class="form-label">수령인</label>
@@ -56,18 +59,18 @@
                         <div class="col-12">
                             <label for="deliveryPhone" class="form-label">연락처</label>
                             <input type="text" class="form-control" id="deliveryPhone" name="deliveryPhone"
-                                   placeholder="010-****-****">
+                                   placeholder="010-****-****" required>
                             <div class="invalid-feedback">
                                 연락처를 입력해주세요.
                             </div>
                         </div>
 
-                        <div class="col-md-8">
+                        <div class="col-md-10">
                             <label for="deliveryZipcode" class="form-label">우편 번호</label>
                             <div class="d-flex">
                                 <input type="text" class="form-control mr-1" id="deliveryZipcode" name="deliveryZipcode"
                                        required readonly="readonly">
-                                <div class="col-md-3">
+                                <div class="col-md-5 ms-3">
                                     <button type="button" class="btn btn-outline-secondary" onclick="execPostCode()"
                                             style="font-size: 14px;">우편번호 찾기
                                     </button>
@@ -210,6 +213,11 @@
     IMP.init('imp22661878');
 
     function request_pay() {
+        const isValid = validateForm();
+        if (!isValid) {
+            alert("필수 정보를 모두 입력해주세요.");
+            return;
+        }
 
         const cartItems = JSON.parse(localStorage.getItem('cartItems'));
         const itemName = cartItems[0].bookTitle;
@@ -306,6 +314,15 @@
                 }
             }
         )
+    }
+
+    function validateForm() {
+        const deliveryName = document.getElementById("deliveryName").value;
+        const deliveryPhone = document.getElementById("deliveryPhone").value;
+        const deliveryZipcode = document.getElementById("deliveryZipcode").value;
+        const deliveryStreet = document.getElementById("deliveryStreet").value;
+
+        return !(!deliveryName || !deliveryPhone || !deliveryZipcode || !deliveryStreet);
     }
 
 </script>

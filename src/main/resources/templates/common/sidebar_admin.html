@@ -8,56 +8,81 @@
         <div class="d-flex ms-3 fw-bold mt-3 pb-3 mb-4 link-dark border-bottom" style="font-size: 18px;">
             <span sec:authentication="name" th:text="${#authentication.name} + ' 님'"></span>
         </div>
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link active" style="color: black;" aria-current="page" th:href="@{/user/profile}">
-                    프로필
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link active" style="color: black;" aria-current="page" th:href="@{/user/password}">
-                    비밀번호 변경
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
-                   aria-expanded="false" style="color: black;">
-                    <span>도서 관리</span>
-                </a>
-                <div class="collapse" id="collapseTwo" aria-labelledby="headingTwo" data-bs-parent="#accordionSidebar">
-                    <ul class="bg-white py-2 collapse-inner pb-1">
-                        <li><a class="collapse-item mb-1" th:href="@{/admin/books}">도서 목록</a></li>
-                        <li><a class="collapse-item mb-1" th:href="@{/admin/book}">도서 등록</a></li>
+        <ul class="list-unstyled ps-0">
+            <li class="mb-2">
+                <button class="btn d-inline-flex align-items-center rounded border-0 fw-bold" style="color: #07687c">
+                    상품 관리
+                </button>
+                <div>
+                    <ul class="list-unstyled pb-1">
+                        <li><a th:href="@{/admin/books}" class="ms-3 mb-1 d-inline-flex text-decoration-none"
+                               style="font-size: 15px">도서 목록</a></li>
+                        <li><a th:href="@{/admin/book}" class="ms-3 d-inline-flex text-decoration-none"
+                               style="font-size: 15px">도서 등록</a></li>
                     </ul>
                 </div>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#collapseOne"
-                   aria-expanded="false" style="color: black;">
+            <li class="mb-2">
+                <button class="btn d-inline-flex align-items-center rounded border-0 fw-bold" style="color: #07687c">
                     주문 관리
-                </a>
-                <div class="collapse" id="collapseOne" aria-labelledby="headingTwo" data-bs-parent="#accordionSidebar">
-                    <ul class="bg-white py-2 collapse-inner pb-1">
-                        <li><a class="collapse-item mb-1" th:href="@{/orders}">주문 목록</a></li>
+                </button>
+                <div>
+                    <ul class="list-unstyled pb-1">
+                        <li><a th:href="@{/orders}" class="ms-3 d-inline-flex text-decoration-none"
+                               style="font-size: 15px">주문 조회</a></li>
                     </ul>
                 </div>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" style="color: black;" href="#">
+            <li class="mb-2">
+                <button class="btn d-inline-flex align-items-center rounded border-0 fw-bold" style="color: #07687c">
                     회원 관리
-                </a>
+                </button>
+                <div>
+                    <ul class="list-unstyled pb-1">
+                        <li><a th:href="@{/orders}" class="ms-3 mb-1 d-inline-flex text-decoration-none"
+                               style="font-size: 15px">회원 목록</a></li>
+                        <li><a th:href="@{/book/reviews}" class="ms-3 d-inline-flex text-decoration-none"
+                               style="font-size: 15px">리뷰
+                            목록</a></li>
+                    </ul>
+                </div>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" style="color: black;" th:href="@{/book/reviews}">
-                    리뷰 관리
-                </a>
+            <li class="mb-2">
+                <button class="btn d-inline-flex align-items-center rounded border-0 fw-bold" style="color: #07687c">
+                    개인정보
+                </button>
+                <div>
+                    <ul class="list-unstyled pb-1">
+                        <li><a th:href="@{/user/profile}" class="ms-3 mb-1 d-inline-flex text-decoration-none"
+                               style="font-size: 15px">프로필
+                            조회</a></li>
+                        <li><a th:href="@{/user/password}" class="ms-3 d-inline-flex text-decoration-none"
+                               style="font-size: 15px">비밀번호
+                            변경</a></li>
+                    </ul>
+                </div>
             </li>
-
         </ul>
-
     </div>
 </nav>
 
+<script>
+    $(document).ready(function () {
+        var currentPath = window.location.pathname;
 
+        $(".sidebar_my a").each(function () {
+            var linkPath = $(this).attr("href");
+            if (linkPath === currentPath) {
+                $(this).addClass("active");
+            }
+        });
+
+        $(".sidebar_my a").click(function () {
+            $("a").removeClass("active");
+            $(this).addClass("active");
+        });
+    });
+</script>
 </body>
+
 </html>
