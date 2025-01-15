@@ -145,3 +145,7 @@ body {
     overflow-y: auto;
     width: 150px;
 }
+
+.no-border {
+    border: none;
+}

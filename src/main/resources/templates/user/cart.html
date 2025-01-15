@@ -8,7 +8,16 @@
     <div class="container-list mt-4">
         <h6>장바구니</h6>
         <div class="row row-cols-1 g-3 mt-3">
-
+            <div th:if="${cartList.size() > 0}">
+                <div class="d-flex justify-content-between align-items-center" style="margin-bottom: 15px;">
+                    <input type="checkbox" id="selectAll" onclick="toggleAllCheckboxes(this)" checked>
+                    <div class="d-flex gap-2 ms-auto">
+                        <button class="btn btn-sm btn-outline-secondary no-border" onclick="deleteItem(this)">선택삭제
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary no-border" onclick="deleteCart()">전체삭제</button>
+                    </div>
+                </div>
+            </div>
             <div th:each="item : ${cartList}">
                 <div class="card shadow-sm d-flex flex-row align-items-center" style="height: 270px">
                     <!-- 체크박스 -->
@@ -38,20 +47,16 @@
                                    type="number" th:value="${item.quantity}" th:data-book-price="${item.bookPrice}"
                                    th:data-cart-item-id="${item.id}"
                                    style="max-width: 4rem; flex-grow: 0; flex-shrink: 0;"/>
-                            <button class="btn btn-sm btn-outline-dark mt-2" type="button"
+                            <button class="btn btn-sm btn-outline-dark"
                                     th:id="'addToCart_' + ${item.bookId}" th:data-book-id="${item.bookId}"
-                                    th:data-cart-item-id="${item.id}"
-                                    style="height: 100%; flex-shrink: 0;">
+                                    th:data-cart-item-id="${item.id}">
                                 변경
                             </button>
-                            <form method="post" th:action="@{/cart/items/{cartItemId}(cartItemId=${item.id})}"
-                                  style="display: inline;">
-                                <input type="hidden" name="_method" value="DELETE"/>
-                                <button class="btn btn-sm btn-outline-dark mt-2"
-                                        type="submit" style="height: 2.5rem; flex-shrink: 0;">
-                                    삭제
-                                </button>
-                            </form>
+                            <button class="btn btn-sm btn-outline-dark ms-2"
+                                    th:data-cart-item-id="${item.id}"
+                                    onclick="deleteItem(this)">
+                                삭제
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -71,6 +76,23 @@
 
 </main>
 <script th:inline="javascript">
+    function toggleAllCheckboxes(source) {
+        const checkboxes = document.querySelectorAll('.cart-item-checkbox')
+        checkboxes.forEach(checkbox => checkbox.checked = source.checked);
+
+        updateSelectAllCheckbox();
+        calculateTotalPrice();
+    }
+
+    function updateSelectAllCheckbox() {
+        const checkboxes = document.querySelectorAll('.cart-item-checkbox');
+        const selectAllCheckbox = document.getElementById('selectAll');
+        const total = checkboxes.length;
+        const checkedBoxes = Array.from(checkboxes).filter(checkbox => checkbox.checked).length;
+
+        selectAllCheckbox.checked = checkedBoxes === total;
+    }
+
     // 총 금액 계산
     function calculateTotalPrice() {
         const checkboxes = document.querySelectorAll('.cart-item-checkbox');
@@ -91,7 +113,10 @@
     }
 
     document.querySelectorAll('.cart-item-checkbox').forEach(checkbox => {
-        checkbox.addEventListener('change', calculateTotalPrice);
+        checkbox.addEventListener('change', function () {
+            updateSelectAllCheckbox();
+            calculateTotalPrice();
+        });
     });
 
     calculateTotalPrice();
@@ -184,6 +209,57 @@
             })
 
     });
+
+    function deleteItem(button) {
+        let selectedCartItems = [];
+
+        document.querySelectorAll('.cart-item-checkbox:checked').forEach(checkbox => {
+            selectedCartItems.push(checkbox.getAttribute('data-cart-item-id'));
+        })
+
+        if (selectedCartItems.length === 0) {
+            alert("선택된 항목이 없습니다.");
+            return;
+        }
+
+        if (button.classList.contains('btn-outline-secondary')) {
+            if (!confirm("선택 상품을 삭제하시겠습니까?")) {
+                return;
+            }
+        } else {
+            const cartItemId = button.getAttribute('data-cart-item-id');
+            selectedCartItems = [cartItemId];
+        }
+
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/cart/items?cartItemIds=' + selectedCartItems.join(','),
+            success: function () {
+                alert('선택 상품 삭제 완료');
+                location.reload();
+            },
+            error: function () {
+                alert('삭제 실패');
+            },
+        })
+    }
+
+    function deleteCart() {
+        if (!confirm("장바구니를 비우시겠습니까?")) {
+            return;
+        }
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/cart',
+            success: function () {
+                alert('장바구니 비우기 완료');
+                location.reload();
+            },
+            error: function () {
+                alert('장바구니 전체 상품 삭제 실패');
+            },
+        })
+    }
 
 
 </script>

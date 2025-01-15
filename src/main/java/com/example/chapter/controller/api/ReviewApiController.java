@@ -1,6 +1,6 @@
 package com.example.chapter.controller.api;
 
-import com.example.chapter.dto.ApiResponse;
+import com.example.chapter.dto.api.ApiResponse;
 import com.example.chapter.dto.ReviewResponseDto;
 import com.example.chapter.security.UserDetailsImpl;
 import com.example.chapter.service.ReviewService;

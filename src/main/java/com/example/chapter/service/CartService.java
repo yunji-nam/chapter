@@ -30,7 +30,7 @@ public class CartService {
     private final CartItemRepository cartItemRepository;
 
     // 장바구니 추가
-    @CacheEvict(cacheNames = CART_COUNT, key= "#user.id")
+    @CacheEvict(cacheNames = CART_COUNT, key = "#user.id")
     public void addCartItem(CartDto dto, User user) {
         Book book = findBook(dto.getBookId());
 
@@ -62,7 +62,7 @@ public class CartService {
 
     // 아이템 수량 수정
     @Transactional
-    @CacheEvict(cacheNames = CART_COUNT, key= "#user.id")
+    @CacheEvict(cacheNames = CART_COUNT, key = "#user.id")
     public void updateCartItemQuantity(CartDto dto, User user) {
         CartItem cartItem = cartItemRepository.findById(dto.getCartItemId())
                 .orElseThrow(() -> new EntityNotFoundException("cart item을 찾을 수 없습니다."));
@@ -74,29 +74,28 @@ public class CartService {
 
     // 전체 삭제
     @Transactional
-    @CacheEvict(cacheNames = CART_COUNT, key= "#user.id")
+    @CacheEvict(cacheNames = CART_COUNT, key = "#user.id")
     public void deleteCart(User user) {
         Cart cart = cartRepository.findByUserId(user.getId())
-                        .orElseThrow(() -> new EntityNotFoundException("cart을 찾을 수 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("cart을 찾을 수 없습니다."));
         cartRepository.delete(cart);
     }
 
     // 장바구니 내 아이템 삭제
     @Transactional
-    @CacheEvict(cacheNames = CART_COUNT, key= "#user.id")
-    public void deleteItemFromCart(Long id, User user) {
-        CartItem cartItem = cartItemRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("cart item을 찾을 수 없습니다."));
-        if (!cartItem.getCart().getUser().getId().equals(user.getId())) {
-            throw new IllegalArgumentException("사용자가 다릅니다.");
+    @CacheEvict(cacheNames = CART_COUNT, key = "#user.id")
+    public void deleteItemsFromCart(List<Long> cartItemIds, User user) {
+        List<CartItem> cartItems = cartItemRepository.findAllById(cartItemIds);
+        for (CartItem cartItem : cartItems) {
+            if (!cartItem.getCart().getUser().getId().equals(user.getId())) {
+                throw new IllegalArgumentException("사용자가 다릅니다.");
+            }
         }
-        Cart cart = cartItem.getCart();
-        cart.getItems().remove(cartItem);
-        cartItemRepository.delete(cartItem);
+        cartItemRepository.deleteByIdIn(cartItemIds);
     }
 
     // 장바구니 아이템 수량 계산
-    @Cacheable(cacheNames = CART_COUNT, key= "#user.id")
+    @Cacheable(cacheNames = CART_COUNT, key = "#user.id")
     public int getCartItemQuantity(User user) {
         return cartRepository.getCartItemQuantityByUserId(user.getId());
     }

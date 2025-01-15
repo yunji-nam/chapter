@@ -1,6 +1,6 @@
 package com.example.chapter.exception;
 
-import com.example.chapter.dto.ErrorResponse;
+import com.example.chapter.dto.api.ErrorResponse;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

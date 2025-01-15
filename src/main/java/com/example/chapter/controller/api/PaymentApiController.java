@@ -1,6 +1,6 @@
 package com.example.chapter.controller.api;
 
-import com.example.chapter.dto.ApiResponse;
+import com.example.chapter.dto.api.ApiResponse;
 import com.example.chapter.dto.OrderRequestDto;
 import com.example.chapter.dto.PaymentCallbackDto;
 import com.example.chapter.dto.PaymentDto;

@@ -27,16 +27,4 @@ public class CartController {
         return "user/cart";
     }
 
-    @DeleteMapping("/items")
-    public String deleteCart(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        cartService.deleteCart(userDetails.getUser());
-        return "redirect:/cart";
-    }
-
-    @DeleteMapping("/items/{cartItemId}")
-    public String deleteItemFromCart(@PathVariable Long cartItemId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        cartService.deleteItemFromCart(cartItemId, userDetails.getUser());
-        return "redirect:/cart";
-    }
-
 }
