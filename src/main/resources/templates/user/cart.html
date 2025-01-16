@@ -217,18 +217,18 @@
             selectedCartItems.push(checkbox.getAttribute('data-cart-item-id'));
         })
 
+        if (!button.classList.contains('btn-outline-secondary')) {
+            const cartItemId = button.getAttribute('data-cart-item-id');
+            selectedCartItems = [cartItemId];
+        }
+
         if (selectedCartItems.length === 0) {
             alert("선택된 항목이 없습니다.");
             return;
         }
 
-        if (button.classList.contains('btn-outline-secondary')) {
-            if (!confirm("선택 상품을 삭제하시겠습니까?")) {
-                return;
-            }
-        } else {
-            const cartItemId = button.getAttribute('data-cart-item-id');
-            selectedCartItems = [cartItemId];
+        if (!confirm("선택 상품을 삭제하시겠습니까?")) {
+            return;
         }
 
         $.ajax({

@@ -11,17 +11,25 @@
         <div class="col-md-9 ms-sm-auto col-lg-10">
             <div class="mt-4 ms-3" style="max-width: 1000px; margin: 0 auto; padding: 0 15px;">
                 <h5>주문 목록</h5>
+                <form th:action="@{/orders}" th:method="get" class="text-end">
+                    <label for="startDate">시작일</label>
+                    <input type="date" id="startDate" name="startDate" />
+                    <label class="ms-1" for="endDate">종료일</label>
+                    <input type="date" id="endDate" name="endDate" />
+                    <button class="btn btn-sm btn-dark" type="submit">조회</button>
+                </form>
+
                 <table class="table table-striped text-center mt-4">
                     <thead>
 
                     <tr>
                         <th scope="col">주문 번호</th>
                         <th scope="col">도서 정보</th>
+                        <th scope="col">주문자명</th>
                         <th scope="col">주문 날짜</th>
                         <th scope="col">주문 상태</th>
-                        <th scope="col">배송 상태</th>
+                        <th scope="col" class="col-wide">배송 상태</th>
                         <th scope="col">취소</th>
-
                     </tr>
                     </thead>
                     <tbody>
@@ -42,12 +50,14 @@
                                 </li>
                             </ul>
                         </td>
+                        <td th:text="${order.username}"></td>
                         <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd')}" class="col-wide"></td>
                         <td th:text="${order.orderStatus.getStatusName()}"></td>
                         <td>
-                            <form method="post" th:action="@{/admin/delivery/{orderId}/status(orderId=${order.id})}">
+                            <form method="post" th:action="@{/admin/delivery/{orderId}/status(orderId=${order.id})}"
+                                  style="display: flex; align-items: center; gap: 5px;">
                                 <input type="hidden" name="_method" value="PUT"/>
-                                <select name="status" class="form-select form-select-sm">
+                                <select name="status" class="form-select form-select-sm" style="width: 110px;">
                                     <option value="" th:selected="${order.deliveryStatus == null}" disabled>선택</option>
                                     <option th:each="status : ${deliveryStatus}"
                                             th:value="${status}"

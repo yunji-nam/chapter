@@ -1,11 +1,13 @@
 package com.example.chapter.controller.api;
 
-import com.example.chapter.dto.ApiResponse;
+import com.example.chapter.dto.api.ApiResponse;
 import com.example.chapter.dto.BookStatusUpdateDto;
 import com.example.chapter.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,9 +30,9 @@ public class BookApiController {
     }
 
     // 도서 삭제
-    @DeleteMapping("/admin/book/{bookId}")
-    public ApiResponse<String> deleteBook(@PathVariable Long bookId) {
-        bookService.deleteBook(bookId);
+    @DeleteMapping("/admin/books")
+    public ApiResponse<String> deleteBooks(@RequestParam List<Long> bookIds) {
+        bookService.deleteBooks(bookIds);
         return new ApiResponse<>("도서 삭제 처리 완료");
     }
 }

@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -83,5 +85,18 @@ public class BookAdminController {
 
         model.addAttribute("bookList", bookDtos);
         return "admin/book/list";
+    }
+
+    @GetMapping("/book/search")
+    public String searchBook(@RequestParam String keyword,
+                             @RequestParam String condition,
+                             @PageableDefault(size = 5) Pageable pageable,
+                             Model model) {
+        Page<BookListDto> searchResults = bookService.searchBookByCondition(keyword, condition, pageable);
+        model.addAttribute("bookList", searchResults);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("condition", condition);
+
+        return "admin/book/search";
     }
 }

@@ -29,4 +29,9 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     Page<Book> findByCreatedAtBetweenAndDeletedFalseOrderByIdDesc(LocalDateTime startedAt, LocalDateTime endedAt, Pageable pageable);
 
+    Page<Book> findByTitleContainingIgnoreCaseAndDeletedFalse(String title, Pageable pageable);
+    Page<Book> findByAuthorContainingIgnoreCaseAndDeletedFalse(String author, Pageable pageable);
+    Page<Book> findByPublisherContainingIgnoreCaseAndDeletedFalse(String publisher, Pageable pageable);
+    Page<Book> findByIsbnContainingIgnoreCaseAndDeletedFalse(String isbn, Pageable pageable);
+
 }

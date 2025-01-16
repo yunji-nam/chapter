@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -64,10 +65,10 @@ public class OrderService {
     }
 
     // 주문 목록 조회 (최근 2년 내)
-    public Page<OrderListDto> getOrders(User user, LocalDateTime startDate, LocalDateTime endDate, int pageNo, int size) {
+    public Page<OrderListDto> getOrders(User user, LocalDate startDate, LocalDate endDate, int pageNo, int size) {
         Pageable pageable = getPageable(pageNo, size);
-        LocalDateTime twoYearAgo = LocalDateTime.now().minusYears(2);
-        LocalDateTime now = LocalDateTime.now();
+        LocalDate twoYearAgo = LocalDate.now().minusYears(2);
+        LocalDate now = LocalDate.now();
 
         if (startDate == null || startDate.isBefore(twoYearAgo)) {
             startDate = twoYearAgo;
@@ -75,11 +76,15 @@ public class OrderService {
         if (endDate == null || endDate.isAfter(now)) {
             endDate = now;
         }
+
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+
         Page<Order> page;
         if (user.isAdmin()) {
-            page = orderRepository.findByCreatedAtBetween(startDate, endDate, pageable);
+            page = orderRepository.findByCreatedAtBetween(startDateTime, endDateTime, pageable);
         } else {
-            page = orderRepository.findByUserIdAndCreatedAtBetween(user.getId(), startDate, endDate, pageable);
+            page = orderRepository.findByUserIdAndCreatedAtBetween(user.getId(), startDateTime, endDateTime, pageable);
         }
 
         return page.map(OrderListDto::new);

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Controller
 @RequiredArgsConstructor
@@ -47,8 +47,8 @@ public class OrderController {
     // 주문 목록 조회
     @GetMapping("/orders")
     public String getOrders(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                            @RequestParam(required = false) LocalDateTime startDate,
-                            @RequestParam(required = false) LocalDateTime endDate,
+                            @RequestParam(required = false) LocalDate startDate,
+                            @RequestParam(required = false) LocalDate endDate,
                             @RequestParam(defaultValue = "0") int pageNo,
                             @RequestParam(defaultValue = "1") int size,
                             Model model) {

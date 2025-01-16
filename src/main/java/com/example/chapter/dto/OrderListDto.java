@@ -15,6 +15,7 @@ public class OrderListDto {
     private Long id;
     private String merchantUid;
     private List<OrderBookInfo> books;
+    private String username;
     private OrderStatus orderStatus;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime orderDate;
@@ -27,6 +28,7 @@ public class OrderListDto {
         this.books = order.getItems().stream()
                 .map(OrderBookInfo::new)
                 .collect(Collectors.toList());
+        this.username = order.getUser().getName();
         this.orderStatus = order.getStatus();
         this.orderDate = order.getCreatedAt();
         this.deliveryStatus = order.getDelivery().getStatus();

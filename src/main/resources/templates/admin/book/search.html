@@ -11,9 +11,10 @@
         <div class="col-md-9 ms-sm-auto col-lg-10">
             <div class="mt-4 ms-3" style="max-width: 1100px; margin: 0 auto; padding: 0 15px;">
                 <h5>도서 목록</h5>
-                <div style="display: flex; justify-content: flex-start; align-items: center; margin-bottom: 15px; margin-top: 15px;">
+                <div style="display: flex; justify-content: flex-start; align-items: center; margin-bottom: 15px;">
                     <button class="btn btn-outline-dark btn-sm"
-                            onclick="updateBookStatus('OUT_OF_STOCK')">품절 처리
+                            onclick="updateBookStatus('OUT_OF_STOCK')">품절
+                        처리
                     </button>
                     <button class="btn btn-outline-dark btn-sm ms-2" onclick="updateBookStatus('SELL')">판매중 처리
                     </button>
@@ -33,60 +34,61 @@
                         </form>
                     </div>
                 </div>
-                <table class="table table-striped text-center mt-4">
-                    <thead>
-
-                    <tr>
-                        <th scope="col">
-                            <input type="checkbox" id="selectAll" onclick="toggleAllCheckboxes(this)">
-                        </th>
-                        <th scope="col">카테고리</th>
-                        <th scope="col" class="col-wide">제목</th>
-                        <th scope="col">저자</th>
-                        <th scope="col">출판사</th>
-                        <th scope="col" class="col-wide">ISBN</th>
-                        <th scope="col">가격</th>
-                        <th scope="col">재고(개)</th>
-                        <th scope="col">상태</th>
-                        <th scope="col">관리</th>
-
-                    </tr>
-                    </thead>
-                    <tbody>
-
-                    <tr th:each="book : ${bookList.content}">
-                        <td>
-                            <input type="checkbox" name="selectedBooks" th:value="${book.id}">
-                        </td>
-                        <td th:text="${book.category.categoryName}"></td>
-                        <td class="col-wide">
-                            <a th:href="@{/book/{bookId}(bookId=${book.id})}" th:text="${book.title}"></a>
-                        </td>
-                        <td th:text="${book.author}"></td>
-                        <td th:text="${book.publisher}"></td>
-                        <td th:text="${book.isbn}" class="col-wide"></td>
-                        <td th:text="${#numbers.formatInteger(book.price, 3, 'COMMA')} + ' 원'"></td>
-                        <td th:text="${book.stockQuantity}"></td>
-                        <td th:text="${book.status.statusName}"></td>
-                        <td>
-                            <a th:href="@{/admin/book/{bookId}/edit(bookId=${book.id})}"
-                               class="btn btn-sm btn-outline-primary">수정</a>
-                            <a class="btn btn-sm btn-outline-primary"
-                               th:data-book-id="${book.id}"
-                               onclick="deleteBook(this)">
-                                삭제
-                            </a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-
                 <div th:if="${bookList.totalElements > 0}">
+                    <table class="table table-striped text-center mt-4">
+                        <thead>
+
+                        <tr>
+                            <th scope="col">
+                                <input type="checkbox" id="selectAll" onclick="toggleAllCheckboxes(this)">
+                            </th>
+                            <th scope="col">카테고리</th>
+                            <th scope="col" class="col-wide">제목</th>
+                            <th scope="col">저자</th>
+                            <th scope="col">출판사</th>
+                            <th scope="col" class="col-wide">ISBN</th>
+                            <th scope="col">가격</th>
+                            <th scope="col">재고(개)</th>
+                            <th scope="col">상태</th>
+                            <th scope="col">관리</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr th:each="book : ${bookList.content}">
+                            <td>
+                                <input type="checkbox" name="selectedBooks" th:value="${book.id}">
+                            </td>
+                            <td th:text="${book.category.categoryName}"></td>
+                            <td class="col-wide">
+                                <a th:href="@{/book/{bookId}(bookId=${book.id})}" th:text="${book.title}"></a>
+                            </td>
+                            <td th:text="${book.author}"></td>
+                            <td th:text="${book.publisher}"></td>
+                            <td th:text="${book.isbn}" class="col-wide"></td>
+                            <td th:text="${#numbers.formatInteger(book.price, 3, 'COMMA')} + ' 원'"></td>
+                            <td th:text="${book.stockQuantity}"></td>
+                            <td th:text="${book.status.statusName}"></td>
+                            <td>
+                                <a th:href="@{/admin/book/{bookId}/edit(bookId=${book.id})}"
+                                   class="btn btn-sm btn-outline-primary">수정</a>
+                                <a class="btn btn-sm btn-outline-primary"
+                                   th:data-book-id="${book.id}"
+                                   onclick="deleteBook(this)">
+                                    삭제
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+
                     <ul class="pagination h-100 justify-content-center align-items-center">
                         <li class="page-item" th:classappend="${bookList.hasPrevious()} ? '' : 'disabled'">
 
                             <a class="page-link"
-                               th:href="@{/admin/books(pageNo=${bookList.number - 1}, size=${bookList.size}, sortType=${sortType}, category=${category})}"
+                               th:href="@{/admin/book/search(keyword=${keyword}, condition=${condition}, page=${bookList.number - 1}, size=${bookList.size})}"
                                aria-label="Previous">
                                 &laquo;
                             </a>
@@ -94,18 +96,21 @@
                         <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, bookList.totalPages - 1)}"
                             th:classappend="${pageNum == bookList.number} ? 'active'">
                             <a class="page-link"
-                               th:href="@{/admin/books(pageNo=${pageNum}, size=${bookList.size}, sortType=${sortType}, category=${category})}"
+                               th:href="@{/admin/book/search(keyword=${keyword}, condition=${condition}, page=${bookList.number}, size=${bookList.size})}"
                                th:text="${pageNum + 1}"></a>
                         </li>
 
                         <li class="page-item" th:classappend="${bookList.hasNext()} ? '' : 'disabled'">
                             <a class="page-link"
-                               th:href="@{/admin/books(pageNo=${bookList.number + 1}, size=${bookList.size}, sortType=${sortType},  category=${category})}"
+                               th:href="@{/admin/book/search(keyword=${keyword}, condition=${condition}, page=${bookList.number + 1}, size=${bookList.size})}"
                                aria-label="Next">
                                 &raquo;
                             </a>
                         </li>
                     </ul>
+                </div>
+                <div th:if="${bookList.totalElements == 0}" class="mt-4 text-center">
+                    검색 결과가 없습니다.
                 </div>
 
             </div>

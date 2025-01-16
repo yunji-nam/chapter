@@ -10,7 +10,7 @@
         </div>
         <ul class="list-unstyled ps-0">
             <li class="mb-2">
-                <button class="btn d-inline-flex align-items-center rounded border-0 fw-bold" style="color: #07687c">
+                <button class="btn d-inline-flex align-items-center rounded border-0 fw-bold" style="color: #0e859d">
                     상품 관리
                 </button>
                 <div>
@@ -23,7 +23,7 @@
                 </div>
             </li>
             <li class="mb-2">
-                <button class="btn d-inline-flex align-items-center rounded border-0 fw-bold" style="color: #07687c">
+                <button class="btn d-inline-flex align-items-center rounded border-0 fw-bold" style="color: #0e859d">
                     주문 관리
                 </button>
                 <div>
@@ -34,7 +34,7 @@
                 </div>
             </li>
             <li class="mb-2">
-                <button class="btn d-inline-flex align-items-center rounded border-0 fw-bold" style="color: #07687c">
+                <button class="btn d-inline-flex align-items-center rounded border-0 fw-bold" style="color: #0e859d">
                     회원 관리
                 </button>
                 <div>
@@ -48,7 +48,7 @@
                 </div>
             </li>
             <li class="mb-2">
-                <button class="btn d-inline-flex align-items-center rounded border-0 fw-bold" style="color: #07687c">
+                <button class="btn d-inline-flex align-items-center rounded border-0 fw-bold" style="color: #0e859d">
                     개인정보
                 </button>
                 <div>
@@ -69,13 +69,17 @@
 <script>
     $(document).ready(function () {
         var currentPath = window.location.pathname;
+        console.log("currentPath:" + currentPath);
 
         $(".sidebar_my a").each(function () {
             var linkPath = $(this).attr("href");
             if (linkPath === currentPath) {
                 $(this).addClass("active");
             }
+            console.log("linkpath:" + linkPath);
         });
+
+
 
         $(".sidebar_my a").click(function () {
             $("a").removeClass("active");
