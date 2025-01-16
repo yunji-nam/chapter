@@ -111,9 +111,9 @@ public class BookService {
     // 도서 삭제
     @Transactional
     @CacheEvict(cacheNames = {BOOK_LIST, FEATURED_BOOK_LIST}, allEntries = true)
-    public void deleteBook(Long id) {
-        Book book = findBook(id);
-        book.delete();
+    public void deleteBooks(List<Long> ids) {
+        List<Book> books = bookRepository.findAllById(ids);
+        books.forEach(Book::delete);
     }
 
     // 도서 상태변경
@@ -128,6 +128,27 @@ public class BookService {
     public Page<BookListDto> searchBook(String keyword, Pageable pageable) {
         PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
         return bookRepository.findAllByKeywordIgnoreCaseAndDeletedFalse(keyword, pageRequest);
+    }
+
+    public Page<BookListDto> searchBookByCondition(String keyword, String condition, Pageable pageable) {
+        Page<Book> page;
+        switch (condition.toLowerCase()) {
+            case "title":
+                page = bookRepository.findByTitleContainingIgnoreCaseAndDeletedFalse(keyword, pageable);
+                break;
+            case "author":
+                page = bookRepository.findByAuthorContainingIgnoreCaseAndDeletedFalse(keyword, pageable);
+                break;
+            case "publisher":
+                page = bookRepository.findByPublisherContainingIgnoreCaseAndDeletedFalse(keyword, pageable);
+                break;
+            case "isbn":
+                page = bookRepository.findByIsbnContainingIgnoreCaseAndDeletedFalse(keyword, pageable);
+                break;
+            default:
+                throw new IllegalArgumentException("유효하지 않은 값입니다.");
+        }
+        return page.map(BookListDto::new);
     }
 
     private Book findBook(Long id) {
