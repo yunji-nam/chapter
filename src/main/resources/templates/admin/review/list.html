@@ -101,7 +101,7 @@
             url: `/api/book/${bookId}/review/${reviewId}`,
             success: function () {
                 alert('리뷰 삭제 완료');
-                location.href = '/book/reviews';
+                location.reload();
             },
             error: function () {
                 alert('리뷰 삭제 실패');

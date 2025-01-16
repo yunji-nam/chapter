@@ -9,10 +9,10 @@ import com.example.chapter.repository.LikeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Slf4j
@@ -36,10 +36,9 @@ public class LikeService {
         }
     }
 
-    public List<BookListDto> getLikeList(User user) {
-        List<Like> likeList = likeRepository.findAllByUserId(user.getId());
-        List<Book> bookList = likeList.stream().map(Like::getBook).toList();
-        return bookList.stream().map(BookListDto::new).toList();
+    public Page<BookListDto> getLikeList(User user, Pageable pageable) {
+        Page<Like> likeList = likeRepository.findAllByUserIdAndBookDeletedFalse(user.getId(), pageable);
+        return likeList.map(like -> new BookListDto(like.getBook()));
     }
 
     public boolean getLikeStatus(User user, Long bookId) {

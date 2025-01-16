@@ -25,6 +25,35 @@
                             </div>
                         </a>
                     </div>
+
+                    <div th:if="${likeList.totalElements > 0}">
+                        <ul class="pagination h-100 justify-content-center align-items-center"
+                            style="margin-top: 20px;">
+                            <li class="page-item" th:classappend="${likeList.hasPrevious()} ? '' : 'disabled'">
+
+                                <a class="page-link"
+                                   th:href="@{/user/book/likes(page=${likeList.number - 1}, size=${likeList.size})}"
+                                   aria-label="Previous">
+                                    &laquo;
+                                </a>
+                            </li>
+                            <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, likeList.totalPages - 1)}"
+                                th:classappend="${pageNum == likeList.number} ? 'active'">
+                                <a class="page-link"
+                                   th:href="@{/user/book/likes(page=${pageNum}, size=${likeList.size})}"
+                                   th:text="${pageNum + 1}"></a>
+                            </li>
+
+
+                            <li class="page-item" th:classappend="${likeList.hasNext()} ? '' : 'disabled'">
+                                <a class="page-link"
+                                   th:href="@{/user/book/likes(page=${likeList.number + 1}, size=${likeList.size})}"
+                                   aria-label="Next">
+                                    &raquo;
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
