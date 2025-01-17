@@ -13,9 +13,9 @@
                 <h5>주문 목록</h5>
                 <form th:action="@{/orders}" th:method="get" class="text-end">
                     <label for="startDate">시작일</label>
-                    <input type="date" id="startDate" name="startDate" />
+                    <input type="date" id="startDate" name="startDate"/>
                     <label class="ms-1" for="endDate">종료일</label>
-                    <input type="date" id="endDate" name="endDate" />
+                    <input type="date" id="endDate" name="endDate"/>
                     <button class="btn btn-sm btn-dark" type="submit">조회</button>
                 </form>
 
@@ -112,6 +112,9 @@
                             </a>
                         </li>
                     </ul>
+                </div>
+                <div th:if="${orders.totalElements == 0}" class="mt-4 text-center">
+                    조회된 주문이 없습니다.
                 </div>
             </div>
         </div>

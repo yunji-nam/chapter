@@ -39,7 +39,7 @@
                 </button>
                 <div>
                     <ul class="list-unstyled pb-1">
-                        <li><a th:href="@{/orders}" class="ms-3 mb-1 d-inline-flex text-decoration-none"
+                        <li><a th:href="@{/admin/users}" class="ms-3 mb-1 d-inline-flex text-decoration-none"
                                style="font-size: 15px">회원 목록</a></li>
                         <li><a th:href="@{/book/reviews}" class="ms-3 d-inline-flex text-decoration-none"
                                style="font-size: 15px">리뷰
@@ -78,8 +78,6 @@
             }
             console.log("linkpath:" + linkPath);
         });
-
-
 
         $(".sidebar_my a").click(function () {
             $("a").removeClass("active");

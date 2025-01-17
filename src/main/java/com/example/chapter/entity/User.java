@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor
-public class User {
+public class User extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +35,7 @@ public class User {
     @Embedded
     private Address address;
 
-    private boolean isDelete;
+    private boolean deleted;
 
     @Column(nullable = false)
     private String provider;
@@ -55,6 +55,10 @@ public class User {
 
     public boolean isAdmin() {
         return this.role.equals(UserRoleEnum.ADMIN);
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 
 

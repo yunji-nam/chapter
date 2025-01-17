@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}"
+      layout:fragment="content">
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div th:insert="~{common/sidebar_admin::sidebar_admin}" class="col-md-3 col-lg-2"></div>
+        <div class="col-md-9 ms-sm-auto col-lg-10">
+            <div class="mt-4 ms-3" style="max-width: 1000px; margin: 0 auto; padding: 0 15px;">
+                <h5>회원 목록</h5>
+                <table class="table table-striped text-center mt-4">
+                    <thead>
+
+                    <tr>
+                        <th scope="col">ID(이메일)</th>
+                        <th scope="col">회원명</th>
+                        <th scope="col">연락처</th>
+                        <th scope="col">가입일자</th>
+                        <th scope="col">등급</th>
+                        <th scope="col">탈퇴여부</th>
+                        <th scope="col">관리</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr th:each="user : ${userList}">
+                        <td th:text="${user.email}"></td>
+                        <td th:text="${user.username}"></td>
+                        <td th:text="${user.getMaskedPhone()}"></td>
+                        <td th:text="${user.joinDate}"></td>
+                        <td th:text="${user.role}"></td>
+                        <td>
+                            <span th:if="${user.deleted == true}">
+                                Y
+                            </span>
+                            <span th:if="${user.deleted == false}">
+                                N
+                            </span>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-danger"
+                                    th:data-user-id="${user.id}"
+                                    onclick="deleteUser(this)">
+                                탈퇴처리
+                            </button>
+                        </td>
+
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div th:if="${userList.totalElements > 0}">
+                    <ul class="pagination h-100 justify-content-center align-items-center">
+                        <li class="page-item" th:classappend="${userList.hasPrevious()} ? '' : 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/admin/users(pageNo=${userList.number - 1}, size=${userList.size})}"
+                               aria-label="Previous">
+                                &laquo;
+                            </a>
+                        </li>
+                        <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, userList.totalPages - 1)}"
+                            th:classappend="${pageNum == userList.number} ? 'active'">
+                            <a class="page-link"
+                               th:href="@{/admin/users(pageNo=${pageNum}, size=${userList.size})}"
+                               th:text="${pageNum + 1}"></a>
+                        </li>
+                        <li class="page-item" th:classappend="${userList.hasNext()} ? '' : 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/admin/users(pageNo=${userList.number + 1}, size=${userList.size})}"
+                               aria-label="Next">
+                                &raquo;
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+
+    function deleteUser(button) {
+        const userId = button.getAttribute("data-user-id");
+        const role = /*[[user.role]]*/ 'USER';
+
+        if (!confirm("해당 유저를 탈퇴 처리 하시겠습니까?")) {
+            return;
+        }
+        $.ajax({
+            type: "PUT",
+            url: `/api/user/${userId}/withdraw`,
+            success: function () {
+                alert('탈퇴 처리 완료');
+                if (role === 'ADMIN') {
+                    location.reload();
+                } else {
+                    window.location.replace("/logout");
+                }
+            },
+            error: function () {
+                alert('탈퇴 처리 실패');
+            },
+        })
+    }
+</script>
+
+</html>

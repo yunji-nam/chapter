@@ -1,6 +1,7 @@
 package com.example.chapter.dto;
 
 import com.example.chapter.entity.Review;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -15,7 +16,9 @@ public class ReviewResponseDto {
     private String username;
     private String content;
     private int rating;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime modifiedDate;
 
     public ReviewResponseDto(Review review) {

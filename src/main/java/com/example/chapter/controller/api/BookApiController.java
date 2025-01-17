@@ -30,7 +30,7 @@ public class BookApiController {
     }
 
     // 도서 삭제
-    @DeleteMapping("/admin/books")
+    @PutMapping("/admin/books")
     public ApiResponse<String> deleteBooks(@RequestParam List<Long> bookIds) {
         bookService.deleteBooks(bookIds);
         return new ApiResponse<>("도서 삭제 처리 완료");

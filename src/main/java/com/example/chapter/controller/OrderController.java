@@ -53,9 +53,7 @@ public class OrderController {
                             @RequestParam(defaultValue = "1") int size,
                             Model model) {
         Page<OrderListDto> orders = orderService.getOrders(userDetails.getUser(), startDate, endDate, pageNo, size);
-        if (orders.getContent().isEmpty()) {
-            return "order/empty";
-        }
+
         model.addAttribute("orders", orders);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
@@ -63,6 +61,10 @@ public class OrderController {
 
         if (userDetails.getUser().isAdmin()) {
             return "admin/order/list";
+        }
+
+        if (orders.getContent().isEmpty()) {
+            return "order/empty";
         }
         return "order/list";
     }

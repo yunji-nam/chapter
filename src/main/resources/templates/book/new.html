@@ -26,8 +26,7 @@
                                 <p class="card-text" th:text="${book.author} + ' | ' + ${book.publisher}"></p>
                             </div>
 
-                            <p class="card-text" th:text="${#temporals.format(book.publishedDate, 'yy-MM-dd')}">
-                                Published Date</p>
+                            <p class="card-text" th:text="${book.publishedDate}">Published Date</p>
                             <p class="card-text text-danger fw-bold"
                                th:text="${#numbers.formatInteger(book.price, 3, 'COMMA')} + ' 원'"></p>
                             <button id="likeButton" class="btn btn-outline-danger"

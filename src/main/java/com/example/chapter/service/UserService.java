@@ -58,7 +58,7 @@ public class UserService {
                 .phone(phone)
                 .role(role)
                 .address(new Address(zipcode, street, detail))
-                .isDelete(false)
+                .deleted(false)
                 .provider("chapter").build();
 
         userRepository.save(user);
@@ -121,11 +121,11 @@ public class UserService {
     }
 
     private boolean validateEmail(String email) {
-        return userRepository.existsByEmail(email);
+        return userRepository.existsByEmailAndDeletedFalse(email);
     }
 
     private boolean validatePhone(String phone) {
-        return userRepository.existsByPhone(phone);
+        return userRepository.existsByPhoneAndDeletedFalse(phone);
     }
 
     private Address updateAddress(Address currentAddress, Address newAddress) {
@@ -144,4 +144,11 @@ public class UserService {
         return new Address(zipcode, street, detail);
     }
 
+    @Transactional
+    public void withdraw(Long userId, User user) {
+        if (!userId.equals(user.getId()) && !user.isAdmin()) {
+            throw new IllegalArgumentException("잘못된 접근입니다.");
+        }
+        user.delete();
+    }
 }

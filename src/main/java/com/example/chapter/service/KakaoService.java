@@ -67,7 +67,7 @@ public class KakaoService {
 
     private User registerKakaoUser(KakaoUserInfo info) {
         String kakaoEmail = info.getEmail();
-        User user = userRepository.findByEmail(kakaoEmail).orElse(null);
+        User user = userRepository.findByEmailAndDeletedFalse(kakaoEmail).orElse(null);
 
         if (user == null) {
             String password = UUID.randomUUID().toString();

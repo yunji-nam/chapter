@@ -17,7 +17,7 @@
                     <span th:text="${book.author} + ' | ' + ${book.publisher}"></span>
                 </div>
                 <div class="fs-6 mb-1">
-                    <span th:text="${#temporals.format(book.publishedDate, 'yyyy-MM-dd')}"></span>
+                    <span th:text="${book.publishedDate}"></span>
                 </div>
                 <div class="fs-5 mb-5">
                     <span class="fw-bold text-danger"
@@ -50,7 +50,7 @@
         <div class="border-bottom mb-2"></div>
         <div th:text="'분류 : ' + ${book.category.categoryName}"></div>
         <div th:text="'ISBN : ' + ${book.isbn}"></div>
-        <div th:text="'발행일자 : ' + ${#temporals.format(book.publishedDate, 'yyyy년 MM월 dd일')}"></div>
+        <div th:text="'발행일자 : ' + ${book.publishedDate}"></div>
         <div class="mb-5" th:text="'쪽수 : ' + ${book.pages} + '쪽'"></div>
     </div>
 </section>
@@ -179,7 +179,7 @@
                             </div>
                             <div class="ms-3">
                                 <span>${review.username}</span> |
-                                <span>${formatDate(review.createdDate)}</span>
+                                <span>${review.createdDate}</span>
                             </div>
                         </div>
                     </div>

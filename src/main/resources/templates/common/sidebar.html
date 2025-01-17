@@ -7,7 +7,7 @@
     <div class="pt-3">
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link active" style="color: black" th:href="@{/books}">
+                <a class="nav-link" style="color: black" th:href="@{/books}">
                     전체
                 </a>
             </li>
@@ -20,7 +20,26 @@
 
     </div>
 </nav>
+<script>
+    $(document).ready(function () {
+        var currentPath = window.location.pathname;
+        var currentSearch = window.location.search;
+        console.log("currentPath: " + currentPath + ", currentSearch: " + currentSearch);
 
+        $(".sidebar a").each(function () {
+            var linkPath = $(this).attr("href");
+
+            if (linkPath === currentPath + currentSearch) {
+                $(this).addClass("active");
+            }
+        });
+
+        $(".sidebar a").click(function () {
+            $("a").removeClass("active");
+            $(this).addClass("active");
+        });
+    });
+</script>
 
 </body>
 </html>

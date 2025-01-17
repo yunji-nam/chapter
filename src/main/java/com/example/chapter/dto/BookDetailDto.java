@@ -3,6 +3,7 @@ package com.example.chapter.dto;
 import com.example.chapter.entity.Book;
 import com.example.chapter.entity.BookStatus;
 import com.example.chapter.entity.Category;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -18,6 +19,7 @@ public class BookDetailDto {
     private String isbn;
     private int pages;
     private Category category;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate publishedDate;
     private int price;
     private String description;

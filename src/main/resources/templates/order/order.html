@@ -301,7 +301,7 @@
                                     localStorage.removeItem('cartItems');
                                     localStorage.removeItem('totalPrice');
 
-                                    window.location.href = `/order/success/${merchantUid}`;
+                                    window.location.replace(`/order/success/${merchantUid}`);
                                 })
                                 .catch(error => {
                                     console.error('Error: ', error);
