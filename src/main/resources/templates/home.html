@@ -3,7 +3,32 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{common/layout}"
       layout:fragment="content">
-<body>
 
+<body>
+<head>
+    <title>Chapter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+<style>
+    .font {
+        font-family: "East Sea Dokdo", serif;
+        font-optical-sizing: auto;
+        font-weight: 400;
+    }
+</style>
+</head>
+<header class="font bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <div class="fw-bolder" style="font-size:100px;">Chapter</div>
+            <div class="fw-normal text-white-50 mb-0" style="font-size: 30px;">도서 쇼핑몰 챕터에 오신 걸 환영합니다</div>
+        </div>
+    </div>
+</header>
+
+<div class="text-center mt-5">
+    <a class="font fw-bolder" style="font-size: 30px;" th:href="@{/books}">shop ></a>
+</div>
 </body>
 </html>

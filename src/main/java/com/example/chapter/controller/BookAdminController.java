@@ -88,13 +88,13 @@ public class BookAdminController {
     }
 
     @GetMapping("/book/search")
-    public String searchBook(@RequestParam String keyword,
+    public String searchBook(@RequestParam String query,
                              @RequestParam String condition,
                              @PageableDefault(size = 5) Pageable pageable,
                              Model model) {
-        Page<BookListDto> searchResults = bookService.searchBookByCondition(keyword, condition, pageable);
+        Page<BookListDto> searchResults = bookService.searchBookByCondition(query, condition, pageable);
         model.addAttribute("bookList", searchResults);
-        model.addAttribute("keyword", keyword);
+        model.addAttribute("query", query);
         model.addAttribute("condition", condition);
 
         return "admin/book/search";

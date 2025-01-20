@@ -130,26 +130,27 @@ public class BookService {
         return bookRepository.findAllByKeywordIgnoreCaseAndDeletedFalse(keyword, pageRequest);
     }
 
-    public Page<BookListDto> searchBookByCondition(String keyword, String condition, Pageable pageable) {
+    public Page<BookListDto> searchBookByCondition(String query, String condition, Pageable pageable) {
         Page<Book> page;
         switch (condition.toLowerCase()) {
             case "title":
-                page = bookRepository.findByTitleContainingIgnoreCaseAndDeletedFalse(keyword, pageable);
+                page = bookRepository.findByTitleContainingIgnoreCaseAndDeletedFalse(query, pageable);
                 break;
             case "author":
-                page = bookRepository.findByAuthorContainingIgnoreCaseAndDeletedFalse(keyword, pageable);
+                page = bookRepository.findByAuthorContainingIgnoreCaseAndDeletedFalse(query, pageable);
                 break;
             case "publisher":
-                page = bookRepository.findByPublisherContainingIgnoreCaseAndDeletedFalse(keyword, pageable);
+                page = bookRepository.findByPublisherContainingIgnoreCaseAndDeletedFalse(query, pageable);
                 break;
             case "isbn":
-                page = bookRepository.findByIsbnContainingIgnoreCaseAndDeletedFalse(keyword, pageable);
+                page = bookRepository.findByIsbnContainingIgnoreCaseAndDeletedFalse(query, pageable);
                 break;
             default:
                 throw new IllegalArgumentException("유효하지 않은 값입니다.");
         }
         return page.map(BookListDto::new);
     }
+
 
     private Book findBook(Long id) {
         return bookRepository.findById(id)

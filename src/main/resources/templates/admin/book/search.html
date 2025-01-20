@@ -27,8 +27,8 @@
                                 <option value="publisher">출판사</option>
                                 <option value="isbn">ISBN</option>
                             </select>
-                            <input class="form-control ms-1 me-1" type="search" name="keyword"
-                                   th:value="${keyword}" placeholder="검색어를 입력하세요" aria-label="Search"
+                            <input class="form-control ms-1 me-1" type="search" name="query"
+                                   th:value="${query}" placeholder="검색어를 입력하세요" aria-label="Search"
                                    style="height: 38px;">
                             <button class="btn btn-sm btn-primary" style="height: 38px; width: 60px;">검색</button>
                         </form>
@@ -88,7 +88,7 @@
                         <li class="page-item" th:classappend="${bookList.hasPrevious()} ? '' : 'disabled'">
 
                             <a class="page-link"
-                               th:href="@{/admin/book/search(keyword=${keyword}, condition=${condition}, page=${bookList.number - 1}, size=${bookList.size})}"
+                               th:href="@{/admin/book/search(query=${query}, condition=${condition}, page=${bookList.number - 1}, size=${bookList.size})}"
                                aria-label="Previous">
                                 &laquo;
                             </a>
@@ -96,13 +96,13 @@
                         <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, bookList.totalPages - 1)}"
                             th:classappend="${pageNum == bookList.number} ? 'active'">
                             <a class="page-link"
-                               th:href="@{/admin/book/search(keyword=${keyword}, condition=${condition}, page=${bookList.number}, size=${bookList.size})}"
+                               th:href="@{/admin/book/search(query=${query}, condition=${condition}, page=${bookList.number}, size=${bookList.size})}"
                                th:text="${pageNum + 1}"></a>
                         </li>
 
                         <li class="page-item" th:classappend="${bookList.hasNext()} ? '' : 'disabled'">
                             <a class="page-link"
-                               th:href="@{/admin/book/search(keyword=${keyword}, condition=${condition}, page=${bookList.number + 1}, size=${bookList.size})}"
+                               th:href="@{/admin/book/search(query=${query}, condition=${condition}, page=${bookList.number + 1}, size=${bookList.size})}"
                                aria-label="Next">
                                 &raquo;
                             </a>

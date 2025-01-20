@@ -7,6 +7,7 @@
 <main>
     <div class="container-list mt-4">
         <div class="row row-cols-1 g-3 justify-content-center">
+            <h6 th:text="'\'' + ${keyword} + '\'' + ' 검색 결과'"></h6>
             <div th:each="book : ${bookList.content}" class="col">
                 <div class="card shadow-sm d-flex flex-row" style="height: 230px; max-width: 600px; margin: 0 auto;">
                     <a th:href="@{'/book/' + ${book.id}}"
@@ -29,11 +30,6 @@
                                 Published Date</p>
                             <p class="card-text text-danger fw-bold"
                                th:text="${#numbers.formatInteger(book.price, 3, 'COMMA')} + ' 원'"></p>
-                            <button id="likeButton" class="btn btn-outline-danger"
-                                    th:onclick="'likeButton(' + ${book.id} + ', ' + ${book.likeStatus} + ')'">
-                                <i th:id="'heartIcon_' + ${book.id}"
-                                   th:class="${book.likeStatus} ? 'bi bi-heart-fill' : 'bi bi-heart'"></i>
-                            </button>
                         </div>
                         <div class="d-flex flex-column align-items-end justify-content-center" style="flex: 1;">
                             <button class="btn btn-sm btn-outline-danger mt-2" type="button"
@@ -129,37 +125,6 @@
         });
     });
 
-    function likeButton(bookId, isLiked) {
-        const method = isLiked ? "DELETE" : "POST";
-        const heartIcon = $(`#heartIcon_${bookId}`);
-        console.log(isLiked);
-
-        $.ajax({
-            type: method,
-            url: `/api/book/${bookId}/like`,
-            success: function () {
-                if (method === "POST") {
-                    heartIcon.removeClass("bi-heart").addClass("bi-heart-fill");
-                    heartIcon.css('color', 'red');
-                    isLiked = true;
-                    alert("좋아요를 눌렀습니다.");
-                } else {
-                    heartIcon.removeClass('bi-heart-fill').addClass('bi-heart');
-                    heartIcon.css('color', '');
-                    isLiked = false;
-                    alert("좋아요를 취소했습니다.");
-                }
-            },
-            error: function (xhr) {
-                if (xhr.status === 401) {
-                    alert("로그인이 필요합니다.");
-                    window.location.href = "/login";
-                } else {
-                    alert("오류 발생");
-                }
-            },
-        })
-    }
 
     document.querySelectorAll('[id="proceedToOrder"]').forEach(button => {
         button.addEventListener('click', function () {
