@@ -14,7 +14,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Table(name = "orders")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Order extends TimeStamped {
+public class Order extends CreatedTimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

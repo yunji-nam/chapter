@@ -12,7 +12,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PaymentEntity extends TimeStamped {
+public class PaymentEntity extends CreatedTimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

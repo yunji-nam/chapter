@@ -62,10 +62,6 @@ public class OrderController {
         if (userDetails.getUser().isAdmin()) {
             return "admin/order/list";
         }
-
-        if (orders.getContent().isEmpty()) {
-            return "order/empty";
-        }
         return "order/list";
     }
 

@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -96,6 +97,26 @@ public class OrderService {
         Order order = findOrderById(id);
         checkUser(user, order);
         order.cancel();
+    }
+
+    public Page<OrderListDto> searchOrder(String query, String condition, Pageable pageable) {
+        Page<Order> page;
+        switch (condition) {
+            case "merchantUid":
+                page = orderRepository.findByMerchantUidContainingIgnoreCase(query, pageable);
+                break;
+            case "username":
+                page = orderRepository.findByUser_NameContainingIgnoreCase(query, pageable);
+                break;
+            default:
+                throw new IllegalArgumentException("유효하지 않은 값입니다.");
+        }
+        return page.map(OrderListDto::new);
+    }
+
+    public List<OrderListDto> getLatestOrderList(User user) {
+        List<Order> orderList = orderRepository.findTop5ByUserIdOrderByCreatedAtDesc(user.getId());
+        return orderList.stream().map(OrderListDto::new).collect(Collectors.toList());
     }
 
     private PageRequest getPageable(int pageNo, int size) {

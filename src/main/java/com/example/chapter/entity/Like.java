@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "likes", uniqueConstraints = @UniqueConstraint(
         name = "likes_uk",
         columnNames = {"user_id", "book_id"}))
-public class Like {
+public class Like extends CreatedTimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
