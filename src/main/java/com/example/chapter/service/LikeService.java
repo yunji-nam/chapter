@@ -44,7 +44,7 @@ public class LikeService {
         return likeList.map(like -> new BookListDto(like.getBook()));
     }
 
-    public List<BookListDto> getLikeList(User user) {
+    public List<BookListDto> getLatestLikeList(User user) {
         List<Like> likeList = likeRepository.findTop8ByUserIdAndBookDeletedFalseOrderByCreatedAtDesc(user.getId());
         return likeList.stream().map(like -> new BookListDto(like.getBook())).collect(Collectors.toList());
     }

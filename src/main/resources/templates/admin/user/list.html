@@ -85,7 +85,6 @@
 
     function deleteUser(button) {
         const userId = button.getAttribute("data-user-id");
-        const role = /*[[user.role]]*/ 'USER';
 
         if (!confirm("해당 유저를 탈퇴 처리 하시겠습니까?")) {
             return;
@@ -95,11 +94,7 @@
             url: `/api/user/${userId}/withdraw`,
             success: function () {
                 alert('탈퇴 처리 완료');
-                if (role === 'ADMIN') {
-                    location.reload();
-                } else {
-                    window.location.replace("/logout");
-                }
+                location.reload();
             },
             error: function () {
                 alert('탈퇴 처리 실패');

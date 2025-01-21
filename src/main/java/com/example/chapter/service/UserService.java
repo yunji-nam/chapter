@@ -66,14 +66,14 @@ public class UserService {
 
     // 프로필 조회
     public ProfileDto getProfile(User user) {
-        User findUser = getUser(user);
+        User findUser = getUser(user.getId());
         return new ProfileDto(findUser);
     }
 
     // 프로필 수정
     @Transactional
     public void updateProfile(User user, UpdateProfileDto dto) {
-        User findUser = getUser(user);
+        User findUser = getUser(user.getId());
         String email = findUser.getEmail();
         if (!dto.getEmail().equals(email)) {
             if (validateEmail(dto.getEmail())) {
@@ -108,7 +108,7 @@ public class UserService {
     // 비밀번호 수정
     @Transactional
     public void updatePassword(User user, PasswordDto dto) {
-        User findUser = getUser(user);
+        User findUser = getUser(user.getId());
         if (!passwordEncoder.matches(dto.getCurrentPassword(), findUser.getPassword())) {
             throw new IllegalArgumentException("현재 비밀번호가 틀립니다.");
         }
@@ -116,16 +116,16 @@ public class UserService {
         findUser.updatePassword(newPassword);
     }
 
-    private User getUser(User user) {
-        return userRepository.findById(user.getId()).orElseThrow(() -> new EntityNotFoundException("user를 찾을 수 없습니다."));
+    private User getUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("user를 찾을 수 없습니다."));
     }
 
     private boolean validateEmail(String email) {
-        return userRepository.existsByEmailAndDeletedFalse(email);
+        return userRepository.existsByEmail(email);
     }
 
     private boolean validatePhone(String phone) {
-        return userRepository.existsByPhoneAndDeletedFalse(phone);
+        return userRepository.existsByPhone(phone);
     }
 
     private Address updateAddress(Address currentAddress, Address newAddress) {
@@ -149,6 +149,7 @@ public class UserService {
         if (!userId.equals(user.getId()) && !user.isAdmin()) {
             throw new IllegalArgumentException("잘못된 접근입니다.");
         }
-        user.delete();
+        User findUser = getUser(userId);
+        findUser.delete();
     }
 }

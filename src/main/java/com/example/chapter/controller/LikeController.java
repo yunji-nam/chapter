@@ -20,9 +20,7 @@ public class LikeController {
     @GetMapping("/user/book/likes")
     public String getLikes(@AuthenticationPrincipal UserDetailsImpl userDetails, Pageable pageable, Model model) {
         Page<BookListDto> likeList = likeService.getLikeList(userDetails.getUser(), pageable);
-        if (likeList.isEmpty()) {
-            return "like/empty";
-        }
+
         model.addAttribute("likeList", likeList);
         return "like/list";
     }

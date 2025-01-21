@@ -11,26 +11,24 @@
         <div class="col-md-9 ms-sm-auto col-lg-10">
             <div class="mt-4 ms-3" style="max-width: 1000px; margin: 0 auto; padding: 0 15px;">
                 <h5>주문 목록</h5>
-                <div class="justify-content-between">
-                    <form th:action="@{/orders}" th:method="get">
+                <div class="mt-2 d-flex justify-content-between">
+                    <form class="gap-1" th:action="@{/orders}" th:method="get">
                         <label for="startDate">시작일</label>
                         <input type="date" id="startDate" name="startDate"/>
-                        <label class="ms-1" for="endDate">종료일</label>
+                        <label for="endDate">종료일</label>
                         <input type="date" id="endDate" name="endDate"/>
                         <button class="btn btn-sm btn-dark" type="submit">조회</button>
                     </form>
-                    <div>
-                        <form class="d-flex ms-3" method="get" th:action="@{/admin/order/search}">
-                            <select class="form-select-sm" name="condition">
-                                <option value="merchantUid">주문번호</option>
-                                <option value="username">주문자명</option>
-                            </select>
-                            <input class="form-control ms-1 me-1" type="search" name="query"
-                                   th:value="${query}" placeholder="검색어를 입력하세요" aria-label="Search"
-                                   style="height: 38px;">
-                            <button class="btn btn-sm btn-primary" style="height: 38px; width: 60px;">검색</button>
-                        </form>
-                    </div>
+                    <form class="d-flex ms-3" method="get" th:action="@{/admin/order/search}">
+                        <select class="form-select-sm" name="condition">
+                            <option value="merchantUid">주문번호</option>
+                            <option value="username">주문자명</option>
+                        </select>
+                        <input class="form-control ms-1 me-1" type="search" name="query"
+                               th:value="${query}" placeholder="검색어를 입력하세요" aria-label="Search"
+                               style="height: 38px;">
+                        <button class="btn btn-sm btn-primary" style="height: 38px; width: 60px;">검색</button>
+                    </form>
                 </div>
 
 

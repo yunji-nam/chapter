@@ -74,9 +74,6 @@ public class ReviewController {
         if (userDetails.getUser().isAdmin()) {
             return "admin/review/list";
         }
-        if (reviews.getContent().isEmpty()) {
-            return "review/empty";
-        }
         return "review/list";
     }
 

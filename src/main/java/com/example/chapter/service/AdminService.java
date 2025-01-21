@@ -13,9 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class AdminService {
@@ -46,12 +43,12 @@ public class AdminService {
     }
 
     private String validateEmail(String email) {
-        if (userRepository.existsByEmailAndDeletedFalse(email)) throw new DuplicateFieldException("이메일", email);
+        if (userRepository.existsByEmail(email)) throw new DuplicateFieldException("이메일", email);
         return email;
     }
 
     private String validatePhone(String phone) {
-        if (userRepository.existsByPhoneAndDeletedFalse(phone)) throw new DuplicateFieldException("휴대폰 번호", phone);
+        if (userRepository.existsByPhone(phone)) throw new DuplicateFieldException("휴대폰 번호", phone);
         return phone;
     }
 

@@ -78,6 +78,9 @@
                             </li>
                         </ul>
                     </div>
+                    <div th:if="${reviews.totalElements == 0}" class="mt-4 text-center">
+                        작성 리뷰가 없습니다.
+                    </div>
                 </div>
             </div>
         </div>

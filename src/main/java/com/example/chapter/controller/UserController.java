@@ -1,11 +1,10 @@
 package com.example.chapter.controller;
 
-import com.example.chapter.dto.PasswordDto;
-import com.example.chapter.dto.ProfileDto;
-import com.example.chapter.dto.SignUpDto;
-import com.example.chapter.dto.UpdateProfileDto;
+import com.example.chapter.dto.*;
 import com.example.chapter.security.UserDetailsImpl;
 import com.example.chapter.service.KakaoService;
+import com.example.chapter.service.LikeService;
+import com.example.chapter.service.OrderService;
 import com.example.chapter.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpSession;
@@ -22,6 +21,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @Controller
 @Slf4j
 @RequiredArgsConstructor
@@ -29,6 +30,8 @@ public class UserController {
 
     private final UserService userService;
     private final KakaoService kakaoService;
+    private final OrderService orderService;
+    private final LikeService likeService;
 
     @Value("${kakao.restapi.key}")
     private String clientId;
@@ -67,6 +70,10 @@ public class UserController {
 
     @GetMapping("/user/me")
     public String getMyPage(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
+        List<OrderListDto> orderList = orderService.getLatestOrderList(userDetails.getUser());
+        List<BookListDto> likeList = likeService.getLatestLikeList(userDetails.getUser());
+        model.addAttribute("orderList", orderList);
+        model.addAttribute("likeList", likeList);
         return "user/myPage";
     }
 
