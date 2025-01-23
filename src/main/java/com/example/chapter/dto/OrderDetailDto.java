@@ -16,7 +16,6 @@ public class OrderDetailDto {
     private List<OrderBookInfo> books;
     private int totalPrice;
     private OrderStatus orderStatus;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime orderDate;
     private DeliveryStatus deliveryStatus;
     private String username;

@@ -32,11 +32,9 @@
                             <a th:href="@{/order/{orderId}(orderId=${order.id})}" th:text="${order.merchantUid}"></a>
                         </td>
                         <td>
-                            <ul style="list-style: none; padding: 0;">
-                                <li th:each="book : ${order.books}">
-                                    <div th:text="${book.title}"></div>
-                                </li>
-                            </ul>
+                            <div th:each="book : ${order.books}" style="margin-bottom: 5px;">
+                                <span th:text="${book.title}"></span>
+                            </div>
                         </td>
                         <td th:text="${#numbers.formatInteger(order.totalPrice, 3, 'COMMA')} + '원'"></td>
 
