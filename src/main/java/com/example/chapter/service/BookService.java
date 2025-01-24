@@ -151,6 +151,11 @@ public class BookService {
         return page.map(BookListDto::new);
     }
 
+    public BookImageUpdateDto getBookImage(Long id) {
+        Book book = findBook(id);
+        return new BookImageUpdateDto(book);
+    }
+
 
     private Book findBook(Long id) {
         return bookRepository.findById(id)

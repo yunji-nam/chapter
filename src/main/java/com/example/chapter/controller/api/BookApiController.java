@@ -23,7 +23,7 @@ public class BookApiController {
     }
 
     // 도서 이미지 수정
-    @PutMapping("/admin/book/{bookId}/cover")
+    @PutMapping("/admin/book/{bookId}/image")
     public ApiResponse<Object> updateBookImage(@PathVariable Long bookId, @RequestParam(value = "image") MultipartFile file) {
         String imageUrl = bookService.updateBookImage(bookId, file);
         return ApiResponse.builder().data(imageUrl).message("도서 이미지 변경 완료").build();

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,16 +28,20 @@ public class ReviewController {
     // 리뷰 등록 폼
     @GetMapping("/book/{orderItemId}/review")
     public String addReviewForm(@PathVariable Long orderItemId, Model model) {
-        model.addAttribute("form", new ReviewRegistrationDto());
+        model.addAttribute("reviewRegistrationDto", new ReviewRegistrationDto());
         return "review/add";
     }
 
     // 리뷰 등록
     @PostMapping("/book/{orderItemId}/review")
     public String addReview(@PathVariable Long orderItemId,
-                            @Valid ReviewRegistrationDto dto,
+                            @Valid ReviewRegistrationDto reviewRegistrationDto,
+                            BindingResult result,
                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        reviewService.addReview(orderItemId, dto, userDetails.getUser());
+        if (result.hasErrors()) {
+            return "review/add";
+        }
+        reviewService.addReview(orderItemId, reviewRegistrationDto, userDetails.getUser());
         return "redirect:/book/reviews";
     }
 

@@ -25,8 +25,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="fw-bold">휴대폰 번호 : </label>
-                    <span th:if="${profile.phone}" th:text="${profile.phone}"></span>
-                    <span th:unless="${profile.phone}"></span>
+                    <span th:text="${profile.getFormatPhoneNumber()}"></span>
                 </div>
                 <div class="mb-3">
                     <label class="fw-bold">우편 번호 : </label>

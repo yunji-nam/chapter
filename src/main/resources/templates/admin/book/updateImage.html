@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}"
+      layout:fragment="content">
+
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div th:insert="~{common/sidebar_admin::sidebar_admin}" class="col-md-4 col-lg-3"></div>
+        <div class="col-md-8 ms-sm-auto col-lg-9">
+            <div class="container mt-4 ms-3">
+                <h5>도서 이미지 변경</h5>
+
+                <div class="form-group mb-5" style="text-align: center;">
+                    <div>
+                        <img id="currentImage" th:src="${book.imageUrl}" alt="도서 이미지"
+                             style="margin-top: 20px; margin-bottom: 20px; max-width: 200px; max-height: 250px; width: auto; height: auto;">
+                      <span th:text="${book.title}"></span> |
+                      <span th:text="${book.author}"></span>
+                    </div>
+                    <input type="file" name="image" class="form-control" id="image">
+                    <div>변경할 이미지 파일을 업로드 후 이미지 변경을 눌러주세요.</div>
+                    <button type="button" id="image-update-btn" th:data-book-id="${book.bookId}"
+                            class="btn btn-info mt-3">
+                        이미지 변경
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    document.getElementById("image-update-btn").addEventListener("click", function () {
+        const bookId = this.getAttribute("data-book-id");
+        var formData = new FormData();
+        var fileInput = document.getElementById("image");
+        var file = fileInput.files[0];
+        if (file) {
+            formData.append("image", file);
+
+            fetch(`/api/admin/book/${bookId}/image`, {
+                method: "PUT",
+                body: formData
+            })
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                    alert(data.message);
+                    document.getElementById("currentImage").src = data.data;
+                })
+                .catch(err => {
+                    console.error("이미지 업로드 실패:", err);
+                })
+        } else {
+            alert("파일을 선택해 주세요");
+        }
+    })
+
+</script>
+</body>
+</html>

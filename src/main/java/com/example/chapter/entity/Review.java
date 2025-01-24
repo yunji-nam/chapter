@@ -19,6 +19,8 @@ public class Review extends TimeStamped {
 
     private int rating;
 
+    private boolean deleted;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_item_id", nullable = false)
     private OrderItem orderItem;
@@ -37,5 +39,9 @@ public class Review extends TimeStamped {
     public void update(String content, int rating) {
         this.content = content;
         this.rating = rating;
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 }

@@ -9,7 +9,7 @@
     <div class="row">
         <div th:insert="~{common/sidebar_admin::sidebar_admin}" class="col-md-3 col-lg-2"></div>
         <div class="col-md-9 ms-sm-auto col-lg-10">
-            <div class="mt-4 ms-3" style="max-width: 1100px; margin: 0 auto; padding: 0 15px;">
+            <div class="mt-4 ms-3" style="max-width: 1200px; margin: 0 auto; padding: 0 15px;">
                 <h5>도서 목록</h5>
                 <div style="display: flex; justify-content: flex-start; align-items: center; margin-bottom: 15px; margin-top: 15px;">
                     <button class="btn btn-outline-dark btn-sm"
@@ -41,14 +41,14 @@
                             <input type="checkbox" id="selectAll" onclick="toggleAllCheckboxes(this)">
                         </th>
                         <th scope="col">카테고리</th>
-                        <th scope="col" class="col-wide">제목</th>
+                        <th scope="col">제목</th>
                         <th scope="col">저자</th>
                         <th scope="col">출판사</th>
                         <th scope="col" class="col-wide">ISBN</th>
                         <th scope="col">가격</th>
                         <th scope="col">재고(개)</th>
                         <th scope="col">상태</th>
-                        <th scope="col">관리</th>
+                        <th scope="col" class="col-wide">관리</th>
 
                     </tr>
                     </thead>
@@ -69,7 +69,9 @@
                         <td th:text="${book.stockQuantity}"></td>
                         <td th:text="${book.status.statusName}"></td>
                         <td>
-                            <a th:href="@{/admin/book/{bookId}/edit(bookId=${book.id})}"
+                            <a th:href="@{/admin/book/{bookId}/image(bookId=${book.id})}"
+                               class="btn btn-sm btn-outline-primary">이미지</a>
+                            <a th:href="@{/admin/book/{bookId}(bookId=${book.id})}"
                                class="btn btn-sm btn-outline-primary">수정</a>
                             <a class="btn btn-sm btn-outline-primary"
                                th:data-book-id="${book.id}"

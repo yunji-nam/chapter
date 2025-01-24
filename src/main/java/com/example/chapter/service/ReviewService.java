@@ -87,7 +87,7 @@ public class ReviewService {
     public void deleteReview(Long id, User user) {
         Review review = findReview(id);
         checkUser(user, review);
-        reviewRepository.delete(review);
+        review.delete();
     }
 
     private Review findReview(Long reviewId) {

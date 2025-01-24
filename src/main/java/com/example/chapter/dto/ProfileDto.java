@@ -20,4 +20,11 @@ public class ProfileDto {
         this.phone = user.getPhone();
         this.address = user.getAddress();
     }
+
+    public String getFormatPhoneNumber() {
+        if (phone == null) {
+            return "";
+        }
+        return phone.replaceAll("(\\d{3})(\\d{4})(\\d{4})", "$1-$2-$3");
+    }
 }

@@ -93,7 +93,7 @@
         const bookId = button.getAttribute("data-book-id");
         const reviewId = button.getAttribute("data-review-id");
 
-        if (!confirm("리뷰를 삭제하시겠습니까?")) {
+        if (!confirm("리뷰를 삭제하면 재작성은 불가합니다. 삭제하시겠습니까?")) {
             return;
         }
         $.ajax({

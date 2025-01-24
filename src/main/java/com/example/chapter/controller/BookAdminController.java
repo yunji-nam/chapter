@@ -1,6 +1,7 @@
 package com.example.chapter.controller;
 
 import com.example.chapter.dto.BookDetailDto;
+import com.example.chapter.dto.BookImageUpdateDto;
 import com.example.chapter.dto.BookListDto;
 import com.example.chapter.dto.BookRegistrationDto;
 import com.example.chapter.entity.Category;
@@ -44,25 +45,32 @@ public class BookAdminController {
     }
 
     //도서 수정 폼
-    @GetMapping("/book/{bookId}/edit")
+    @GetMapping("/book/{bookId}")
     public String updateBookForm(@PathVariable Long bookId, Model model) {
         BookDetailDto responseDto = bookService.getBook(bookId);
         model.addAttribute("bookRegistrationDto", new BookRegistrationDto(responseDto));
         model.addAttribute("categories", Category.values());
-        return "admin/book/update";
+        return "admin/book/updateInfo";
     }
 
     // 도서 정보 수정
-    @PutMapping("/book/{bookId}/edit")
+    @PutMapping("/book/{bookId}")
     public String updateBook(@PathVariable Long bookId, @Valid BookRegistrationDto bookRegistrationDto, BindingResult result, Model model) {
         if (result.hasErrors()) {
             model.addAttribute("categories", Category.values());
-            return "admin/book/update";
+            return "admin/book/updateInfo";
         }
         bookService.updateBook(bookId, bookRegistrationDto);
         return "redirect:/admin/books";
     }
 
+    // 도서 이미지 수정 폼
+    @GetMapping("/book/{bookId}/image")
+    public String updateBookImageForm(@PathVariable Long bookId, Model model) {
+        BookImageUpdateDto dto = bookService.getBookImage(bookId);
+        model.addAttribute("book", dto);
+        return "admin/book/updateImage";
+    }
 
     // 도서 목록 조회
     @GetMapping("/books")

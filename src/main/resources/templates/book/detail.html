@@ -23,7 +23,6 @@
                     <span class="fw-bold text-danger"
                           th:text="${#numbers.formatInteger(book.price, 3, 'COMMA')} + ' 원'"></span>
                 </div>
-                <p class="lead" th:text="${book.description}"></p>
                 <div class="d-flex">
                     <button id="likeButton" class="btn btn-outline-danger" onclick="likeButton()">
                         <i id="heartIcon" th:class="${likeStatus} ? 'bi bi-heart-fill' : 'bi bi-heart'"></i>
@@ -45,7 +44,14 @@
 <input type="hidden" id="bookId" th:value="${book.id}"/>
 
 <section class="py-5 bg-light">
-    <div class="container px-4 px-lg-5">
+    <div class="container px-4 px-lg-5" style="max-width: 800px;">
+        <h6 class="fw-bolder mb-2">설명</h6>
+        <div class="border-bottom mb-2"></div>
+        <div th:text="${book.description}"></div>
+    </div>
+</section>
+<section class="py-5">
+    <div class="container px-4 px-lg-5" style="max-width: 800px;">
         <h6 class="fw-bolder mb-2">상세 정보</h6>
         <div class="border-bottom mb-2"></div>
         <div th:text="'분류 : ' + ${book.category.categoryName}"></div>
@@ -54,9 +60,9 @@
         <div class="mb-5" th:text="'쪽수 : ' + ${book.pages} + '쪽'"></div>
     </div>
 </section>
-<section class="py-5">
+<section class="py-5 bg-light">
     <div class="container px-4 px-lg-5" style="max-width: 800px;">
-        <h6 class="fw-bolder mb-2">review</h6>
+        <h6 class="fw-bolder mb-2">리뷰</h6>
         <div class="border-bottom mb-2"></div>
         <div id="reviews" class="mb-4"></div>
         <div id="pagination" class="d-flex justify-content-center mt-5">

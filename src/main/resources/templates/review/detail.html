@@ -6,47 +6,48 @@
 
 <body>
 
-<div class="container mt-4">
+<div class="container-fluid mt-4 card w-50" style="height: 250px;">
 
     <form id="review" th:object="${review}">
-        <h5 class="mb-4">
+        <div class="card-header text-center">
             <a th:href="@{/book/{bookId}(bookId=${review.bookId})}"
                th:text="'\'' + ${review.bookTitle} + '\''"
-               style="color: #078080; font-size: 1.0rem;">
+               style="color: #006fff; font-size: 1.0rem;">
             </a>
-            <span> 에 대한 리뷰</span>
-        </h5>
+            <span> 리뷰</span>
+        </div>
 
-        <fieldset>
-            <input type="radio" name="rating" value="5" id="rate1" th:field="*{rating}" disabled>
-            <label for="rate1">★</label>
-            <input type="radio" name="rating" value="4" id="rate2" th:field="*{rating}" disabled>
-            <label for="rate2">★</label>
-            <input type="radio" name="rating" value="3" id="rate3" th:field="*{rating}" disabled>
-            <label for="rate3">★</label>
-            <input type="radio" name="rating" value="2" id="rate4" th:field="*{rating}" disabled>
-            <label for="rate4">★</label>
-            <input type="radio" name="rating" value="1" id="rate5" th:field="*{rating}" disabled>
-            <label for="rate5">★</label>
-        </fieldset>
-        <span class="ms-3" style="font-size: 0.9rem; color: gray;">
-            <span th:text="${#temporals.format(review.createdDate, 'yyyy-MM-dd')}"></span>
-        </span>
-        <div th:text="${review.content}" class="mt-3"></div>
-        <div class="d-flex mt-3">
-            <a th:href="@{/book/{bookId}/review/{reviewId}/edit(bookId=${review.bookId}, reviewId=${review.id})}"
-               class="btn btn-sm btn-outline-secondary"
-               th:if="${#authorization.expression('hasAuthority(''ROLE_ADMIN'')') or (#authentication.name == review.username)}">
-                수정
-            </a>
-            <button type="button" class="btn btn-sm btn-outline-secondary ms-2"
-                    th:data-book-id="${review.bookId}"
-                    th:data-review-id="${review.id}"
-                    onclick="deleteReview(this)"
-                    th:if="${#authorization.expression('hasAuthority(''ROLE_ADMIN'')') or (#authentication.name == review.username)}">
-                삭제
-            </button>
-
+        <div class="card-body p-3">
+            <fieldset>
+                <input type="radio" name="rating" value="5" id="rate1" th:field="*{rating}" disabled>
+                <label for="rate1">★</label>
+                <input type="radio" name="rating" value="4" id="rate2" th:field="*{rating}" disabled>
+                <label for="rate2">★</label>
+                <input type="radio" name="rating" value="3" id="rate3" th:field="*{rating}" disabled>
+                <label for="rate3">★</label>
+                <input type="radio" name="rating" value="2" id="rate4" th:field="*{rating}" disabled>
+                <label for="rate4">★</label>
+                <input type="radio" name="rating" value="1" id="rate5" th:field="*{rating}" disabled>
+                <label for="rate5">★</label>
+            </fieldset>
+            <span class="ms-3" style="font-size: 0.9rem; color: gray;">
+                        <span th:text="${#temporals.format(review.createdDate, 'yyyy-MM-dd')}"></span>
+                    </span>
+            <div th:text="${review.content}" class="mt-3"></div>
+            <div class="d-flex" style="margin-top: 50px;">
+                <a th:href="@{/book/{bookId}/review/{reviewId}/edit(bookId=${review.bookId}, reviewId=${review.id})}"
+                   class="btn btn-sm btn-outline-secondary"
+                   th:if="${#authorization.expression('hasAuthority(''ROLE_ADMIN'')') or (#authentication.name == review.username)}">
+                    수정
+                </a>
+                <button type="button" class="btn btn-sm btn-outline-secondary ms-2"
+                        th:data-book-id="${review.bookId}"
+                        th:data-review-id="${review.id}"
+                        onclick="deleteReview(this)"
+                        th:if="${#authorization.expression('hasAuthority(''ROLE_ADMIN'')') or (#authentication.name == review.username)}">
+                    삭제
+                </button>
+            </div>
         </div>
     </form>
 </div>
@@ -56,7 +57,7 @@
         const bookId = button.getAttribute("data-book-id");
         const reviewId = button.getAttribute("data-review-id");
 
-        if (!confirm("리뷰를 삭제하시겠습니까?")) {
+        if (!confirm("리뷰를 삭제하면 재작성은 불가합니다. 삭제하시겠습니까?")) {
             return;
         }
         $.ajax({
