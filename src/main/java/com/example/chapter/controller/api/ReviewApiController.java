@@ -22,7 +22,7 @@ public class ReviewApiController {
         return reviewService.getBookReviews(bookId, pageNo, size);
     }
 
-    @DeleteMapping("/api/book/{bookId}/review/{reviewId}")
+    @PutMapping("/api/book/{bookId}/review/{reviewId}")
     public ApiResponse<String> deleteReview(@PathVariable Long bookId, @PathVariable Long reviewId,
                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         reviewService.deleteReview(reviewId, userDetails.getUser());

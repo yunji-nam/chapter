@@ -9,7 +9,7 @@
 <div class="container mt-4">
     <h4 class="mb-4">리뷰 등록</h4>
 
-    <form id="review" th:action="@{/book/{orderItemId}/review(orderItemId=${orderItemId})}" th:object="${form}" method="post">
+    <form id="review" th:action="@{/book/{orderItemId}/review(orderItemId=${orderItemId})}" th:object="${reviewRegistrationDto}" method="post">
         <fieldset>
             <span class="text-bold">별점을 선택해주세요</span>
             <input type="radio" name="rating" value="5" id="rate1" th:field="*{rating}"><label for="rate1">★</label>
@@ -19,7 +19,8 @@
             <input type="radio" name="rating" value="1" id="rate5" th:field="*{rating}"><label for="rate5">★</label>
         </fieldset>
         <div>
-            <textarea class="form-control mt-3" type="text" th:field="*{content}" placeholder="도서에 대한 한줄평을 남겨주세요."></textarea>
+            <textarea class="form-control mt-3" type="text" th:field="*{content}" placeholder="도서에 대한 리뷰를 최소 10자 이상 남겨주세요."></textarea>
+            <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="text-danger"></p>
         </div>
         <div class="text-center mt-4">
             <button type="submit" class="btn btn-outline-success">등록</button>

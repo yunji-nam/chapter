@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 public class BookDetailDto {
@@ -26,10 +25,8 @@ public class BookDetailDto {
     private int stockQuantity;
     private String image;
     private BookStatus status;
-    private List<ReviewResponseDto> reviews;
 
-
-    public BookDetailDto(Book book, List<ReviewResponseDto> reviews) {
+    public BookDetailDto(Book book) {
         this.id = book.getId();
         this.title = book.getTitle();
         this.author = book.getAuthor();
@@ -43,7 +40,6 @@ public class BookDetailDto {
         this.stockQuantity = book.getStockQuantity();
         this.image = book.getImage();
         this.status = book.getStatus();
-        this.reviews = reviews;
     }
 
 }

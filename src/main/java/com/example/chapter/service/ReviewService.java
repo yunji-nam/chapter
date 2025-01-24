@@ -55,14 +55,14 @@ public class ReviewService {
     // 하나의 책에 대한 리뷰 리스트
     public Page<ReviewResponseDto> getBookReviews(Long bookId, int pageNo, int size) {
         Pageable pageable = PageRequest.of(pageNo, size, Sort.by(Sort.Direction.DESC, "modifiedAt"));
-        return reviewRepository.findAllByBookId(bookId, pageable);
+        return reviewRepository.findAllByBookIdAndDeletedFalse(bookId, pageable);
     }
 
     // 리뷰 목록 조회
     public Page<ReviewResponseDto> getReviews(User user, Pageable pageable) {
-        Page<Review> reviews = reviewRepository.findAllByUserIdOrderByCreatedAt(user.getId(), pageable);
+        Page<Review> reviews = reviewRepository.findAllByUserIdAndDeletedFalseOrderByCreatedAt(user.getId(), pageable);
         if (user.isAdmin()) {
-            reviews = reviewRepository.findAll(pageable);
+            reviews = reviewRepository.findAllByDeletedFalse(pageable);
         }
         return reviews.map(ReviewResponseDto::new);
     }
@@ -91,12 +91,12 @@ public class ReviewService {
     }
 
     private Review findReview(Long reviewId) {
-        return reviewRepository.findById(reviewId)
+        return reviewRepository.findByIdAndDeletedFalse(reviewId)
                 .orElseThrow(() -> new EntityNotFoundException("리뷰를 찾을 수 없습니다"));
     }
 
     private static void checkUser(User user, Review review) {
-        if (!user.getId().equals(review.getUser().getId()) || !user.isAdmin()) {
+        if (!user.getId().equals(review.getUser().getId()) && !user.isAdmin()) {
             throw new IllegalArgumentException("권한이 없습니다.");
         }
     }

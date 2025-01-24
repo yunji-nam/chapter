@@ -4,7 +4,6 @@ import com.example.chapter.dto.*;
 import com.example.chapter.entity.Book;
 import com.example.chapter.entity.Category;
 import com.example.chapter.repository.BookRepository;
-import com.example.chapter.repository.ReviewRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +29,6 @@ import static com.example.chapter.constant.CacheConstant.FEATURED_BOOK_LIST;
 public class BookService {
 
     private final BookRepository bookRepository;
-    private final ReviewRepository reviewRepository;
     private final S3Service s3Service;
 
     // 도서 등록
@@ -81,8 +79,7 @@ public class BookService {
     // 도서 상세 조회
     public BookDetailDto getBook(Long id) {
         Book book = findBook(id);
-        List<ReviewResponseDto> reviewResponseDto = reviewRepository.findAllByBookId(id);
-        return new BookDetailDto(book, reviewResponseDto);
+        return new BookDetailDto(book);
     }
 
     // 도서 수정
@@ -156,9 +153,8 @@ public class BookService {
         return new BookImageUpdateDto(book);
     }
 
-
     private Book findBook(Long id) {
-        return bookRepository.findById(id)
+        return bookRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new EntityNotFoundException("책을 찾을 수 없습니다."));
     }
 

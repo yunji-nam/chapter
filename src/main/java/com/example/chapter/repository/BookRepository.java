@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
     Page<Book> findAllByDeletedFalse(Pageable pageable);
@@ -34,4 +35,5 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Page<Book> findByPublisherContainingIgnoreCaseAndDeletedFalse(String publisher, Pageable pageable);
     Page<Book> findByIsbnContainingIgnoreCaseAndDeletedFalse(String isbn, Pageable pageable);
 
+    Optional<Book> findByIdAndDeletedFalse(Long id);
 }
