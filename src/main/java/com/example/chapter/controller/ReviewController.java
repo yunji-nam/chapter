@@ -45,7 +45,7 @@ public class ReviewController {
         return "redirect:/book/reviews";
     }
 
-    // 리뷰 조회
+    // 리뷰 상세 조회
     @GetMapping("/book/{bookId}/review/{reviewId}")
     public String getReview(@PathVariable Long bookId, @PathVariable Long reviewId, Model model) {
         ReviewResponseDto dto = reviewService.getReview(reviewId);

@@ -31,7 +31,7 @@ public class BookController {
     public String getAllBooks(@RequestParam(required = false) Category category,
                               @RequestParam(defaultValue = "id") String sortType,
                               @RequestParam(defaultValue = "0") int pageNo,
-                              @RequestParam(defaultValue = "3") int size,
+                              @RequestParam(defaultValue = "10") int size,
                               @AuthenticationPrincipal UserDetailsImpl userDetails,
                               Model model) {
         Page<BookListDto> bookDtos;
@@ -82,9 +82,7 @@ public class BookController {
 
     // 도서 검색
     @GetMapping("/search")
-    public String searchBook(@RequestParam String keyword,
-                             @PageableDefault(size = 3) Pageable pageable,
-                             Model model) {
+    public String searchBook(@RequestParam String keyword, Pageable pageable, Model model) {
         Page<BookListDto> searchResults = bookService.searchBook(keyword, pageable);
         model.addAttribute("bookList", searchResults);
         model.addAttribute("keyword", keyword);
@@ -96,14 +94,14 @@ public class BookController {
     }
 
     @GetMapping("/books/best")
-    public String getBooksByBestSelling(@PageableDefault(size = 3) Pageable pageable, Model model) {
+    public String getBooksByBestSelling(Pageable pageable, Model model) {
         Page<BookListDto> booksByBestSelling = bookService.getBooksByBestSelling(pageable);
         model.addAttribute("bookList", booksByBestSelling);
         return "book/best";
     }
 
     @GetMapping("/books/new")
-    public String getBooksByLatest(@PageableDefault(size = 3) Pageable pageable, Model model) {
+    public String getBooksByLatest(Pageable pageable, Model model) {
         Page<BookListDto> booksByLatest = bookService.getBooksByLatest(pageable);
         model.addAttribute("bookList", booksByLatest);
         return "book/new";

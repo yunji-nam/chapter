@@ -22,7 +22,7 @@ public class OrderAdminController {
     @GetMapping("/order/search")
     public String search(@RequestParam String query,
                          @RequestParam String condition,
-                         @PageableDefault(size = 5) Pageable pageable,
+                         Pageable pageable,
                          Model model) {
         Page<OrderListDto> searchResults = orderService.searchOrder(query, condition, pageable);
 

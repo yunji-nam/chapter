@@ -15,6 +15,7 @@ public class ReviewApiController {
 
     private final ReviewService reviewService;
 
+    // 책에 대한 리뷰 목록 조회
     @GetMapping("/api/book/{bookId}/reviews")
     public Page<ReviewResponseDto> getBookReviews(@PathVariable Long bookId,
                                               @RequestParam(defaultValue = "0") int pageNo,
@@ -22,6 +23,7 @@ public class ReviewApiController {
         return reviewService.getBookReviews(bookId, pageNo, size);
     }
 
+    // 리뷰 삭제
     @PutMapping("/api/book/{bookId}/review/{reviewId}")
     public ApiResponse<String> deleteReview(@PathVariable Long bookId, @PathVariable Long reviewId,
                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
