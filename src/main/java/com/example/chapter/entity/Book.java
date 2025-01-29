@@ -40,7 +40,7 @@ public class Book extends TimeStamped {
 
     private int price;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String description;
 
     private int stockQuantity;
@@ -65,7 +65,6 @@ public class Book extends TimeStamped {
         this.description = description;
         this.stockQuantity = quantity;
         this.image = image;
-        this.deleted = false;
         this.status = BookStatus.SELL;
     }
 
