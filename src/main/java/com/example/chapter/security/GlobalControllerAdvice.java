@@ -1,6 +1,5 @@
-package com.example.chapter.config;
+package com.example.chapter.security;
 
-import com.example.chapter.security.UserDetailsImpl;
 import com.example.chapter.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
