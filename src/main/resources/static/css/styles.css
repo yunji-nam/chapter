@@ -7,9 +7,11 @@ a {
 a:hover {
     color: inherit;
 }
+
 a.active {
     font-weight: bold;
 }
+
 .card-text {
     margin: 0;
 }
@@ -49,19 +51,33 @@ td {
 html, body {
     height: 100%;
     margin: 0;
-    display: flex;
-    flex-direction: column;
 }
 
-main {
-    flex: 1;
+body {
+    font-family: "Noto Sans KR", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    flex-direction: column;
+    display: flex;
+}
+
+#wrapper {
+    min-height: 100%;
+    position: relative;
+    padding-bottom: 60px;
 }
 
 .footer-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
     padding: 10px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 60px;
+    width: 100%;
 }
 
 .btn-search {
@@ -125,17 +141,6 @@ main {
 #heartIcon {
     font-size: 24px;
     margin-right: 8px;
-}
-
-body {
-    font-family: "Noto Sans KR", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 300;
-    font-style: normal;
-    flex-direction: column;
-    min-height: 100vh;
-    display: flex;
-    margin: 0;
 }
 
 .container-fluid {
