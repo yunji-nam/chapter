@@ -1,5 +1,6 @@
 package com.example.chapter.service;
 
+import com.example.chapter.aop.RedissonLock;
 import com.example.chapter.dto.*;
 import com.example.chapter.dto.api.ApiResponse;
 import com.example.chapter.entity.*;
@@ -19,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -72,7 +72,7 @@ public class PaymentService {
         return new CancelData(response.getResponse().getImpUid(), true);
     }
 
-    @Transactional
+    @RedissonLock(value = "#merchantUid")
     public ApiResponse<String> completePayment(String merchantUid, User user, OrderRequestDto dto) {
         List<OrderItemDto> items = dto.getOrderItems();
         Address address = new Address(dto.getDeliveryZipcode(), dto.getDeliveryStreet(), dto.getDeliveryDetail());
