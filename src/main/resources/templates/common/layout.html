@@ -5,10 +5,11 @@
 
 <head th:replace="~{common/header::header}"></head>
 <body>
-<div id="wrapper">
-    <div th:replace="~{common/header::navbar}"></div>
-    <div layout:fragment="content"></div>
-</div>
+
+<div th:replace="~{common/header::navbar}"></div>
+<main>
+    <th:block layout:fragment="content"></th:block>
+</main>
 
 <footer th:replace="~{common/footer::footer}"></footer>
 

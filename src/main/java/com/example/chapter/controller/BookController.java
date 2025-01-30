@@ -32,7 +32,6 @@ public class BookController {
                               @RequestParam(defaultValue = "id") String sortType,
                               @RequestParam(defaultValue = "0") int pageNo,
                               @RequestParam(defaultValue = "10") int size,
-                              @AuthenticationPrincipal UserDetailsImpl userDetails,
                               Model model) {
         Page<BookListDto> bookDtos;
 
@@ -43,14 +42,6 @@ public class BookController {
                 bookDtos = bookService.getBooksByCategory(category, sortType, pageNo, size);
             } catch (IllegalArgumentException e) {
                 bookDtos = bookService.getBooks(sortType, pageNo, size);
-            }
-        }
-
-        if (userDetails != null) {
-            for (BookListDto book : bookDtos.getContent()) {
-                book.setLikeStatus(likeService.getLikeStatus(userDetails.getUser(), book.getId()));
-                log.info("book Id:{}", book.getId());
-                log.info("likeStatus:{}", book.isLikeStatus());
             }
         }
 

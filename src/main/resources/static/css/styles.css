@@ -23,7 +23,7 @@ a.active {
 }
 
 .container {
-    max-width: 600px;
+    padding: 0;
     margin: 0 auto;
 }
 
@@ -48,36 +48,36 @@ td {
     width: 20%;
 }
 
-html, body {
+html {
     height: 100%;
     margin: 0;
 }
 
+main {
+    flex: 1;
+}
+
 body {
+    height: 100%;
     font-family: "Noto Sans KR", sans-serif;
     font-optical-sizing: auto;
     font-weight: 300;
     font-style: normal;
     flex-direction: column;
     display: flex;
+    margin: 0;
 }
 
-#wrapper {
-    min-height: 100%;
-    position: relative;
-    padding-bottom: 60px;
+.container-fluid {
+    padding: 0;
+    margin: 0 auto;
 }
 
 .footer-container {
-    position: absolute;
-    bottom: 0;
-    left: 0;
     padding: 10px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 60px;
-    width: 100%;
 }
 
 .btn-search {
@@ -143,10 +143,6 @@ body {
     margin-right: 8px;
 }
 
-.container-fluid {
-    padding: 0;
-}
-
 .sidebar_my {
     height: 100vh;
     position: fixed;
@@ -158,7 +154,7 @@ body {
 
 .sidebar {
     height: 100vh;
-    margin-left: 20px;
+    margin-left: 50px;
     top: 56px;
     left: 0;
     overflow-y: auto;

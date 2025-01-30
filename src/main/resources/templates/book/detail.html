@@ -6,7 +6,7 @@
 
 <body>
 <section class="py-5">
-    <div class="container-fluid px-4 px-lg-5 my-5" style="max-width: 800px; margin: 0 auto;">
+    <div class="container px-4 px-lg-5 my-5" style="max-width: 800px; margin: 0 auto;">
         <div class="row gx-4 gx-lg-5 align-items-center">
             <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" th:src="@{${book.image}}" alt="Book Cover"/>
             </div>
@@ -93,7 +93,9 @@
                     return;
                 }
                 if (!response.ok) {
-                    throw new Error("응답 실패: " + response.status);
+                    return response.json().then(errorData => {
+                        throw new Error("오류: " + errorData.message);
+                    });
                 }
                 return response.json();
             })
@@ -102,7 +104,10 @@
                     alert("장바구니에 추가되었습니다.");
                 }
             })
-            .catch(error => console.error('api 호출 오류:', error));
+            .catch(error => {
+                console.error('API 호출 오류:', error);
+                alert(error.message);
+            });
     });
 
     /*]]>*/

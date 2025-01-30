@@ -6,7 +6,7 @@
 
 <body>
 
-<div class="container mt-4">
+<div class="container mt-4" style="max-width: 600px;">
     <h4 class="mb-4">리뷰 등록</h4>
 
     <form id="review" th:action="@{/book/{orderItemId}/review(orderItemId=${orderItemId})}" th:object="${reviewRegistrationDto}" method="post">
