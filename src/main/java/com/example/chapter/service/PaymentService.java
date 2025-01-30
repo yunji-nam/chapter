@@ -1,7 +1,10 @@
 package com.example.chapter.service;
 
 import com.example.chapter.aop.RedissonLock;
-import com.example.chapter.dto.*;
+import com.example.chapter.dto.OrderItemDto;
+import com.example.chapter.dto.OrderRequestDto;
+import com.example.chapter.dto.PaymentCallbackDto;
+import com.example.chapter.dto.PaymentDto;
 import com.example.chapter.dto.api.ApiResponse;
 import com.example.chapter.entity.*;
 import com.example.chapter.exception.PaymentAmountMismatchException;
@@ -18,8 +21,10 @@ import com.siot.IamportRestClient.response.Payment;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -28,6 +33,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.example.chapter.constant.CacheConstant.BOOK_LIST;
+import static com.example.chapter.constant.CacheConstant.FEATURED_BOOK_LIST;
 
 @Service
 @Slf4j
@@ -39,6 +47,8 @@ public class PaymentService {
     private final OrderRepository orderRepository;
     private final BookRepository bookRepository;
     private final RestTemplate restTemplate;
+    private final OrderService orderService;
+    private final BookService bookService;
 
     // 사전 검증
     public ApiResponse<String> preparePayment(PaymentDto prepareDto) throws IamportResponseException, IOException {
@@ -72,7 +82,8 @@ public class PaymentService {
         return new CancelData(response.getResponse().getImpUid(), true);
     }
 
-    @RedissonLock(value = "#merchantUid")
+    @Transactional
+    @CacheEvict(cacheNames = {BOOK_LIST, FEATURED_BOOK_LIST}, allEntries = true)
     public ApiResponse<String> completePayment(String merchantUid, User user, OrderRequestDto dto) {
         List<OrderItemDto> items = dto.getOrderItems();
         Address address = new Address(dto.getDeliveryZipcode(), dto.getDeliveryStreet(), dto.getDeliveryDetail());
@@ -87,9 +98,8 @@ public class PaymentService {
         for (OrderItemDto item : items) {
             Long bookId = item.getBookId();
             int quantity = item.getQuantity();
-            Book book = bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("book을 찾을 수 없습니다."));
-
-            book.decreaseStock(quantity);
+            Book book = bookService.findBook(bookId);
+            bookService.decreaseStock(book, quantity);
             order.addOrderItem(book, quantity);
         }
         orderRepository.save(order);
@@ -104,8 +114,7 @@ public class PaymentService {
     }
 
     private String prepareRefund(PaymentDto dto) throws IamportResponseException, IOException {
-        Order order = orderRepository.findByMerchantUid(dto.getMerchant_uid()).orElseThrow(() ->
-                new EntityNotFoundException("order를 찾을 수 없습니다."));
+        Order order = orderService.findOrderByMerchantUid(dto.getMerchant_uid());
         PaymentEntity payment = paymentRepository.findByOrderId(order.getId()).orElseThrow(() ->
                 new EntityNotFoundException("payment를 찾을 수 없습니다."));
         log.info("payment amount{}", payment.getAmount());
@@ -131,7 +140,7 @@ public class PaymentService {
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("merchant_uid", dto.getMerchant_uid());
         requestBody.put("amount", dto.getAmount());
-        requestBody.put("reason", "테스트");
+        requestBody.put("reason", "cancel");
 
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 

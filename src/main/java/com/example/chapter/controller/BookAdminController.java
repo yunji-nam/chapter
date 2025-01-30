@@ -77,7 +77,7 @@ public class BookAdminController {
     public String getAllBooks(@RequestParam(required = false) String category,
                               @RequestParam(defaultValue = "id") String sortType,
                               @RequestParam(defaultValue = "0") int pageNo,
-                              @RequestParam(defaultValue = "5") int size,
+                              @RequestParam(defaultValue = "10") int size,
                               Model model) {
         Page<BookListDto> bookDtos;
 

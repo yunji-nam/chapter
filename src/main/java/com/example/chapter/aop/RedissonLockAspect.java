@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class RedissonLockAspect {
 
     private final RedissonClient redisson;
+    private final AopForTransaction aopForTransaction;
 
     @Around("@annotation(com.example.chapter.aop.RedissonLock)")
     public void redissonLock(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -38,9 +39,10 @@ public class RedissonLockAspect {
                 log.warn("Lock 획득 실패:{}", lockKey);
                 return;
             }
-            joinPoint.proceed();
+            log.info("Lock 획득 성공:{}", lockKey);
+            aopForTransaction.proceed(joinPoint);
         } catch (InterruptedException e) {
-            throw new RuntimeException("에러 발생:" + e.getMessage());
+            throw new InterruptedException("에러 발생:" + e.getMessage());
         } finally {
             if (lock.isHeldByCurrentThread()) {
                 log.info("Lock 해제:{}", lockKey);

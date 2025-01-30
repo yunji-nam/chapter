@@ -25,7 +25,6 @@ public class BookListDto {
     private int stockQuantity;
     private String image;
     private BookStatus status;
-    private boolean likeStatus;
 
     public BookListDto(Book book) {
         this.id = book.getId();
@@ -40,10 +39,5 @@ public class BookListDto {
         this.image = book.getImage();
         this.status = book.getStatus();
     }
-
-    public void setLikeStatus(boolean likeStatus) {
-        this.likeStatus = likeStatus;
-    }
-
 
 }

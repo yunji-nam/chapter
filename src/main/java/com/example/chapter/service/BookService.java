@@ -1,5 +1,6 @@
 package com.example.chapter.service;
 
+import com.example.chapter.aop.RedissonLock;
 import com.example.chapter.dto.*;
 import com.example.chapter.entity.Book;
 import com.example.chapter.entity.Category;
@@ -148,12 +149,18 @@ public class BookService {
         return page.map(BookListDto::new);
     }
 
+    @RedissonLock(value = "#book.id")
+    public void decreaseStock(Book book, int quantity) {
+        Book findBook = findBook(book.getId());
+        findBook.decreaseStock(quantity);
+    }
+
     public BookImageUpdateDto getBookImage(Long id) {
         Book book = findBook(id);
         return new BookImageUpdateDto(book);
     }
 
-    private Book findBook(Long id) {
+    public Book findBook(Long id) {
         return bookRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new EntityNotFoundException("책을 찾을 수 없습니다."));
     }
