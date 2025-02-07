@@ -24,16 +24,16 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-
     // 회원가입
     @Transactional
     public void join(SignUpDto signUpDto) {
 
         String name = signUpDto.getName();
-        log.info("name:" + name);
+        log.info("name: {}", name);
         String password = passwordEncoder.encode(signUpDto.getPassword());
-        log.info("password:" + password);
+        log.info("password: {}", password);
         String email = signUpDto.getEmail();
+        log.info("email: {}", email);
         String phone = signUpDto.getPhone();
 
         if (validateEmail(email)) {

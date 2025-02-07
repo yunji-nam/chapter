@@ -70,7 +70,7 @@ public class UserController {
 
     @GetMapping("/user/me")
     public String getMyPage(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
-        List<OrderListDto> orderList = orderService.getLatestOrderList(userDetails.getUser());
+        List<OrderSummaryDto> orderList = orderService.getLatestOrderList(userDetails.getUser());
         List<BookListDto> likeList = likeService.getLatestLikeList(userDetails.getUser());
         model.addAttribute("orderList", orderList);
         model.addAttribute("likeList", likeList);

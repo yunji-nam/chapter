@@ -3,6 +3,7 @@ package com.example.chapter.service;
 import com.example.chapter.dto.OrderBookInfo;
 import com.example.chapter.dto.OrderDetailDto;
 import com.example.chapter.dto.OrderListDto;
+import com.example.chapter.dto.OrderSummaryDto;
 import com.example.chapter.entity.Order;
 import com.example.chapter.entity.ReviewStatus;
 import com.example.chapter.entity.User;
@@ -114,9 +115,9 @@ public class OrderService {
         return page.map(OrderListDto::new);
     }
 
-    public List<OrderListDto> getLatestOrderList(User user) {
+    public List<OrderSummaryDto> getLatestOrderList(User user) {
         List<Order> orderList = orderRepository.findTop5ByUserIdOrderByCreatedAtDesc(user.getId());
-        return orderList.stream().map(OrderListDto::new).collect(Collectors.toList());
+        return orderList.stream().map(OrderSummaryDto::new).collect(Collectors.toList());
     }
 
     private PageRequest getPageable(int pageNo, int size) {
