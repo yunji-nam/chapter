@@ -9,15 +9,17 @@
     <div class="row">
         <div th:insert="~{common/sidebar_admin::sidebar_admin}" class="col-md-4 col-lg-3"></div>
         <div class="col-md-8 ms-sm-auto col-lg-9">
-            <div class="container mt-4 ms-3">
+            <div class="container mt-4 ms-3" style="max-width: 800px;">
                 <h5>도서 이미지 변경</h5>
 
                 <div class="form-group mb-5" style="text-align: center;">
                     <div>
+                        <span th:text="${book.title}"></span> |
+                        <span th:text="${book.author}"></span>
+                    </div>
+                    <div>
                         <img id="currentImage" th:src="${book.imageUrl}" alt="도서 이미지"
                              style="margin-top: 20px; margin-bottom: 20px; max-width: 200px; max-height: 250px; width: auto; height: auto;">
-                      <span th:text="${book.title}"></span> |
-                      <span th:text="${book.author}"></span>
                     </div>
                     <input type="file" name="image" class="form-control" id="image">
                     <div>변경할 이미지 파일을 업로드 후 이미지 변경을 눌러주세요.</div>
