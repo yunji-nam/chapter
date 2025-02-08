@@ -1,11 +1,11 @@
 package com.example.chapter.controller;
 
 import com.example.chapter.dto.OrderListDto;
+import com.example.chapter.entity.DeliveryStatus;
 import com.example.chapter.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +29,7 @@ public class OrderAdminController {
         model.addAttribute("orderList", searchResults);
         model.addAttribute("query", query);
         model.addAttribute("condition", condition);
+        model.addAttribute("deliveryStatus", DeliveryStatus.values());
 
         return "admin/order/search";
     }

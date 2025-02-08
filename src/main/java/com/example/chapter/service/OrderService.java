@@ -109,6 +109,9 @@ public class OrderService {
             case "username":
                 page = orderRepository.findByUser_NameContainingIgnoreCase(query, pageable);
                 break;
+            case "bookTitle":
+                page = orderRepository.findByItems_Book_TitleContainingIgnoreCase(query, pageable);
+                break;
             default:
                 throw new IllegalArgumentException("유효하지 않은 값입니다.");
         }

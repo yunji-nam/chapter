@@ -22,6 +22,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Page<Order> findByMerchantUidContainingIgnoreCase(String query, Pageable pageable);
     Page<Order> findByUser_NameContainingIgnoreCase(String query, Pageable pageable);
+    Page<Order> findByItems_Book_TitleContainingIgnoreCase(String query, Pageable pageable);
 
     List<Order> findTop5ByUserIdOrderByCreatedAtDesc(Long userId);
 
