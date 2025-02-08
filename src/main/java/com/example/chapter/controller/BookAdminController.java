@@ -92,6 +92,9 @@ public class BookAdminController {
         }
 
         model.addAttribute("bookList", bookDtos);
+        model.addAttribute("categories", Category.values());
+        model.addAttribute("requestedCategory", category);
+
         return "admin/book/list";
     }
 

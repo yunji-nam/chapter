@@ -45,7 +45,9 @@ public class Delivery {
     }
 
     public void updateDeliveryStatus(DeliveryStatus status) {
+        if (this.order.getStatus() == OrderStatus.CANCEL) {
+            throw new IllegalStateException("취소된 주문입니다.");
+        }
         this.status = status;
     }
-
 }

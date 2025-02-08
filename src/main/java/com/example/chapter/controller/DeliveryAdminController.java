@@ -1,11 +1,12 @@
 package com.example.chapter.controller;
 
 import com.example.chapter.dto.TrackingNumberDto;
-import com.example.chapter.entity.DeliveryStatus;
 import com.example.chapter.service.DeliveryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor
@@ -19,11 +20,4 @@ public class DeliveryAdminController {
         deliveryService.registerTrackingNumber(orderId, dto);
         return "redirect:/orders";
     }
-
-    @PutMapping("/{orderId}/status")
-    public String updateDeliveryStatus(@PathVariable Long orderId, @RequestParam DeliveryStatus status) {
-        deliveryService.updateDeliveryStatus(orderId, status);
-        return "redirect:/orders";
-    }
-
 }

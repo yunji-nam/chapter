@@ -34,7 +34,6 @@
 
                 <table class="table table-striped text-center mt-4">
                     <thead>
-
                     <tr>
                         <th scope="col">주문 번호</th>
                         <th scope="col">도서 정보</th>
@@ -67,9 +66,7 @@
                         <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd')}" class="col-wide"></td>
                         <td th:text="${order.orderStatus.getStatusName()}"></td>
                         <td>
-                            <form method="post" th:action="@{/admin/delivery/{orderId}/status(orderId=${order.id})}"
-                                  style="display: flex; align-items: center; gap: 5px;">
-                                <input type="hidden" name="_method" value="PUT"/>
+                            <div style="display: flex; align-items: center; gap: 5px;">
                                 <select name="status" class="form-select form-select-sm" style="width: 110px;">
                                     <option value="" th:selected="${order.deliveryStatus == null}" disabled>선택</option>
                                     <option th:each="status : ${deliveryStatus}"
@@ -78,8 +75,10 @@
                                             th:selected="${status == order.deliveryStatus}">
                                     </option>
                                 </select>
-                                <button type="submit" class="btn btn-info btn-sm">변경</button>
-                            </form>
+                                <button class="btn btn-info btn-sm" th:data-order-id="${order.id}"
+                                        onclick="updateDeliveryStatus(this)">변경
+                                </button>
+                            </div>
                         </td>
 
                         <td>
@@ -164,6 +163,28 @@
             error: function (err) {
                 console.error('아임포트 결제 취소 실패:', err);
                 alert("결제 취소에 실패했습니다. 다시 시도해주세요.");
+            }
+        });
+    }
+
+
+    function updateDeliveryStatus(button) {
+        const orderId = button.getAttribute('data-order-id');
+        const select = button.previousElementSibling;
+        const selectedStatus = select.value;
+
+        if (!confirm("배송 상태를 변경하시겠습니까?")) {
+            return;
+        }
+        $.ajax({
+            url: `/api/admin/delivery/${orderId}/status?status=` + selectedStatus,
+            type: 'PUT',
+            success: function () {
+                alert('배송 상태 변경 완료');
+                location.reload();
+            },
+            error: function (xhr) {
+                alert('오류 발생: ' + xhr.responseText);
             }
         });
     }

@@ -9,7 +9,7 @@
     <div class="row">
         <div th:insert="~{common/sidebar_admin::sidebar_admin}" class="col-md-3 col-lg-2"></div>
         <div class="col-md-9 ms-sm-auto col-lg-10">
-            <div class="mt-4 ms-3" style="max-width: 1200px; margin: 0 auto; padding: 0 15px;">
+            <div class="mt-4 ms-3" style="max-width: 1100px; margin: 0 auto; padding: 0 15px;">
                 <h5>도서 목록</h5>
                 <div style="display: flex; justify-content: flex-start; align-items: center; margin-bottom: 15px; margin-top: 15px;">
                     <button class="btn btn-outline-dark btn-sm"
@@ -40,7 +40,19 @@
                         <th scope="col">
                             <input type="checkbox" id="selectAll" onclick="toggleAllCheckboxes(this)">
                         </th>
-                        <th scope="col">카테고리</th>
+                        <th scope="col">
+                            <form id="categoryForm" th:action="@{/admin/books}" method="get">
+                                <select name="category" id="category" class="form-select" onchange="this.form.submit()"
+                                        style="width: 120px;">
+                                    <option value="">카테고리</option>
+                                    <option th:each="ca : ${categories}"
+                                            th:value="${ca}"
+                                            th:text="${ca.categoryName}"
+                                            th:selected="${ca.name() == requestedCategory}">
+                                    </option>
+                                </select>
+                            </form>
+                        </th>
                         <th scope="col">제목</th>
                         <th scope="col">저자</th>
                         <th scope="col">출판사</th>
@@ -59,7 +71,7 @@
                             <input type="checkbox" name="selectedBooks" th:value="${book.id}">
                         </td>
                         <td th:text="${book.category.categoryName}"></td>
-                        <td class="col-wide">
+                        <td>
                             <a th:href="@{/book/{bookId}(bookId=${book.id})}" th:text="${book.title}"></a>
                         </td>
                         <td th:text="${book.author}"></td>
@@ -148,7 +160,7 @@
             },
             error: function (xhr, status, error) {
                 console.error('Error:', error);
-                alert('오류 발생');
+                alert('오류 발생: ' + xhr.responseText);
             }
         });
     }
