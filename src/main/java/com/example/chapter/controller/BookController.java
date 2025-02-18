@@ -48,9 +48,6 @@ public class BookController {
         model.addAttribute("requestedCategory", category);
         model.addAttribute("bookList", bookDtos);
 
-        if (bookDtos.getContent().isEmpty()) {
-            return "book/empty";
-        }
         return "book/list";
     }
 
