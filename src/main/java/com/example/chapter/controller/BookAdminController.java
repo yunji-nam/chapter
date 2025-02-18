@@ -10,8 +10,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -75,38 +73,54 @@ public class BookAdminController {
     // 도서 목록 조회
     @GetMapping("/books")
     public String getAllBooks(@RequestParam(required = false) String category,
-                              @RequestParam(defaultValue = "id") String sortType,
+                              @RequestParam(defaultValue = "id_desc") String sortType,
                               @RequestParam(defaultValue = "0") int pageNo,
                               @RequestParam(defaultValue = "10") int size,
                               Model model) {
         Page<BookListDto> bookDtos;
 
         if (category == null || category.isEmpty()) {
-            bookDtos = bookService.getBooks(sortType, pageNo, size);
+            bookDtos = bookService.getBooksForAdmin(sortType, pageNo, size);
         } else {
             try {
-                bookDtos = bookService.getBooksByCategory(Category.valueOf(category), sortType, pageNo, size);
+                bookDtos = bookService.getBooksByCategoryForAdmin(Category.valueOf(category), sortType, pageNo, size);
             } catch (IllegalArgumentException e) {
-                bookDtos = bookService.getBooks(sortType, pageNo, size);
+                bookDtos = bookService.getBooksForAdmin(sortType, pageNo, size);
             }
         }
 
         model.addAttribute("bookList", bookDtos);
         model.addAttribute("categories", Category.values());
         model.addAttribute("requestedCategory", category);
+        model.addAttribute("sortType", sortType);
 
         return "admin/book/list";
     }
 
     @GetMapping("/book/search")
-    public String searchBook(@RequestParam String query,
+    public String searchBook(@RequestParam(required = false) String category,
+                             @RequestParam(defaultValue = "id_desc") String sortType,
+                             @RequestParam String query,
                              @RequestParam String condition,
-                             @PageableDefault(size = 5) Pageable pageable,
+                             @RequestParam(defaultValue = "0") int pageNo,
+                             @RequestParam(defaultValue = "10") int size,
                              Model model) {
-        Page<BookListDto> searchResults = bookService.searchBookByCondition(query, condition, pageable);
+        Category categoryValue = null;
+        if (category != null && !category.isEmpty()) {
+            try {
+                categoryValue = Category.valueOf(category);
+            } catch (IllegalArgumentException e) {
+                categoryValue = null;
+            }
+        }
+        Page<BookListDto> searchResults = bookService.searchBookByCondition(categoryValue, sortType, query, condition, pageNo, size);
+
         model.addAttribute("bookList", searchResults);
+        model.addAttribute("sortType", sortType);
         model.addAttribute("query", query);
         model.addAttribute("condition", condition);
+        model.addAttribute("categories", Category.values());
+        model.addAttribute("requestedCategory", category);
 
         return "admin/book/search";
     }

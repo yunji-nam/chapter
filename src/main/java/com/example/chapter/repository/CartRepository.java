@@ -10,6 +10,6 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
 
     Optional<Cart> findByUserId(Long userId);
 
-    @Query("select coalesce(sum(ci.quantity), 0) from CartItem  ci where ci.cart.user.id = :userId")
+    @Query("select coalesce(sum(ci.quantity), 0) from CartItem ci where ci.cart.user.id = :userId")
     Integer getCartItemQuantityByUserId(Long userId);
 }

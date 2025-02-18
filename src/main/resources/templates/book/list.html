@@ -8,8 +8,17 @@
 <div class="container-fluid mt-4">
     <div class="row">
         <div th:insert="~{common/sidebar::sidebar}" class="col-md-3 col-lg-2"></div>
-        <div class="col-md-9 col-lg-10" style="max-width: 600px; margin-left: 150px;">
-            <div th:each="book : ${bookList}">
+        <div class="col-md-9 col-lg-10" style="max-width: 800px;">
+            <form id="sortTypeForm" th:action="@{/books}" method="get"
+                  style="display: flex; justify-content: flex-end; align-items: center;">
+                <select name="sortType" id="sortType" class="form-select" onchange="this.form.submit()"
+                        style="width: 120px; font-size: 13px; margin-bottom: 15px;">
+                    <option value="id_desc" th:selected="${sortType == 'id_desc'}">신상품순</option>
+                    <option value="price_desc" th:selected="${sortType == 'price_desc'}">높은 가격순</option>
+                    <option value="price_asc" th:selected="${sortType == 'price_asc'}">낮은 가격순</option>
+                </select>
+            </form>
+            <div th:each="book : ${bookList}" style="max-width: 600px; margin-left: 150px;">
                 <div class="card shadow-sm d-flex flex-row" style="height: 200px; margin-bottom: 20px;">
                     <a th:href="@{'/book/' + ${book.id}}"
                        style="display: flex; justify-content: center; align-items: center;">
@@ -30,7 +39,7 @@
                             <p class="card-text" th:text="${book.publishedDate}">
                                 Published Date</p>
                             <p class="card-text text-danger fw-bold"
-                               th:text="${#numbers.formatInteger(book.price, 3, 'COMMA')} + ' 원'"></p>
+                               th:text="${#numbers.formatInteger(book.price, 0, 'COMMA')} + ' 원'"></p>
                         </div>
                         <div class="d-flex flex-column align-items-end justify-content-center" style="flex: 1;">
                             <button class="btn btn-sm btn-outline-danger mt-2" type="button"

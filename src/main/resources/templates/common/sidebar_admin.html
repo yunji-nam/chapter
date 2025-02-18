@@ -24,11 +24,22 @@
             </li>
             <li class="mb-2">
                 <button class="btn d-inline-flex align-items-center rounded border-0 fw-bold" style="color: #0e859d">
+                    매출 관리
+                </button>
+                <div>
+                    <ul class="list-unstyled pb-1">
+                        <li><a th:href="@{/admin/sales}" class="ms-3 d-inline-flex text-decoration-none"
+                               style="font-size: 15px">매출 통계</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="mb-2">
+                <button class="btn d-inline-flex align-items-center rounded border-0 fw-bold" style="color: #0e859d">
                     주문 관리
                 </button>
                 <div>
                     <ul class="list-unstyled pb-1">
-                        <li><a th:href="@{/orders}" class="ms-3 d-inline-flex text-decoration-none"
+                        <li><a th:href="@{/admin/orders}" class="ms-3 d-inline-flex text-decoration-none"
                                style="font-size: 15px">주문 조회</a></li>
                     </ul>
                 </div>

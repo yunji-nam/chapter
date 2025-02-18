@@ -1,0 +1,108 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}"
+      layout:fragment="content">
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div th:insert="~{common/sidebar_admin::sidebar_admin}" class="col-md-3 col-lg-2"></div>
+        <div class="col-md-9 ms-sm-auto col-lg-10">
+            <div class="mt-4 ms-3" style="max-width: 1000px; margin: 0 auto; padding: 0 15px;">
+                <div style="display: flex;">
+                    <h5>매출 통계</h5>
+                    <span style="margin-left: 10px;">최근 1년 내의 매출 내역입니다.</span>
+                </div>
+                <div class="mt-2 d-flex justify-content-between">
+                    <form class="gap-1 mt-3" th:action="@{/admin/sales}" th:method="get">
+                        <label for="startDate">시작일</label>
+                        <input type="date" id="startDate" name="startDate" th:value="${startDate}"/>
+                        <label for="endDate">종료일</label>
+                        <input type="date" id="endDate" name="endDate" th:value="${endDate}"/>
+                        <button class="btn btn-sm btn-dark" type="submit">조회</button>
+                    </form>
+                    <form id="sortTypeForm" th:action="@{/admin/sales}" method="get"
+                          style="display: flex; justify-content: center; align-items: center;">
+                        <label for="sortType" style="margin-right: 10px;">정렬</label>
+                        <select name="sortType" id="sortType" class="form-select" onchange="this.form.submit()"
+                                style="width: 130px;">
+                            <option value="sales" th:selected="${sortType == 'sales'}">매출순</option>
+                            <option value="quantity" th:selected="${sortType == 'quantity'}">주문 수량순</option>
+                        </select>
+                    </form>
+                </div>
+
+                <table class="table table-striped text-center mt-4">
+                    <thead>
+
+                    <tr>
+                        <th scope="col">
+                            <form id="categoryForm" th:action="@{/admin/sales}" method="get"
+                                  style="display: flex; justify-content: center; align-items: center;">
+                                <select name="category" id="category" class="form-select" onchange="this.form.submit()"
+                                        style="width: 120px;">
+                                    <option value="">카테고리</option>
+                                    <option th:each="ca : ${categories}"
+                                            th:value="${ca}"
+                                            th:text="${ca.categoryName}"
+                                            th:selected="${ca.name() == requestedCategory}">
+                                    </option>
+                                </select>
+                            </form>
+                        </th>
+                        <th scope="col">도서 정보</th>
+                        <th scope="col">개별 가격</th>
+                        <th scope="col">총 주문 수량(합계)</th>
+                        <th scope="col">총 매출(가격 x 합계)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="sales : ${bookSales.content}">
+                        <td th:text="${sales.category.categoryName}"></td>
+                        <td>
+                            <a th:href="@{/book/{bookId}(bookId=${sales.bookId})}" th:text="${sales.bookTitle}"></a>
+                            | <span th:text="${sales.bookAuthor}"></span>
+                        </td>
+                        <td th:text="${#numbers.formatInteger(sales.bookPrice, 0, 'COMMA')} + '원'"></td>
+                        <td th:text="${#numbers.formatInteger(sales.totalQuantity, 0, 'COMMA')} + '개'"></td>
+                        <td th:text="${#numbers.formatInteger(sales.totalSales, 0, 'COMMA')} + '원'"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div th:if="${bookSales.totalElements > 0}">
+                    <ul class="pagination h-100 justify-content-center align-items-center">
+                        <li class="page-item" th:classappend="${bookSales.hasPrevious()} ? '' : 'disabled'">
+
+                            <a class="page-link"
+                               th:href="@{/admin/sales(page=${bookSales.number - 1}, size=${bookSales.size})}"
+                               aria-label="Previous">
+                                &laquo;
+                            </a>
+                        </li>
+                        <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, bookSales.totalPages - 1)}"
+                            th:classappend="${pageNum == bookSales.number} ? 'active'">
+                            <a class="page-link"
+                               th:href="@{/admin/sales(page=${pageNum}, size=${bookSales.size})}"
+                               th:text="${pageNum + 1}"></a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${bookSales.hasNext()} ? '' : 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/admin/sales(page=${bookSales.number + 1}, size=${bookSales.size})}"
+                               aria-label="Next">
+                                &raquo;
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div th:if="${bookSales.totalElements == 0}" class="mt-4 text-center">
+                    매출이 없습니다.
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</html>

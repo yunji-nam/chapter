@@ -37,7 +37,7 @@
                     <a th:href="@{'/book/' + ${item.bookId}}">
                         <h6 class="card-title mb-2" th:text="${item.bookTitle}"></h6>
                         <p class="card-text"
-                           th:text="${#numbers.formatInteger(item.bookPrice, 3, 'COMMA')} + ' 원'"></p>
+                           th:text="${#numbers.formatInteger(item.bookPrice, 0, 'COMMA')} + ' 원'"></p>
                     </a>
                     <div class="d-flex align-items-center justify-content-end gap-3" style="height: 40px;">
                         <input class="form-control text-center me-3" th:id="'inputQuantity_' + ${item.bookId}"

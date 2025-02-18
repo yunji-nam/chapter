@@ -32,9 +32,9 @@
                             <a th:href="@{/order/{orderId}(orderId=${order.id})}" th:text="${order.merchantUid}"></a>
                         </td>
                         <td>
-                            <div th:each="book : ${order.books}" style="margin-bottom: 5px;">
-                                <span th:text="${book.title}"></span>
-                            </div>
+                            <span th:text="${order.books[0].title}"></span>
+                            <span th:if="${#lists.size(order.books) > 1}"
+                                  th:text="' 외 ' + (${#lists.size(order.books) - 1}) + '개'"></span>
                         </td>
                         <td th:text="${#numbers.formatInteger(order.totalPrice, 3, 'COMMA')} + '원'"></td>
 

@@ -9,14 +9,16 @@
     <div class="row">
         <div th:insert="~{common/sidebar_admin::sidebar_admin}" class="col-md-3 col-lg-2"></div>
         <div class="col-md-9 ms-sm-auto col-lg-10">
-            <div class="mt-4 ms-3" style="max-width: 1000px; margin: 0 auto; padding: 0 15px;">
+            <div class="mt-4 ms-3" style="max-width: 1200px; margin: 0 auto; padding: 0 15px;">
                 <h5>주문 목록</h5>
                 <div class="mt-2 d-flex justify-content-between">
-                    <form class="gap-1" th:action="@{/orders}" th:method="get">
+                    <form class="gap-1" th:action="@{/admin/order/search}" th:method="get">
                         <label for="startDate">시작일</label>
-                        <input type="date" id="startDate" name="startDate"/>
+                        <input type="date" id="startDate" name="startDate" th:value="${startDate}"/>
                         <label for="endDate">종료일</label>
-                        <input type="date" id="endDate" name="endDate"/>
+                        <input type="date" id="endDate" name="endDate" th:value="${endDate}"/>
+                        <input type="hidden" name="condition" th:value="${condition}">
+                        <input type="hidden" name="query" th:value="${query}">
                         <button class="btn btn-sm btn-dark" type="submit">조회</button>
                     </form>
                     <form class="d-flex ms-3" method="get" th:action="@{/admin/order/search}">
@@ -31,7 +33,6 @@
                         <button class="btn btn-sm btn-primary" style="height: 38px; width: 60px;">검색</button>
                     </form>
                 </div>
-
 
                 <table class="table table-striped text-center mt-4">
                     <thead>
@@ -59,7 +60,7 @@
                                         <strong th:text="${book.title}"></strong>
                                         | <span th:text="${book.author}"></span>
                                     </div>
-                                    <span th:text="${#numbers.formatInteger(book.price, 3, 'COMMA')} + '원'"></span>
+                                    <span th:text="${#numbers.formatInteger(book.price, 0, 'COMMA')} + '원'"></span>
                                     | <span th:text="${book.quantity + '개'}"></span>
                                 </li>
                             </ul>
@@ -68,9 +69,7 @@
                         <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd')}" class="col-wide"></td>
                         <td th:text="${order.orderStatus.getStatusName()}"></td>
                         <td>
-                            <form method="post" th:action="@{/admin/delivery/{orderId}/status(orderId=${order.id})}"
-                                  style="display: flex; align-items: center; gap: 5px;">
-                                <input type="hidden" name="_method" value="PUT"/>
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
                                 <select name="status" class="form-select form-select-sm" style="width: 110px;">
                                     <option value="" th:selected="${order.deliveryStatus == null}" disabled>선택</option>
                                     <option th:each="status : ${deliveryStatus}"
@@ -79,8 +78,10 @@
                                             th:selected="${status == order.deliveryStatus}">
                                     </option>
                                 </select>
-                                <button type="submit" class="btn btn-info btn-sm">변경</button>
-                            </form>
+                                <button class="btn btn-info btn-sm" th:data-order-id="${order.id}"
+                                        onclick="updateDeliveryStatus(this)">변경
+                                </button>
+                            </div>
                         </td>
 
                         <td>
@@ -165,6 +166,27 @@
             error: function (err) {
                 console.error('아임포트 결제 취소 실패:', err);
                 alert("결제 취소에 실패했습니다. 다시 시도해주세요.");
+            }
+        });
+    }
+
+    function updateDeliveryStatus(button) {
+        const orderId = button.getAttribute('data-order-id');
+        const select = button.previousElementSibling;
+        const selectedStatus = select.value;
+
+        if (!confirm("배송 상태를 변경하시겠습니까?")) {
+            return;
+        }
+        $.ajax({
+            url: `/api/admin/delivery/${orderId}/status?status=` + selectedStatus,
+            type: 'PUT',
+            success: function () {
+                alert('배송 상태 변경 완료');
+                location.reload();
+            },
+            error: function (xhr) {
+                alert('오류 발생: ' + xhr.responseText);
             }
         });
     }

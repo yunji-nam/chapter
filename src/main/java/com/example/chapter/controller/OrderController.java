@@ -59,9 +59,6 @@ public class OrderController {
         model.addAttribute("endDate", endDate);
         model.addAttribute("deliveryStatus", DeliveryStatus.values());
 
-        if (userDetails.getUser().isAdmin()) {
-            return "admin/order/list";
-        }
         return "order/list";
     }
 

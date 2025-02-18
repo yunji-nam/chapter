@@ -1,6 +1,5 @@
 package com.example.chapter.service;
 
-import com.example.chapter.aop.RedissonLock;
 import com.example.chapter.dto.OrderItemDto;
 import com.example.chapter.dto.OrderRequestDto;
 import com.example.chapter.dto.PaymentCallbackDto;
@@ -8,7 +7,6 @@ import com.example.chapter.dto.PaymentDto;
 import com.example.chapter.dto.api.ApiResponse;
 import com.example.chapter.entity.*;
 import com.example.chapter.exception.PaymentAmountMismatchException;
-import com.example.chapter.repository.BookRepository;
 import com.example.chapter.repository.OrderRepository;
 import com.example.chapter.repository.PaymentRepository;
 import com.siot.IamportRestClient.IamportClient;
@@ -45,7 +43,6 @@ public class PaymentService {
     private final IamportClient iamportClient;
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
-    private final BookRepository bookRepository;
     private final RestTemplate restTemplate;
     private final OrderService orderService;
     private final BookService bookService;

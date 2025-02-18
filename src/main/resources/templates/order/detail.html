@@ -28,7 +28,8 @@
                     <thead>
 
                     <tr>
-                        <th scope="col" style="width: 30%;">도서 정보</th>
+                        <th scope="col" style="width: 40%;">도서</th>
+                        <th scope="col" style="width: 10%;">가격</th>
                         <th scope="col" style="width: 10%;">수량</th>
                         <th scope="col" style="width: 15%;">진행 상태</th>
                         <th scope="col" style="width: 15%;">리뷰</th>
@@ -43,17 +44,16 @@
                                 <ul style="list-style: none; padding: 0;">
                                     <li style="margin-bottom: 10px;">
                                         <img th:src="${orderItems.image}" alt="book cover"
-                                             style="width: 100px; height: 200px; margin-right: 10px;"/>
+                                             style="object-fit: contain; width: 150px; height: 180px; margin-right: 10px;"/>
                                         <div>
                                             <strong th:text="${orderItems.title}"></strong>
                                             | <span th:text="${orderItems.author}"></span>
                                         </div>
-                                        <span th:text="${#numbers.formatInteger(orderItems.price, 3, 'COMMA')} + '원'"></span>
                                     </li>
                                 </ul>
                             </a>
-
                         </td>
+                        <td th:text="${#numbers.formatInteger(orderItems.price, 0, 'COMMA')} + '원'"></td>
                         <td th:text="${orderItems.quantity + '개'}"></td>
                         <td th:text="${order.deliveryStatus != null ? order.deliveryStatus.getStatusName() : order.orderStatus.getStatusName()}"></td>
                         <td th:switch="${orderItems.reviewStatus != null ? orderItems.reviewStatus.name() : 'NOT_ALLOWED'}">
@@ -76,7 +76,7 @@
                 </table>
                 <div style="display: flex; justify-content: flex-end; align-items: center; margin-top: 13px; margin-bottom: 25px; font-size: 18px; font-weight: bold; color: coral">
                     <span>총 결제 금액 </span>
-                    <span th:text="${#numbers.formatInteger(order.totalPrice, 3, 'COMMA')} + ' 원'"
+                    <span th:text="${#numbers.formatInteger(order.totalPrice, 0, 'COMMA')} + ' 원'"
                           style="margin-left: 10px;"></span>
                 </div>
 

@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,7 +28,7 @@ public class BookController {
     // 도서 모두 조회
     @GetMapping("/books")
     public String getAllBooks(@RequestParam(required = false) Category category,
-                              @RequestParam(defaultValue = "id") String sortType,
+                              @RequestParam(defaultValue = "id_desc") String sortType,
                               @RequestParam(defaultValue = "0") int pageNo,
                               @RequestParam(defaultValue = "10") int size,
                               Model model) {
@@ -66,7 +65,6 @@ public class BookController {
             likeStatus = likeService.getLikeStatus(userDetails.getUser(), bookId);
         }
         model.addAttribute("likeStatus", likeStatus);
-        log.info("like status{}", likeStatus);
 
         return "book/detail";
     }

@@ -13,9 +13,9 @@
                 <h6>주문 목록</h6>
                 <form th:action="@{/orders}" th:method="get" class="text-end">
                     <label for="startDate">시작일</label>
-                    <input type="date" id="startDate" name="startDate"/>
+                    <input type="date" id="startDate" name="startDate" th:value="${startDate}"/>
                     <label class="ms-1" for="endDate">종료일</label>
-                    <input type="date" id="endDate" name="endDate"/>
+                    <input type="date" id="endDate" name="endDate" th:value="${endDate}"/>
                     <button class="btn btn-sm btn-dark" type="submit">조회</button>
                 </form>
                 <table class="table table-striped text-center mt-4">
@@ -43,7 +43,7 @@
                                         <strong th:text="${book.title}"></strong>
                                         | <span th:text="${book.author}"></span>
                                     </div>
-                                    <span th:text="${#numbers.formatInteger(book.price, 3, 'COMMA')} + '원'"></span>
+                                    <span th:text="${#numbers.formatInteger(book.price, 0, 'COMMA')} + '원'"></span>
                                     | <span th:text="${book.quantity + '개'}"></span>
                                 </li>
                             </ul>

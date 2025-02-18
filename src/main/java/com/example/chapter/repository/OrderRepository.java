@@ -20,9 +20,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     boolean existsByIdAndUserIdAndItemsIdAndStatusAndDeliveryStatus(Long orderId, Long userId, Long orderItemId, OrderStatus orderStatus, DeliveryStatus deliveryStatus);
 
-    Page<Order> findByMerchantUidContainingIgnoreCase(String query, Pageable pageable);
-    Page<Order> findByUser_NameContainingIgnoreCase(String query, Pageable pageable);
-    Page<Order> findByItems_Book_TitleContainingIgnoreCase(String query, Pageable pageable);
+    Page<Order> findByMerchantUidContainingIgnoreCaseAndCreatedAtBetween(String query, LocalDateTime startedAt, LocalDateTime endedAt, Pageable pageable);
+    Page<Order> findByUser_NameContainingIgnoreCaseAndCreatedAtBetween(String query, LocalDateTime startedAt, LocalDateTime endedAt, Pageable pageable);
+    Page<Order> findByItems_Book_TitleContainingIgnoreCaseAndCreatedAtBetween(String query, LocalDateTime startedAt, LocalDateTime endedAt, Pageable pageable);
 
     List<Order> findTop5ByUserIdOrderByCreatedAtDesc(Long userId);
 

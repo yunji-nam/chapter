@@ -1,9 +1,6 @@
 package com.example.chapter.service;
 
-import com.example.chapter.dto.OrderBookInfo;
-import com.example.chapter.dto.OrderDetailDto;
-import com.example.chapter.dto.OrderListDto;
-import com.example.chapter.dto.OrderSummaryDto;
+import com.example.chapter.dto.*;
 import com.example.chapter.entity.Order;
 import com.example.chapter.entity.ReviewStatus;
 import com.example.chapter.entity.User;
@@ -82,12 +79,28 @@ public class OrderService {
         LocalDateTime startDateTime = startDate.atStartOfDay();
         LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
 
-        Page<Order> page;
-        if (user.isAdmin()) {
-            page = orderRepository.findByCreatedAtBetween(startDateTime, endDateTime, pageable);
-        } else {
-            page = orderRepository.findByUserIdAndCreatedAtBetween(user.getId(), startDateTime, endDateTime, pageable);
+        Page<Order> page = orderRepository.findByUserIdAndCreatedAtBetween(user.getId(), startDateTime, endDateTime, pageable);
+
+        return page.map(OrderListDto::new);
+    }
+
+    // 주문 목록 조회(최근 1년내) - 어드민
+    public Page<OrderListDto> getOrders(LocalDate startDate, LocalDate endDate, int pageNo, int size) {
+        Pageable pageable = getPageable(pageNo, size);
+        LocalDate oneYearAgo = LocalDate.now().minusYears(1);
+        LocalDate now = LocalDate.now();
+
+        if (startDate == null || startDate.isBefore(oneYearAgo)) {
+            startDate = oneYearAgo;
         }
+        if (endDate == null || endDate.isAfter(now)) {
+            endDate = now;
+        }
+
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+
+        Page<Order> page = orderRepository.findByCreatedAtBetween(startDateTime, endDateTime, pageable);
 
         return page.map(OrderListDto::new);
     }
@@ -100,17 +113,31 @@ public class OrderService {
         order.cancel();
     }
 
-    public Page<OrderListDto> searchOrder(String query, String condition, Pageable pageable) {
+    public Page<OrderListDto> searchOrder(LocalDate startDate, LocalDate endDate, String query, String condition, int pageNo, int size)  {
+        Pageable pageable = getPageable(pageNo, size);
+        LocalDate oneYearAgo = LocalDate.now().minusYears(1);
+        LocalDate now = LocalDate.now();
+
+        if (startDate == null || startDate.isBefore(oneYearAgo)) {
+            startDate = oneYearAgo;
+        }
+        if (endDate == null || endDate.isAfter(now)) {
+            endDate = now;
+        }
+
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+
         Page<Order> page;
         switch (condition) {
             case "merchantUid":
-                page = orderRepository.findByMerchantUidContainingIgnoreCase(query, pageable);
+                page = orderRepository.findByMerchantUidContainingIgnoreCaseAndCreatedAtBetween(query, startDateTime, endDateTime, pageable);
                 break;
             case "username":
-                page = orderRepository.findByUser_NameContainingIgnoreCase(query, pageable);
+                page = orderRepository.findByUser_NameContainingIgnoreCaseAndCreatedAtBetween(query, startDateTime, endDateTime, pageable);
                 break;
             case "bookTitle":
-                page = orderRepository.findByItems_Book_TitleContainingIgnoreCase(query, pageable);
+                page = orderRepository.findByItems_Book_TitleContainingIgnoreCaseAndCreatedAtBetween(query, startDateTime, endDateTime, pageable);
                 break;
             default:
                 throw new IllegalArgumentException("유효하지 않은 값입니다.");

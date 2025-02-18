@@ -9,14 +9,17 @@
     <div class="row">
         <div th:insert="~{common/sidebar_admin::sidebar_admin}" class="col-md-3 col-lg-2"></div>
         <div class="col-md-9 ms-sm-auto col-lg-10">
-            <div class="mt-4 ms-3" style="max-width: 1000px; margin: 0 auto; padding: 0 15px;">
-                <h5>주문 목록</h5>
+            <div class="mt-4 ms-3" style="max-width: 1200px; margin: 0 auto; padding: 0 15px;">
+                <div style="display: flex;">
+                    <h5>주문 목록</h5>
+                    <span style="margin-left: 10px;">최근 1년 내의 주문 내역입니다.</span>
+                </div>
                 <div class="mt-2 d-flex justify-content-between">
-                    <form class="gap-1" th:action="@{/orders}" th:method="get">
+                    <form class="gap-1" th:action="@{/admin/orders}" th:method="get">
                         <label for="startDate">시작일</label>
-                        <input type="date" id="startDate" name="startDate"/>
+                        <input type="date" id="startDate" name="startDate" th:value="${startDate}"/>
                         <label for="endDate">종료일</label>
-                        <input type="date" id="endDate" name="endDate"/>
+                        <input type="date" id="endDate" name="endDate" th:value="${endDate}"/>
                         <button class="btn btn-sm btn-dark" type="submit">조회</button>
                     </form>
                     <form class="d-flex ms-3" method="get" th:action="@{/admin/order/search}">
@@ -58,7 +61,7 @@
                                         <strong th:text="${book.title}"></strong>
                                         | <span th:text="${book.author}"></span>
                                     </div>
-                                    <span th:text="${#numbers.formatInteger(book.price, 3, 'COMMA')} + '원'"></span>
+                                    <span th:text="${#numbers.formatInteger(book.price, 0, 'COMMA')} + '원'"></span>
                                     | <span th:text="${book.quantity + '개'}"></span>
                                 </li>
                             </ul>
@@ -67,7 +70,7 @@
                         <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd')}" class="col-wide"></td>
                         <td th:text="${order.orderStatus.getStatusName()}"></td>
                         <td>
-                            <div style="display: flex; align-items: center; gap: 5px;">
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 5px;">
                                 <select name="status" class="form-select form-select-sm" style="width: 110px;">
                                     <option value="" th:selected="${order.deliveryStatus == null}" disabled>선택</option>
                                     <option th:each="status : ${deliveryStatus}"
@@ -106,7 +109,7 @@
                     <ul class="pagination h-100 justify-content-center align-items-center">
                         <li class="page-item" th:classappend="${orders.hasPrevious()} ? '' : 'disabled'">
                             <a class="page-link"
-                               th:href="@{/order(pageNo=${orders.number - 1}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
+                               th:href="@{/admin/orders(pageNo=${orders.number - 1}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
                                aria-label="Previous">
                                 &laquo;
                             </a>
@@ -114,12 +117,12 @@
                         <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, orders.totalPages - 1)}"
                             th:classappend="${pageNum == orders.number} ? 'active'">
                             <a class="page-link"
-                               th:href="@{/orders(pageNo=${pageNum}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
+                               th:href="@{/admin/orders(pageNo=${pageNum}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
                                th:text="${pageNum + 1}"></a>
                         </li>
                         <li class="page-item" th:classappend="${orders.hasNext()} ? '' : 'disabled'">
                             <a class="page-link"
-                               th:href="@{/orders(pageNo=${orders.number + 1}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
+                               th:href="@{/admin/orders(pageNo=${orders.number + 1}, size=${orders.size}, startDate=${startDate}, endDate=${endDate})}"
                                aria-label="Next">
                                 &raquo;
                             </a>
@@ -167,7 +170,6 @@
             }
         });
     }
-
 
     function updateDeliveryStatus(button) {
         const orderId = button.getAttribute('data-order-id');

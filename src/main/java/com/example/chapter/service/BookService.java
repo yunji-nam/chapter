@@ -45,17 +45,30 @@ public class BookService {
     }
 
     // 도서 모두 조회
-    @Cacheable(cacheNames = BOOK_LIST, key = "'page:' + #p1")
+    @Cacheable(cacheNames = BOOK_LIST, key = "'sort:' + #p0 + 'page:' + #p1")
     public Page<BookListDto> getBooks(String sortType, int pageNo, int size) {
-        Pageable pageable = PageRequest.of(pageNo, size, Sort.by(Sort.Direction.DESC, sortType));
+        Pageable pageable = getPageable(pageNo, size, sortType);
         Page<Book> page = bookRepository.findAllByDeletedFalse(pageable);
         return new CustomPageImpl<>(page.map(BookListDto::new));
     }
 
+    // 도서 모두 조회 - 어드민
+    public Page<BookListDto> getBooksForAdmin(String sortType, int pageNo, int size) {
+        Pageable pageable = getPageable(pageNo, size, sortType);
+        Page<Book> page = bookRepository.findAllByDeletedFalse(pageable);
+        return page.map(BookListDto::new);
+    }
+
     // 카테고리 별 조회
-    @Cacheable(cacheNames = BOOK_LIST, key = "'category:' + #p0 + 'page:' + #p2")
+    @Cacheable(cacheNames = BOOK_LIST, key = "'category:' + #p0 + 'sort:' + #p1 + 'page:' + #p2")
     public Page<BookListDto> getBooksByCategory(Category category, String sortType, int pageNo, int size) {
-        Pageable pageable = PageRequest.of(pageNo, size, Sort.by(Sort.Direction.DESC, sortType));
+        Pageable pageable = getPageable(pageNo, size, sortType);
+        Page<Book> page = bookRepository.findByCategoryAndDeletedFalse(category, pageable);
+        return new CustomPageImpl<>(page.map(BookListDto::new));
+    }
+
+    public Page<BookListDto> getBooksByCategoryForAdmin(Category category, String sortType, int pageNo, int size) {
+        Pageable pageable = getPageable(pageNo, size, sortType);
         Page<Book> page = bookRepository.findByCategoryAndDeletedFalse(category, pageable);
         return new CustomPageImpl<>(page.map(BookListDto::new));
     }
@@ -128,23 +141,45 @@ public class BookService {
         return bookRepository.findAllByKeywordIgnoreCaseAndDeletedFalse(keyword, pageRequest);
     }
 
-    public Page<BookListDto> searchBookByCondition(String query, String condition, Pageable pageable) {
+    public Page<BookListDto> searchBookByCondition(Category category, String sortType, String query, String condition, int pageNo, int size) {
+        Pageable pageable = getPageable(pageNo, size, sortType);
+
         Page<Book> page;
-        switch (condition.toLowerCase()) {
-            case "title":
-                page = bookRepository.findByTitleContainingIgnoreCaseAndDeletedFalse(query, pageable);
-                break;
-            case "author":
-                page = bookRepository.findByAuthorContainingIgnoreCaseAndDeletedFalse(query, pageable);
-                break;
-            case "publisher":
-                page = bookRepository.findByPublisherContainingIgnoreCaseAndDeletedFalse(query, pageable);
-                break;
-            case "isbn":
-                page = bookRepository.findByIsbnContainingIgnoreCaseAndDeletedFalse(query, pageable);
-                break;
-            default:
-                throw new IllegalArgumentException("유효하지 않은 값입니다.");
+
+        if (category != null) {
+            switch (condition.toLowerCase()) {
+                case "title":
+                    page = bookRepository.findByCategoryAndTitleContainingIgnoreCaseAndDeletedFalse(category, query, pageable);
+                    break;
+                case "author":
+                    page = bookRepository.findByCategoryAndAuthorContainingIgnoreCaseAndDeletedFalse(category, query, pageable);
+                    break;
+                case "publisher":
+                    page = bookRepository.findByCategoryAndPublisherContainingIgnoreCaseAndDeletedFalse(category, query, pageable);
+                    break;
+                case "isbn":
+                    page = bookRepository.findByCategoryAndIsbnContainingIgnoreCaseAndDeletedFalse(category, query, pageable);
+                    break;
+                default:
+                    throw new IllegalArgumentException("유효하지 않은 값입니다.");
+            }
+        } else {
+            switch (condition.toLowerCase()) {
+                case "title":
+                    page = bookRepository.findByTitleContainingIgnoreCaseAndDeletedFalse(query, pageable);
+                    break;
+                case "author":
+                    page = bookRepository.findByAuthorContainingIgnoreCaseAndDeletedFalse(query, pageable);
+                    break;
+                case "publisher":
+                    page = bookRepository.findByPublisherContainingIgnoreCaseAndDeletedFalse(query, pageable);
+                    break;
+                case "isbn":
+                    page = bookRepository.findByIsbnContainingIgnoreCaseAndDeletedFalse(query, pageable);
+                    break;
+                default:
+                    throw new IllegalArgumentException("유효하지 않은 값입니다.");
+            }
         }
         return page.map(BookListDto::new);
     }
@@ -163,6 +198,14 @@ public class BookService {
     public Book findBook(Long id) {
         return bookRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new EntityNotFoundException("책을 찾을 수 없습니다."));
+    }
+
+    private PageRequest getPageable(int pageNo, int size, String sortType) {
+        String[] sortParts = sortType.split("_");
+        String sortField = sortParts[0];
+        String direction = sortParts[1];
+        Sort sort = Sort.by(Sort.Direction.fromString(direction), sortField);
+        return PageRequest.of(pageNo, size, sort);
     }
 
 }
