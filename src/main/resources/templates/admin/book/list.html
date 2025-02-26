@@ -18,14 +18,13 @@
                         <input type="hidden" name="category" th:value="${requestedCategory}">
                         <select name="sortType" id="sortType" class="form-select" onchange="this.form.submit()"
                                 style="width: 150px;">
-                            <option value="id_desc" th:selected="${sortType == 'id_desc'}">최근 등록순</option>
-                            <option value="title_asc" th:selected="${sortType == 'title_asc'}">가나다 순</option>
-                            <option value="price_desc" th:selected="${sortType == 'price_desc'}">높은 가격 순</option>
-                            <option value="price_asc" th:selected="${sortType == 'price_asc'}">낮은 가격 순</option>
-                            <option value="stockQuantity_desc" th:selected="${sortType == 'stockQuantity_desc'}">재고 많은
-                                순
+                            <option value="id_desc" th:selected="${sortType == 'id_desc'}">신상품순</option>
+                            <option value="title_asc" th:selected="${sortType == 'title_asc'}">도서명순</option>
+                            <option value="price_desc" th:selected="${sortType == 'price_desc'}">높은가격순</option>
+                            <option value="price_asc" th:selected="${sortType == 'price_asc'}">낮은가격순</option>
+                            <option value="stockQuantity_desc" th:selected="${sortType == 'stockQuantity_desc'}">재고많은순
                             </option>
-                            <option value="stockQuantity_asc" th:selected="${sortType == 'stockQuantity_asc'}">재고 적은 순
+                            <option value="stockQuantity_asc" th:selected="${sortType == 'stockQuantity_asc'}">재고적은순
                             </option>
                         </select>
                     </form>

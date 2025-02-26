@@ -14,8 +14,8 @@
                 <select name="sortType" id="sortType" class="form-select" onchange="this.form.submit()"
                         style="width: 120px; font-size: 13px; margin-bottom: 15px;">
                     <option value="id_desc" th:selected="${sortType == 'id_desc'}">신상품순</option>
-                    <option value="price_desc" th:selected="${sortType == 'price_desc'}">높은 가격순</option>
-                    <option value="price_asc" th:selected="${sortType == 'price_asc'}">낮은 가격순</option>
+                    <option value="price_desc" th:selected="${sortType == 'price_desc'}">높은가격순</option>
+                    <option value="price_asc" th:selected="${sortType == 'price_asc'}">낮은가격순</option>
                 </select>
             </form>
             <div th:each="book : ${bookList}" style="max-width: 600px; margin-left: 150px;">
