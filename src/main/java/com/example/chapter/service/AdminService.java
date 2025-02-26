@@ -31,15 +31,24 @@ public class AdminService {
         UserRoleEnum role = UserRoleEnum.ADMIN;
 
         User user = User.builder()
-                        .name(name)
-                        .password(password)
-                        .email(validateEmail(email))
-                        .phone(validatePhone(phone))
-                        .role(role)
-                        .deleted(false)
-                        .provider("chapter").build();
+                .name(name)
+                .password(password)
+                .email(validateEmail(email))
+                .phone(validatePhone(phone))
+                .role(role)
+                .deleted(false)
+                .provider("chapter").build();
 
         userRepository.save(user);
+    }
+
+    public Page<UserInfo> searchUser(String query, String condition, Pageable pageable) {
+        Page<User> page = switch (condition) {
+            case "name" -> userRepository.findByNameContainingIgnoreCase(query, pageable);
+            case "email" -> userRepository.findByEmailContainingIgnoreCase(query, pageable);
+            default -> throw new IllegalArgumentException("유효하지 않은 값입니다.");
+        };
+        return page.map(UserInfo::new);
     }
 
     private String validateEmail(String email) {

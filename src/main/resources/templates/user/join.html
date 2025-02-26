@@ -6,7 +6,11 @@
 
 <body>
 
-<div class="container-fluid mt-4" style="max-width: 600px;">
+<div class="container-fluid" style="max-width: 600px;">
+
+    <div class="py-5 text-center">
+        <h2>회원가입</h2>
+    </div>
 
     <form th:action="@{/join}" th:object="${signUpDto}" method="post">
         <div class="form-group">

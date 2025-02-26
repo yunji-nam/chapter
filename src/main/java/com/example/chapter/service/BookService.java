@@ -144,39 +144,25 @@ public class BookService {
         Page<Book> page;
 
         if (category != null) {
-            switch (condition.toLowerCase()) {
-                case "title":
-                    page = bookRepository.findByCategoryAndTitleContainingIgnoreCaseAndDeletedFalse(category, query, pageable);
-                    break;
-                case "author":
-                    page = bookRepository.findByCategoryAndAuthorContainingIgnoreCaseAndDeletedFalse(category, query, pageable);
-                    break;
-                case "publisher":
-                    page = bookRepository.findByCategoryAndPublisherContainingIgnoreCaseAndDeletedFalse(category, query, pageable);
-                    break;
-                case "isbn":
-                    page = bookRepository.findByCategoryAndIsbnContainingIgnoreCaseAndDeletedFalse(category, query, pageable);
-                    break;
-                default:
-                    throw new IllegalArgumentException("유효하지 않은 값입니다.");
-            }
+            page = switch (condition.toLowerCase()) {
+                case "title" ->
+                        bookRepository.findByCategoryAndTitleContainingIgnoreCaseAndDeletedFalse(category, query, pageable);
+                case "author" ->
+                        bookRepository.findByCategoryAndAuthorContainingIgnoreCaseAndDeletedFalse(category, query, pageable);
+                case "publisher" ->
+                        bookRepository.findByCategoryAndPublisherContainingIgnoreCaseAndDeletedFalse(category, query, pageable);
+                case "isbn" ->
+                        bookRepository.findByCategoryAndIsbnContainingIgnoreCaseAndDeletedFalse(category, query, pageable);
+                default -> throw new IllegalArgumentException("유효하지 않은 값입니다.");
+            };
         } else {
-            switch (condition.toLowerCase()) {
-                case "title":
-                    page = bookRepository.findByTitleContainingIgnoreCaseAndDeletedFalse(query, pageable);
-                    break;
-                case "author":
-                    page = bookRepository.findByAuthorContainingIgnoreCaseAndDeletedFalse(query, pageable);
-                    break;
-                case "publisher":
-                    page = bookRepository.findByPublisherContainingIgnoreCaseAndDeletedFalse(query, pageable);
-                    break;
-                case "isbn":
-                    page = bookRepository.findByIsbnContainingIgnoreCaseAndDeletedFalse(query, pageable);
-                    break;
-                default:
-                    throw new IllegalArgumentException("유효하지 않은 값입니다.");
-            }
+            page = switch (condition.toLowerCase()) {
+                case "title" -> bookRepository.findByTitleContainingIgnoreCaseAndDeletedFalse(query, pageable);
+                case "author" -> bookRepository.findByAuthorContainingIgnoreCaseAndDeletedFalse(query, pageable);
+                case "publisher" -> bookRepository.findByPublisherContainingIgnoreCaseAndDeletedFalse(query, pageable);
+                case "isbn" -> bookRepository.findByIsbnContainingIgnoreCaseAndDeletedFalse(query, pageable);
+                default -> throw new IllegalArgumentException("유효하지 않은 값입니다.");
+            };
         }
         return page.map(BookListDto::new);
     }

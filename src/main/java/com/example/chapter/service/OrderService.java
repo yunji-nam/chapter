@@ -128,20 +128,15 @@ public class OrderService {
         LocalDateTime startDateTime = startDate.atStartOfDay();
         LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
 
-        Page<Order> page;
-        switch (condition) {
-            case "merchantUid":
-                page = orderRepository.findByMerchantUidContainingIgnoreCaseAndCreatedAtBetween(query, startDateTime, endDateTime, pageable);
-                break;
-            case "username":
-                page = orderRepository.findByUser_NameContainingIgnoreCaseAndCreatedAtBetween(query, startDateTime, endDateTime, pageable);
-                break;
-            case "bookTitle":
-                page = orderRepository.findByItems_Book_TitleContainingIgnoreCaseAndCreatedAtBetween(query, startDateTime, endDateTime, pageable);
-                break;
-            default:
-                throw new IllegalArgumentException("유효하지 않은 값입니다.");
-        }
+        Page<Order> page = switch (condition) {
+            case "merchantUid" ->
+                    orderRepository.findByMerchantUidContainingIgnoreCaseAndCreatedAtBetween(query, startDateTime, endDateTime, pageable);
+            case "username" ->
+                    orderRepository.findByUser_NameContainingIgnoreCaseAndCreatedAtBetween(query, startDateTime, endDateTime, pageable);
+            case "bookTitle" ->
+                    orderRepository.findByItems_Book_TitleContainingIgnoreCaseAndCreatedAtBetween(query, startDateTime, endDateTime, pageable);
+            default -> throw new IllegalArgumentException("유효하지 않은 값입니다.");
+        };
         return page.map(OrderListDto::new);
     }
 
