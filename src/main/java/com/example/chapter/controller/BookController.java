@@ -47,6 +47,7 @@ public class BookController {
         model.addAttribute("categories", Category.values());
         model.addAttribute("requestedCategory", category);
         model.addAttribute("bookList", bookDtos);
+        model.addAttribute("sortType", sortType);
 
         return "book/list";
     }

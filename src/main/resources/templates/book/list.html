@@ -18,7 +18,7 @@
                     <option value="price_asc" th:selected="${sortType == 'price_asc'}">낮은가격순</option>
                 </select>
             </form>
-            <div th:each="book : ${bookList}" style="max-width: 600px; margin-left: 150px;">
+            <div th:each="book : ${bookList}" style="max-width: 700px; margin-left: 100px;">
                 <div class="card shadow-sm d-flex flex-row" style="height: 200px; margin-bottom: 20px;">
                     <a th:href="@{'/book/' + ${book.id}}"
                        style="display: flex; justify-content: center; align-items: center;">
