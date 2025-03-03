@@ -8,7 +8,9 @@ import com.example.chapter.exception.DuplicateFieldException;
 import com.example.chapter.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,7 +64,8 @@ public class AdminService {
     }
 
     public Page<UserInfo> getUsers(Pageable pageable) {
-        Page<User> users = userRepository.findAll(pageable);
+        Pageable getPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<User> users = userRepository.findAll(getPageable);
         return users.map(UserInfo::new);
     }
 }

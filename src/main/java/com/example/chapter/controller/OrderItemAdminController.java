@@ -22,7 +22,7 @@ public class OrderItemAdminController {
     private final OrderItemService orderItemService;
 
     @GetMapping("/sales")
-    public String getSales(@RequestParam(required = false) String sortType,
+    public String getSales(@RequestParam(defaultValue = "sales") String sortType,
                            @RequestParam(required = false) String category,
                            @RequestParam(required = false) LocalDate startDate,
                            @RequestParam(required = false) LocalDate endDate,
