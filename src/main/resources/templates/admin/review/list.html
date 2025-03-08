@@ -42,11 +42,11 @@
                                 <span th:text="${review.content}"/>
                             </a>
                         </td>
-                        <td th:text="${#temporals.format(review.createdDate, 'yyyy-MM-dd')}" class="col-wide"></td>
-                        <td th:text="${#temporals.format(review.modifiedDate, 'yyyy-MM-dd')}" class="col-wide"></td>
+                        <td th:text="${#temporals.format(review.createdDate, 'yyyy-MM-dd')}" ></td>
+                        <td th:text="${#temporals.format(review.modifiedDate, 'yyyy-MM-dd')}"></td>
                         <td th:text="${review.username}"></td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-outline-danger"
+                            <button type="button" class="btn btn-sm btn-outline-primary"
                                     th:data-book-id="${review.bookId}"
                                     th:data-review-id="${review.id}"
                                     onclick="deleteReview(this)">
